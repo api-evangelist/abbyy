@@ -1,0 +1,75 @@
+{
+    "name": "ABBYY",
+    "description": "<p>ABBYY is a leading provider of document conversion, data capture, and linguistic software and services. The key areas of ABBYY???s research and development include document recognition and linguistic technologies. ABBYY???s recognition technologies and products help people manage the increasing amount of information delivering powerful instruments which enable them to: unlock information from paper and images, automatically acquire data, and process and store valuable information. Using recognition and data capture products, people save money and effort typically spent on data entry, and benefit from the ability to access information in new, more efficient ways. Our linguistic products help break down language barriers, facilitating easier and clearer communication.<\/p>",
+    "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/298-abbyy-cloud-ocr-sdk.jpg",
+    "tags": [
+        "api provider",
+        "documents",
+        "have api",
+        "no api definition",
+        "ocr"
+    ],
+    "created": "2019-12-18",
+    "modified": "2019-12-18",
+    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/abbyy\/master\/apis.json",
+    "specificationVersion": "0.14",
+    "apis": [
+        {
+            "name": "abbyy",
+            "description": null,
+            "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/298-abbyy-cloud-ocr-sdk.jpg",
+            "humanURL": "http:\/\/ocrsdk.com\/",
+            "baseURL": "",
+            "tags": [],
+            "properties": [
+                {
+                    "type": "x-openapi",
+                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/abbyy-openapi.json"
+                },
+                {
+                    "type": "x-openapi",
+                    "url": "http:\/\/kinlane-productions.s3.amazonaws.com\/api-evangelist-site\/company\/openapis\/abbyy.json"
+                },
+                {
+                    "type": "x-postman-collecction",
+                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/abbyy-postman-collection.json"
+                }
+            ]
+        }
+    ],
+    "include": [],
+    "x-common": [
+        {
+            "type": "Base",
+            "url": "https:\/\/cloud.ocrsdk.com"
+        },
+        {
+            "type": "Blog",
+            "url": "http:\/\/blog.ocrsdk.com\/"
+        },
+        {
+            "type": "Blog RSS",
+            "url": "http:\/\/blog.ocrsdk.com\/feed\/"
+        },
+        {
+            "type": "Crunchbase",
+            "url": "http:\/\/www.crunchbase.com\/company\/abbyy"
+        },
+        {
+            "type": "Github",
+            "url": "https:\/\/github.com\/abbyysdk"
+        },
+        {
+            "type": "Pricing",
+            "url": "http:\/\/ocrsdk.com\/plans-and-pricing\/"
+        },
+        {
+            "type": "Twitter",
+            "url": "https:\/\/twitter.com\/OCRSDKcom"
+        },
+        {
+            "type": "Website",
+            "url": "http:\/\/ocrsdk.com\/"
+        }
+    ]
+}
