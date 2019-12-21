@@ -4,41 +4,27 @@
     "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/298-abbyy-cloud-ocr-sdk.jpg",
     "tags": [
         "api provider",
+        "data extraction",
+        "data location",
+        "document conversion",
         "documents",
         "have api",
+        "multi-platform support",
         "no api definition",
-        "ocr"
+        "ocr",
+        "profile",
+        "text recognition"
     ],
-    "created": "2019-12-18",
-    "modified": "2019-12-18",
+    "created": "2019-12-20",
+    "modified": "2019-12-20",
     "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/abbyy\/master\/apis.json",
     "specificationVersion": "0.14",
-    "apis": [
-        {
-            "name": "abbyy",
-            "description": null,
-            "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/298-abbyy-cloud-ocr-sdk.jpg",
-            "humanURL": "http:\/\/ocrsdk.com\/",
-            "baseURL": "",
-            "tags": [],
-            "properties": [
-                {
-                    "type": "x-openapi",
-                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/abbyy-openapi.json"
-                },
-                {
-                    "type": "x-openapi",
-                    "url": "http:\/\/kinlane-productions.s3.amazonaws.com\/api-evangelist-site\/company\/openapis\/abbyy.json"
-                },
-                {
-                    "type": "x-postman-collecction",
-                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/abbyy-postman-collection.json"
-                }
-            ]
-        }
-    ],
-    "include": [],
+    "apis": [],
     "x-common": [
+        {
+            "type": "APIs.json",
+            "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/apis.json"
+        },
         {
             "type": "Base",
             "url": "https:\/\/cloud.ocrsdk.com"
@@ -56,12 +42,28 @@
             "url": "http:\/\/www.crunchbase.com\/company\/abbyy"
         },
         {
+            "type": "FAQ",
+            "url": "https:\/\/www.ocrsdk.com\/documentation\/faq\/"
+        },
+        {
             "type": "Github",
             "url": "https:\/\/github.com\/abbyysdk"
         },
         {
             "type": "Pricing",
             "url": "http:\/\/ocrsdk.com\/plans-and-pricing\/"
+        },
+        {
+            "type": "Pricing",
+            "url": "https:\/\/www.ocrsdk.com\/plans-and-pricing\/"
+        },
+        {
+            "type": "Service Level AGreements",
+            "url": "https:\/\/www.ocrsdk.com\/sla\/"
+        },
+        {
+            "type": "Status",
+            "url": "https:\/\/www.ocrsdk.com\/status\/"
         },
         {
             "type": "Twitter",
