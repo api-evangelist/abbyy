@@ -30,6 +30,17 @@ common:
     url: https://www.abbyy.com
   - type: Documentation
     url: https://www.abbyy.com/developers/
+  - type: Integrations
+    url: https://www.abbyy.com/marketplace/
+integrations:
+  - name: Assets
+  - name: Contributors
+  - name: Get in touch
+  - name: Request a trial
+  - name: About ABBYY Marketplace
+  - name: Become a Partner
+  - name: Alliances
+  - name: General Terms of Use
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
