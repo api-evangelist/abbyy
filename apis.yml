@@ -26,6 +26,10 @@ apis:
       - type: Documentation
         url: https://www.abbyy.com/developers/
 common:
+  - type: GitHubOrganization
+    url: https://github.com/abbyy
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/abbyy
   - type: Website
     url: https://www.abbyy.com
   - type: Documentation
