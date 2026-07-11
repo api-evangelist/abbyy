@@ -26,6 +26,10 @@ apis:
       - type: Documentation
         url: https://www.abbyy.com/developers/
 common:
+  - type: TrustCenter
+    url: security/abbyy-trust-center.yml
+  - type: DomainSecurity
+    url: security/abbyy-domain-security.yml
   - type: GitHubOrganization
     url: https://github.com/abbyy
   - type: LinkedIn
