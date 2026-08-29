@@ -1,0 +1,210 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  openapi/_original/abbyy-vantage-processing-openapi.json ($ref graph and id-reference fields), enriched
+  from https://docs.abbyy.com/vantage/developer/output/json/json-schema (fetched 2026-08-29)
+provider: ABBYY
+providerId: abbyy
+api: ABBYY Vantage Processing REST API
+summary: >-
+  Two loosely coupled halves. The PROCESSING half is a strict containment tree — Transaction owns
+  Documents, Documents own Files, and everything hangs off one transactionId — governed by a Skill chosen
+  at creation time. The CATALOG half is a flat reference-data store (Catalog, Column, Record) that skills
+  read from during extraction but that the transaction graph never links to. The extraction RESULT is a
+  third model that the OpenAPI barely describes: TransactionDto returns result FILES, and the actual
+  extracted-data shape (ExtractedData, DocumentDefinition, RootObject, ExtractedObject, confidence,
+  RawValue) lives only in ABBYY's separately published JSON Schema documentation.
+entities:
+  - name: Transaction
+    schema: TransactionDto
+    primary_key: transactionId
+    description: A processing job. Created against exactly one Skill, then started, polled and downloaded from.
+    lifecycle: created -> (files added) -> started -> in-progress -> completed | failed -> deleted
+    status_enum: TransactionStatus
+    relationships:
+      - type: has_many
+        target: Document
+        via: documents
+      - type: has_many
+        target: File
+        via: sourceFiles
+      - type: has_many
+        target: RegistrationParameter
+        via: registrationParameters
+      - type: has_many
+        target: SkillParameter
+        via: skillParameters
+      - type: belongs_to
+        target: Skill
+        via: skillId
+  - name: Document
+    schema: ExtractedDocumentDto / TransactionDocumentResult
+    primary_key: documentId
+    description: A logical document inside a transaction; the unit that classification and extraction act on.
+    relationships:
+      - type: belongs_to
+        target: Transaction
+        via: transactionId
+      - type: has_many
+        target: File
+        via: sourceFiles
+      - type: has_many
+        target: ResultFile
+        via: resultFiles
+      - type: has_one
+        target: Classification
+        via: classification
+      - type: has_many
+        target: BusinessRuleError
+        via: businessRulesErrors
+  - name: File
+    schema: FileDto / TransactionFileMetadataDto
+    primary_key: fileId
+    description: An uploaded source image or PDF. Names must be unique within a transaction (409 otherwise).
+    relationships:
+      - type: belongs_to
+        target: Transaction
+        via: transactionId
+      - type: has_one
+        target: ImageProcessingOptions
+        via: imageProcessingOptions
+      - type: has_many
+        target: FileRegistrationParameter
+        via: registrationParameters
+  - name: ResultFile
+    schema: ResultFileDto
+    primary_key: fileId
+    description: A generated output artifact (JSON, XML, searchable PDF and so on) keyed by ResultFileType.
+    relationships:
+      - type: belongs_to
+        target: Document
+        via: documentId
+  - name: Skill
+    schema: SkillDto / SkillListItemDto
+    primary_key: skillId
+    description: >-
+      The trained AI model that drives a transaction. Types are Classification, Document, OCR and Process.
+      A Process skill composes other skills.
+    type_enum: SkillType
+    relationships:
+      - type: has_many
+        target: Field
+        via: fields
+      - type: has_many
+        target: SkillClass
+        via: classes
+      - type: has_many
+        target: Skill
+        via: skills
+        note: self-referential — InnerSkillDto, how a Process skill chains child skills
+  - name: Field
+    schema: FieldDto
+    description: An extractable field definition. Self-referential via children, so tables and nested records recurse.
+    type_enum: FieldType
+    relationships:
+      - type: has_many
+        target: Field
+        via: children
+      - type: has_one
+        target: TextFieldFormat
+        via: textFormat
+  - name: Classification
+    schema: ClassificationDto
+    description: The class assigned to a document plus per-class confidence scores.
+    relationships:
+      - type: has_one
+        target: SkillClass
+        via: resultClass
+      - type: has_many
+        target: ClassificationConfidence
+        via: classConfidences
+      - type: belongs_to
+        target: SkillClass
+        via: classId
+  - name: BusinessRuleError
+    schema: DocumentBusinessRulesErrorDto
+    description: >-
+      A validation-rule violation surfaced INSIDE a successful result, not as an HTTP error.
+      errorType is Normalization, Condition or Unknown.
+    relationships:
+      - type: belongs_to
+        target: Field
+        via: currentFieldId
+      - type: belongs_to
+        target: Rule
+        via: ruleId
+        note: ruleId is opaque — no operation resolves it to a rule definition.
+  - name: Catalog
+    schema: CatalogDto / CatalogListItemDto
+    primary_key: catalogId
+    description: A reference-data table skills look up against during extraction (vendors, GL codes, and so on).
+    relationships:
+      - type: has_many
+        target: Column
+        via: columns
+      - type: has_many
+        target: Record
+        via: records
+  - name: Column
+    schema: ColumnDto
+    type_enum: ColumnType
+    relationships:
+      - type: belongs_to
+        target: Catalog
+        via: catalogId
+  - name: Record
+    schema: RecordDto / RecordModel
+    primary_key: id
+    description: >-
+      One catalog row. The id is CALLER-SUPPLIED, which makes AddRecords upsert-like and DeleteRecords
+      exactly reversible — the only place in the API a client controls a primary key.
+    relationships:
+      - type: belongs_to
+        target: Catalog
+        via: catalogId
+  - name: ReindexOperation
+    schema: ReindexOperationResult
+    primary_key: reindexOperationId
+    description: >-
+      Async job that republishes a catalog to the search index. Skills do not see catalog changes until it
+      completes. State enum ReindexState.
+    relationships:
+      - type: belongs_to
+        target: Catalog
+        via: catalogId
+  - name: RegistrationParameter
+    schema: TransactionRegistrationParameter / TransactionFileRegistrationParameter
+    description: Caller-supplied key-value metadata attached to a transaction or a file, readable back and reportable.
+  - name: SkillParameter
+    schema: TransactionSkillParameter / TransactionSkillParameterDto
+    type_enum: SkillParameterType
+    description: Per-transaction overrides for the chosen skill.
+  - name: Invite
+    schema: CreateAdminInviteData
+    description: Administrative user invitation. Write-only — no read, list or revoke operation is exposed.
+result_payload_model:
+  described_in_openapi: false
+  documented_at: https://docs.abbyy.com/vantage/developer/output/json/json-schema
+  entities:
+    - ExtractedDataTransaction
+    - ExtractedDataDocument
+    - ExtractedData
+    - DocumentDefinition
+    - RootObject
+    - ExtractedObject
+    - FileModel
+    - Page
+  note: >-
+    The single most valuable data structure ABBYY produces — the extracted field values with confidence
+    scores, RawValue and source coordinates — is NOT in the OpenAPI. The API hands back a downloadable
+    result file and the shape is specified in prose documentation only. An agent generating a client from
+    the spec gets no type for the answer it came for.
+id_conventions:
+  format: opaque string
+  prefixes: none
+  note: >-
+    No typed id prefixes (no txn_, doc_, skl_). Ids are bare strings, so a misrouted identifier cannot be
+    caught client-side before the call.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

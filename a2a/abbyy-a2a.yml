@@ -1,0 +1,56 @@
+generated: '2026-08-29'
+method: probed
+source: https://docs.abbyy.com/.well-known/agent-card.json
+provider: ABBYY
+providerId: abbyy
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: docs.abbyy.com
+x-evidence:
+  fetched: '2026-08-29'
+  url: https://docs.abbyy.com/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json
+card: a2a/abbyy-agent-card.json
+name: ABBYY Documentation
+description: Public documentation for ABBYY products
+url: https://docs.abbyy.com/
+version: 1.0.0
+protocolVersion: '0.3'
+preferredTransport: HTTP+JSON
+capabilities:
+  streaming: false
+  pushNotifications: false
+skills:
+  - id: abbyy
+    name: Abbyy
+    url: https://docs.abbyy.com/.well-known/agent-skills/abbyy/skill.md
+grade: conformant
+grade_basis: >-
+  A2A 1.0.0 hard checks all pass — capabilities is an object, protocolVersion is present, and skills is an
+  array — and the optional fields the near-conformant grade tests for (preferredTransport,
+  defaultInputModes, defaultOutputModes) are all present.
+deviations:
+  - field: protocolVersion
+    observed: '0.3'
+    note: >-
+      Declares A2A 0.3, not 1.0.0. The card is structurally valid against 1.0.0, but the provider is
+      asserting the older protocol revision.
+  - field: skills[].tags
+    observed: empty array
+    note: The single skill declares no tags, so it is not discoverable by capability keyword.
+  - field: securitySchemes
+    observed: absent
+    note: No security scheme is declared, consistent with an unauthenticated documentation agent.
+  - field: skills[].examples / inputModes / outputModes
+    observed: absent
+    note: The skill points at a markdown file rather than declaring per-skill modes or examples.
+scope_note: >-
+  This card describes the ABBYY DOCUMENTATION agent, not the Vantage document-processing API. It advertises
+  read-only access to published docs; it cannot submit a document, start a transaction, or reach a tenant.
+  It is a real, provider-served agent surface and is graded as such, but it is not an agent interface to the
+  product.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

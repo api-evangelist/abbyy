@@ -1,0 +1,31 @@
+# ABBYY Documentation
+
+> Public documentation for ABBYY products.
+> This root index links to per-product section files, each under 50,000 characters.
+> Fetch the relevant section file before exploring individual pages.
+
+## Products
+
+- [ABBYY Vantage — Core](https://docs.abbyy.com/llms-vantage-core.txt): Getting started, API guides, how-to tutorials, connectors, private-cloud deployment, and release notes for ABBYY Vantage.
+- [ABBYY Vantage — Skill Authoring](https://docs.abbyy.com/llms-vantage-skill-authoring.txt): Skill Catalog (100+ pre-trained skills) and Skill Designer (building and training custom skills).
+- [ABBYY Vantage — Advanced Designer](https://docs.abbyy.com/llms-vantage-advanced-designer.txt): Advanced Designer reference — process skills, activities, LLM connections, prompt-based extraction, and pipeline configuration.
+- [ABBYY Vantage — Runtime and Admin](https://docs.abbyy.com/llms-vantage-runtime-admin.txt): Manual review, Scanning Station, tenant administration, technology core versions, and skill versioning.
+- [ABBYY FlexiCapture](https://docs.abbyy.com/llms-flexi-capture.txt): _Coming soon._ Placeholder for forthcoming FlexiCapture documentation.
+- [ABBYY FineReader Engine — Guides](https://docs.abbyy.com/llms-finereader-guide.txt): Installation, licensing, guided tour, specifications, distribution, introduction, release notes, and Visual Components reference for FineReader Engine 12.
+- [ABBYY FineReader Engine — API Reference: Data Types](https://docs.abbyy.com/llms-finereader-api-datatypes.txt): Parameter objects and enumerations for the FineReader Engine 12 C++ SDK.
+- [ABBYY FineReader Engine — API Reference: Document and Image Objects](https://docs.abbyy.com/llms-finereader-api-documents.txt): Document-related, image-related, and text-related objects for the FineReader Engine 12 C++ SDK.
+- [ABBYY FineReader Engine — API Reference: Engine and Layout Objects](https://docs.abbyy.com/llms-finereader-api-engine.txt): Engine object, supplementary methods, layout-related, and language-related objects for the FineReader Engine 12 C++ SDK.
+- [ABBYY FineReader Engine — API Reference: Supporting Objects](https://docs.abbyy.com/llms-finereader-api-supporting.txt): Classification, mechanism, document comparison, batch processor, license, engine loaders, functions, and top-level API stubs for the FineReader Engine 12 C++ SDK.
+
+## Quick Entry Points
+
+- [ABBYY Documentation Home](https://docs.abbyy.com/home.md)
+- [Vantage Introduction](https://docs.abbyy.com/vantage/introduction.md): Start here for ABBYY Vantage
+- [Vantage Getting Started — Overview](https://docs.abbyy.com/vantage/getting-started/overview.md)
+- [Vantage API Getting Started](https://docs.abbyy.com/vantage/developer/getting-started.md)
+- [FineReader Engine Overview](https://docs.abbyy.com/fine-reader/engine/introduction.md): Start here for FineReader Engine 12
+
+## Vantage OpenAPI Specs
+
+- [Vantage Processing REST API](https://docs.abbyy.com/openapi.json)
+- [Vantage Reporting API](https://docs.abbyy.com/openapi-reporting.json)

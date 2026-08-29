@@ -1,0 +1,61 @@
+generated: '2026-08-29'
+method: searched
+source: https://docs.abbyy.com/vantage/developer/authentication/authentication + openapi/_original/abbyy-vantage-processing-openapi.json
+  (fetched https://docs.abbyy.com/openapi.json, HTTP 200)
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - authorizationCode
+schemes:
+- name: OAuth2Security
+  type: oauth2
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+    tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+    scopes: 3
+  sources:
+  - openapi/abbyy-vantage-processing-openapi.yml
+  - openapi/abbyy-vantage-reporting-openapi.yml
+  - openapi/abbyy-vantage-reporting-v1-openapi.yml
+docs: https://docs.abbyy.com/vantage/developer/authentication/authentication
+note: The Vantage OpenAPI declares only the OAuth 2.0 authorization-code flow, but ABBYY documents three flows for
+  the same token endpoint. Bearer token goes in the Authorization header on every request. The FlexiCapture Cloud
+  for Invoices API is a separate surface using HTTP Basic auth with an application id and token, base64-encoded.
+documented_flows:
+- flow: authorizationCode
+  pkce: true
+  best_for: User-facing applications
+  docs: https://docs.abbyy.com/vantage/developer/authentication/authorization-code-flow
+- flow: clientCredentials
+  best_for: Machine-to-machine integrations
+  docs: https://docs.abbyy.com/vantage/developer/authentication/client-credentials
+- flow: password
+  best_for: Server-to-server integrations (Resource Owner Password Credentials)
+  docs: https://docs.abbyy.com/vantage/developer/authentication/resource-owner-password-credentials
+token_endpoints:
+- region: US
+  authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+  tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+- region: EU
+  authorizationUrl: https://vantage-eu.abbyy.com/auth2/connect/authorize
+  tokenUrl: https://vantage-eu.abbyy.com/auth2/connect/token
+- region: AU
+  authorizationUrl: https://vantage-au.abbyy.com/auth2/connect/authorize
+  tokenUrl: https://vantage-au.abbyy.com/auth2/connect/token
+other_surfaces:
+- api: ABBYY FlexiCapture Cloud for Invoices API
+  type: http
+  scheme: basic
+  credential: application id + token, colon-joined and base64-encoded
+  docs: https://docs.abbyy.com/flexi-capture/cloud/cloud-f-cfor-invoices-api-auth
+- api: ABBYY Documentation MCP Server
+  type: none
+  credential: anonymous — no token required
+  docs: https://docs.abbyy.com/vantage/developer/mcp-server
+onboarding:
+  self_serve: false
+  note: A Vantage tenant is provisioned by ABBYY on request; API clients are then created by the tenant admin under
+    Administration > API clients.
+  request_url: https://www.abbyy.com/company/contact-us/

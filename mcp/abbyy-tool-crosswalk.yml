@@ -1,0 +1,70 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  mcp/abbyy-mcp.yml (live tools/list against https://docs.abbyy.com/mcp) crossed against
+  openapi/_original/abbyy-vantage-processing-openapi.json and
+  openapi/_original/abbyy-vantage-reporting-openapi.json
+provider: ABBYY
+providerId: abbyy
+surfaces:
+  openapi:
+    - file: openapi/abbyy-vantage-processing-openapi.yml
+      operations: 30
+      gated: false
+      note: Spec is public at https://docs.abbyy.com/openapi.json; calling it needs a tenant OAuth token.
+    - file: openapi/abbyy-vantage-reporting-openapi.yml
+      operations: 6
+      gated: false
+  mcp:
+    url: https://docs.abbyy.com/mcp
+    gated: false
+    tools: 3
+  graphql: none
+headline: >-
+  Zero overlap. ABBYY's MCP server and ABBYY's REST API describe different things: the server reads docs,
+  the API processes documents. Every MCP tool is mcp_only and every one of the 36 REST operations is
+  rest_only. This is the cleanest possible example of a provider shipping an MCP surface that is not an
+  agent interface to the product.
+crosswalk: []
+mcp_only:
+  - tool: search_abbyy_documentation
+    reason: Semantic search over published documentation pages. No REST equivalent — ABBYY exposes no docs-search API.
+  - tool: query_docs_filesystem_abbyy_documentation
+    reason: >-
+      Read-only virtual filesystem over documentation pages and the OpenAPI specs themselves. Backed by the
+      Mintlify docs index, not by any ABBYY product endpoint.
+  - tool: submit_feedback
+    reason: Documentation feedback intake. No public REST operation accepts docs feedback.
+rest_only:
+  - operations: [GetAvailableSkills, GetSkillInfo]
+    group: Skills
+    note: Listing and inspecting the AI skills a tenant can run — the natural first tool an agent would need.
+  - operations: [CreateTransaction, LaunchTransaction, StartTransaction, GetTransactionInfo, DeleteTransaction,
+      GetActiveTransactions, GetCompletedTransactions, GetTransactionRegistrationParameters,
+      GetTransactionSkillParameters, GenerateMobileInputLink]
+    group: Transactions
+    note: The whole document-processing lifecycle. Unreachable over MCP.
+  - operations: [AddFilesToTransaction, DownloadFile]
+    group: Transactions (files)
+  - operations: [CreateTransactionDocument, GetTransactionDocuments, GetTransactionDocument,
+      DeleteTransactionDocument, AddFilesToTransactionDocument, DownloadTransactionDocumentSourceFile]
+    group: TransactionDocuments
+  - operations: [GetCatalogs, GetCatalog, ClearCatalog, StartCatalogReindex, GetReindexOperation]
+    group: Catalogs
+  - operations: [AddRecords, GetRecords, GetRecord, DeleteRecords]
+    group: CatalogRecords
+  - operations: [CreateInvite]
+    group: Invites
+  - operations: [GetDocumentsAsCsv, GetFieldsAsCsv, CreateTransactionStepsExportRequest, ListExportRequests,
+      GetExportStatus, GetExportResult]
+    group: Report (Reporting API v2)
+coverage:
+  mcp_tools: 3
+  rest_operations: 36
+  bound: 0
+  mcp_only: 3
+  rest_only: 36
+  rest_coverage_pct: 0.0
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

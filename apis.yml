@@ -1,8 +1,12 @@
 aid: abbyy
 name: ABBYY
-description: >-
-  ABBYY provides intelligent document processing and process intelligence
-  solutions powered by AI.
+description: ABBYY is an intelligent document processing (IDP) and process intelligence company whose platform classifies
+  documents, extracts structured data with confidence scores, and orchestrates human-in-the-loop review. ABBYY Vantage
+  exposes two public REST APIs — a Processing API for transactions, documents, skills and data catalogs, and a Reporting
+  API for business and analytics warehouse exports — both authenticated with OAuth 2.0 and served from regional
+  US, EU and AU hosts. ABBYY also ships FlexiCapture Cloud for Invoices as a separate Basic-auth REST API, mobile
+  capture SDKs, RPA connectors for UiPath, Power Automate, Pega, Blue Prism and Automation Anywhere, a hosted documentation
+  MCP server, and a published A2A agent card.
 type: Index
 deliveryModel:
   model: unknown
@@ -29,49 +33,208 @@ accessModel:
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/abbyy.png
 tags:
-  - AI Automation
-  - Document Processing
-url: >-
-  https://raw.githubusercontent.com/api-evangelist/abbyy/refs/heads/main/apis.yml
+- AI Automation
+- Document Processing
+- OCR
+- Intelligent Document Processing
+- Data Extraction
+- Process Intelligence
+- MCP
+- Agent Skills
+- RPA
+- Enterprise Automation
+url: https://raw.githubusercontent.com/api-evangelist/abbyy/refs/heads/main/apis.yml
 created: '2026-03-27'
-modified: '2026-03-27'
+modified: '2026-08-29'
 specificationVersion: '0.23'
 apis:
-  - aid: abbyy:abbyy
-    name: ABBYY
-    description: >-
-      ABBYY provides intelligent document processing and process intelligence
-      solutions powered by AI.
-    humanURL: https://www.abbyy.com
-    tags:
-      - AI Automation
-    properties:
-      - type: Documentation
-        url: https://www.abbyy.com/developers/
-common:
-  - type: TrustCenter
-    url: security/abbyy-trust-center.yml
-  - type: DomainSecurity
-    url: security/abbyy-domain-security.yml
-  - type: GitHubOrganization
-    url: https://github.com/abbyy
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/abbyy
-  - type: Website
-    url: https://www.abbyy.com
+- aid: abbyy:abbyy-vantage-processing
+  name: ABBYY Vantage Processing REST API
+  description: Public REST API for ABBYY Vantage intelligent document processing. Create transactions, upload and
+    order files, launch AI skills for classification, extraction and OCR, poll transaction status, download extracted
+    JSON/XML results, generate mobile-input links, and manage data catalogs and their records. OAuth 2.0 authorization-code
+    flow against the tenant auth server; 30 operations across six resource groups.
+  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
+  baseURL: https://vantage-us.abbyy.com
+  tags:
+  - Document Processing
+  - OCR
+  - Intelligent Document Processing
+  - Data Extraction
+  - AI Automation
+  properties:
+  - type: OpenAPI
+    url: openapi/abbyy-vantage-processing-openapi.yml
   - type: Documentation
-    url: https://www.abbyy.com/developers/
-  - type: Integrations
-    url: https://www.abbyy.com/marketplace/
+    url: https://docs.abbyy.com/vantage/developer/api-introduction
+  - type: APIReference
+    url: https://docs.abbyy.com/api-reference
+  - type: GettingStarted
+    url: https://docs.abbyy.com/vantage/developer/getting-started
+  - type: Postman
+    url: https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
+  - type: Authentication
+    url: authentication/abbyy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/abbyy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/abbyy-problem-types.yml
+  - type: DataModel
+    url: data-model/abbyy-data-model.yml
+  - type: Overlay
+    url: overlays/abbyy-vantage-processing-overlay.yaml
+- aid: abbyy:abbyy-vantage-reporting
+  name: ABBYY Vantage Reporting API
+  description: Reporting REST API for ABBYY Vantage. Downloads CSV extracts from the Business Processing Reporting
+    Warehouse (transaction-level step timings, skill versions, reviewer detail) and the Analytics Reporting Warehouse
+    (document and field changes made during Manual Review). Restricted to Tenant Administrator and Processing Supervisor
+    roles. v2 is current; v1 remains published alongside it.
+  humanURL: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
+  baseURL: https://vantage-us.abbyy.com
+  tags:
+  - Process Intelligence
+  - Analytics
+  - Document Processing
+  - Reporting
+  - AI Automation
+  properties:
+  - type: OpenAPI
+    url: openapi/abbyy-vantage-reporting-openapi.yml
+  - type: OpenAPI
+    url: openapi/abbyy-vantage-reporting-v1-openapi.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
+  - type: Overlay
+    url: overlays/abbyy-vantage-reporting-overlay.yaml
+- aid: abbyy:abbyy-flexicapture-invoices
+  name: ABBYY FlexiCapture Cloud for Invoices API
+  description: REST API for ABBYY FlexiCapture Cloud for Invoices. Uploads files, runs invoice capture tasks, downloads
+    results, and maintains business-unit and vendor master-data sets plus model training. HTTP Basic auth using
+    an application id and token. Regional endpoints api-us / api-eu / api-au .flexicapture.com. ABBYY states the
+    FlexiCapture Cloud web portal publishes the API scheme in Swagger format, but that scheme sits behind the portal
+    login and no anonymous OpenAPI document was retrievable.
+  humanURL: https://docs.abbyy.com/flexi-capture/cloud/cloud-f-cfor-invoices-api
+  baseURL: https://api-us.flexicapture.com
+  tags:
+  - Document Processing
+  - Invoice Processing
+  - Data Extraction
+  - OCR
+  - AI Automation
+  properties:
+  - type: Documentation
+    url: https://docs.abbyy.com/flexi-capture/cloud/cloud-f-cfor-invoices-api
+  - type: APIReference
+    url: https://docs.abbyy.com/flexi-capture/cloud/cloud-f-cfor-invoices-api
+  - type: GettingStarted
+    url: https://docs.abbyy.com/flexi-capture/cloud/cloud-f-cfor-invoices-quick-start
+- aid: abbyy:abbyy-docs-mcp
+  name: ABBYY Documentation MCP Server
+  description: 'Hosted, unauthenticated Model Context Protocol server over the public ABBYY documentation corpus.
+    Exposes semantic search, a read-only virtual documentation filesystem, and a feedback tool, plus an MCP resource
+    carrying ABBYY’s published Agent Skill. Read-only: it does not reach a Vantage tenant or process documents.'
+  humanURL: https://docs.abbyy.com/vantage/developer/mcp-server
+  baseURL: https://docs.abbyy.com/mcp
+  tags:
+  - MCP
+  - Agent Skills
+  - Document Processing
+  - AI Automation
+  - Documentation
+  properties:
+  - type: MCPServer
+    url: mcp/abbyy-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/abbyy-tool-crosswalk.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/mcp-server
+common:
+- type: Website
+  url: https://www.abbyy.com
+- type: DeveloperPortal
+  url: https://www.abbyy.com/ai-document-processing/api/
+- type: Documentation
+  url: https://docs.abbyy.com/vantage/developer/api-introduction
+- type: APIReference
+  url: https://docs.abbyy.com/api-reference
+- type: GettingStarted
+  url: https://docs.abbyy.com/vantage/getting-started/overview
+- type: Blog
+  url: https://www.abbyy.com/blog/
+- type: GitHubOrganization
+  url: https://github.com/abbyy
+- type: LinkedIn
+  url: https://www.linkedin.com/company/abbyy
+- type: Integrations
+  url: https://www.abbyy.com/marketplace/
+- type: Postman
+  url: https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
+- type: PrivacyPolicy
+  url: https://www.abbyy.com/privacy/
+- type: TermsOfService
+  url: https://www.abbyy.com/legal/subscription-terms/
+- type: StatusPage
+  url: https://status.abbyy.com/
+- type: LLMsTxt
+  url: llms/abbyy-llms.txt
+- type: AgentCard
+  url: a2a/abbyy-a2a.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: MCPServer
+  url: mcp/abbyy-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/abbyy-tool-crosswalk.yml
+- type: WellKnown
+  url: well-known/abbyy-well-known.yml
+- type: Packages
+  url: packages/abbyy-packages.yml
+- type: SDKs
+  url: packages/abbyy-packages.yml
+- type: Authentication
+  url: authentication/abbyy-authentication.yml
+- type: OAuthScopes
+  url: scopes/abbyy-scopes.yml
+- type: Conventions
+  url: conventions/abbyy-conventions.yml
+- type: Conformance
+  url: conformance/abbyy-conformance.yml
+- type: Compliance
+  url: security/abbyy-trust-center.yml
+- type: ErrorCatalog
+  url: errors/abbyy-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/abbyy-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/abbyy-lifecycle.yml
+- type: ChangeLog
+  url: changelog/abbyy-changelog.yml
+- type: DataModel
+  url: data-model/abbyy-data-model.yml
+- type: Components
+  url: components/abbyy-components.yml
+- type: Plans
+  url: plans/abbyy-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/abbyy-rate-limits.yml
+- type: TrustCenter
+  url: security/abbyy-trust-center.yml
+- type: DomainSecurity
+  url: security/abbyy-domain-security.yml
 integrations:
-  - name: Assets
-  - name: Contributors
-  - name: Get in touch
-  - name: Request a trial
-  - name: About ABBYY Marketplace
-  - name: Become a Partner
-  - name: Alliances
-  - name: General Terms of Use
+- name: Assets
+- name: Contributors
+- name: Get in touch
+- name: Request a trial
+- name: About ABBYY Marketplace
+- name: Become a Partner
+- name: Alliances
+- name: General Terms of Use
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-29'
+  status: enriched
+  artifacts_added: 26
+  pass: local-v1

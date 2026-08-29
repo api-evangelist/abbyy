@@ -1,0 +1,63 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://docs.abbyy.com/vantage/developer/integrating-manual-review,
+  https://docs.abbyy.com/vantage/developer/mobile-upload/mobile-upload,
+  https://docs.abbyy.com/vantage/developer/mobile-upload/configuring-input,
+  https://docs.abbyy.com/vantage/developer/mobile-upload/json-input,
+  openapi/_original/abbyy-vantage-processing-openapi.json — all fetched 2026-08-29
+provider: ABBYY
+providerId: abbyy
+note: >-
+  ABBYY ships no component library, no web components and no element/loader script. What it does ship are
+  two HOSTED, EMBEDDABLE surfaces that the API mints a URL for and the integrator drops into their own
+  application. They are client-side integration points in the sense that matters — a user-facing screen
+  ABBYY renders inside your product — but they are configured by API call and query parameters, not by
+  installing a package.
+families:
+  - name: Manual Review
+    kind: hosted-embedded-ui
+    delivery: iframe
+    description: >-
+      ABBYY's human-in-the-loop verification screen, embedded into the integrator's application. The API
+      returns a manualReviewLink on a transaction whose status requires review; the integrator loads that
+      link in an iframe and polls transaction status to learn when the reviewer is done.
+    entry_point: transaction status + manualReviewLink
+    backing_operations: [GetTransactionInfo, GetActiveTransactions]
+    docs: https://docs.abbyy.com/vantage/developer/integrating-manual-review
+    loader_library: none
+    package: none
+  - name: Vantage Mobile Input
+    kind: hosted-capture-flow
+    delivery: link
+    description: >-
+      A hosted document-capture flow for phones. GenerateMobileInputLink returns a URL the end user opens
+      on a mobile device; images captured there are uploaded straight into the transaction. Configurable
+      by query parameters — document types, page counts, redirect URI, language, theme — and by a JSON
+      document model passed through the `md` parameter as a link or encoded JSON.
+    entry_point: GenerateMobileInputLink
+    backing_operations: [GenerateMobileInputLink, GetTransactionInfo, DownloadFile]
+    docs: https://docs.abbyy.com/vantage/developer/mobile-upload/mobile-upload
+    configuration_docs: https://docs.abbyy.com/vantage/developer/mobile-upload/configuring-input
+    platforms: [iOS, Android]
+    loader_library: none
+    package: none
+native_sdk_components:
+  - name: ABBYY Mobile Capture SDK
+    kind: native-mobile-sdk
+    note: >-
+      Real on-device capture UI components (Image Capture, Real-Time Recognition) for iOS, Android,
+      Cordova and React Native. Distinct from the hosted flows above and from the Vantage API — see
+      packages/abbyy-packages.yml. Last published 2021.
+    packages: [react-native-abbyy-mobile-capture, cordova-plugin-abbyy-rtr-sdk]
+web_components: none
+element_libraries: none
+embedded_dashboards:
+  - name: Analytics UI
+    note: >-
+      Vantage's Analytics interface is a tenant-hosted screen, not an embeddable component; self-hosted
+      deployments gained an option to hide it in release 3.3.0. Recorded for completeness, not as an
+      integration surface.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

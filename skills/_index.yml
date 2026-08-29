@@ -1,0 +1,31 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://docs.abbyy.com/.well-known/agent-skills/abbyy/skill.md (HTTP 200, text/markdown) — also served as
+  MCP resource mintlify://skills/abbyy and referenced from the A2A agent card at
+  https://docs.abbyy.com/.well-known/agent-card.json
+provider: ABBYY
+providerId: abbyy
+note: >-
+  Provider-published, saved verbatim. ABBYY authored this skill; API Evangelist did not generate it. It is
+  a product-orientation skill covering the Vantage skill model, the REST processing flow, Manual Review and
+  RPA connectors, ending in a twelve-item verification checklist. It is written against documentation pages
+  rather than against operationIds, so an agent following it still has to read the OpenAPI to bind calls.
+skills:
+  - id: abbyy
+    name: Abbyy
+    file: skills/abbyy-vantage.md
+    version: '1.0'
+    api: ABBYY Vantage Processing REST API
+    description: >-
+      Use when building document processing workflows, extracting data from documents via API, creating or
+      customizing skills for document classification and extraction, integrating with RPA platforms, or
+      managing manual review and quality assurance for document processing pipelines.
+    published_by: ABBYY
+    source_url: https://docs.abbyy.com/.well-known/agent-skills/abbyy/skill.md
+    operations_referenced: false
+    note: >-
+      Names the API groups (/api/publicapi/v1/, /api/reporting/v2/) and the base URLs but no operationIds.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

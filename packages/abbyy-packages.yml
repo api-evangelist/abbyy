@@ -1,0 +1,104 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  npm registry.npmjs.org, pypi.org, api.nuget.org, search.maven.org, github.com/abbyy,
+  github.com/abbyyProduct, and https://www.abbyy.com/ai-document-processing/api/ (probed 2026-08-29)
+provider: ABBYY
+providerId: abbyy
+note: >-
+  ABBYY's API landing page advertises SDKs in Python, C#, TypeScript and Java. Every one of those that is
+  actually published targets ABBYY Document AI (base https://api.abbyy.com/document-ai), not the Vantage
+  Processing/Reporting APIs this repo profiles. All four Document AI SDKs are Speakeasy-generated, still at
+  0.x, and were last released on 2025-04-17 — and the host they call, api.abbyy.com, returned HTTP 530
+  (Cloudflare origin unreachable) on every path probed on 2026-08-29. There is NO first-party client library
+  for the ABBYY Vantage API on any public registry: ABBYY ships a Postman collection and RPA connectors
+  instead. The remaining first-party packages are mobile-capture bindings, last shipped in 2021-2022.
+packages:
+  - name: '@abbyy-sdk/document-ai'
+    registry: npm
+    language: TypeScript
+    official: true
+    version: 0.1.4
+    published: '2025-04-17'
+    url: https://www.npmjs.com/package/@abbyy-sdk/document-ai
+    repository: https://github.com/abbyyProduct/document-ai-sdk-typescript
+    api: ABBYY Document AI
+    note: Speakeasy-generated. Targets https://api.abbyy.com/document-ai, which answered HTTP 530 on 2026-08-29.
+  - name: abbyy-document-ai
+    registry: pypi
+    language: Python
+    official: true
+    version: 0.3.0
+    published: '2025-04-17'
+    url: https://pypi.org/project/abbyy-document-ai/
+    repository: https://github.com/abbyyProduct/document-ai-sdk-python
+    api: ABBYY Document AI
+    note: Speakeasy-generated. Also published under the alias abbyy_document_ai at the same version and date.
+  - name: ABBYY.DocumentAI
+    registry: nuget
+    language: C#
+    official: true
+    version: 0.0.5
+    published: '2025-04-17'
+    url: https://www.nuget.org/packages/ABBYY.DocumentAI
+    api: ABBYY Document AI
+    note: 942 total downloads as of 2026-08-29 — effectively unadopted.
+  - name: Abbyy.CloudSdk.V2.Client
+    registry: nuget
+    language: C#
+    official: true
+    version: 1.0.6
+    published: '2020-10-12'
+    url: https://www.nuget.org/packages/Abbyy.CloudSdk.V2.Client
+    repository: https://github.com/abbyy/cloudsdk-client-dotnet
+    api: ABBYY Cloud OCR SDK (v2)
+    note: Legacy Cloud OCR SDK client. Repository last pushed 2022-06-22.
+  - name: com.ocrsdk.abbyy:cloudsdk-client
+    registry: maven
+    language: Java
+    official: true
+    version: 1.0.0
+    published: '2020-01-24'
+    url: https://central.sonatype.com/artifact/com.ocrsdk.abbyy/cloudsdk-client
+    repository: https://github.com/abbyy/cloudsdk-client-java
+    api: ABBYY Cloud OCR SDK (v2)
+    note: Single release. Repository last pushed 2022-05-20.
+  - name: react-native-abbyy-mobile-capture
+    registry: npm
+    language: JavaScript
+    official: true
+    version: 1.0.4
+    published: '2021-07-09'
+    url: https://www.npmjs.com/package/react-native-abbyy-mobile-capture
+    repository: https://github.com/abbyy/MobileCapture.ReactNative
+    api: ABBYY Mobile Capture SDK
+  - name: cordova-plugin-abbyy-rtr-sdk
+    registry: npm
+    language: JavaScript
+    official: true
+    version: 1.0.17
+    published: '2021-07-09'
+    url: https://www.npmjs.com/package/cordova-plugin-abbyy-rtr-sdk
+    repository: https://github.com/abbyysdk/RTR-SDK.Cordova
+    api: ABBYY Mobile Capture SDK (Real-Time Recognition)
+  - name: ABBYY.Flexicapture.ExternalExport
+    registry: nuget
+    language: C#
+    official: true
+    version: 1.0.1
+    published: '2014-04-24'
+    url: https://www.nuget.org/packages/ABBYY.Flexicapture.ExternalExport
+    api: ABBYY FlexiCapture (on-premises external export)
+    note: Twelve years without a release; retained as an inventory record, not a recommendation.
+absent:
+  - api: ABBYY Vantage Processing REST API
+    reason: >-
+      No first-party client library found on npm, PyPI, NuGet, Maven Central, RubyGems, crates.io,
+      Packagist or pkg.go.dev on 2026-08-29. ABBYY's published integration path is the Postman collection
+      plus platform connectors (UiPath, Power Automate, Pega, Blue Prism, Automation Anywhere, IBM
+      watsonx Orchestrate) and the Vantage Mendix plugin.
+  - api: ABBYY Vantage Reporting API
+    reason: Same as the Processing API — no packaged client on any registry.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

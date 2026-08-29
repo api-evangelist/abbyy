@@ -1,0 +1,4147 @@
+{
+  "openapi": "3.0.1",
+  "servers": [
+    {
+      "url": "https://vantage-us.abbyy.com",
+      "description": "Production United States"
+    },
+    {
+      "url": "https://vantage-eu.abbyy.com",
+      "description": "Production Europe"
+    },
+    {
+      "url": "https://vantage-au.abbyy.com",
+      "description": "Production Australia"
+    }
+  ],
+  "info": {
+    "title": "Vantage processing REST API",
+    "description": "The Vantage Processing REST API lets you process documents programmatically: create transactions, upload files, launch skills, monitor progress, and download results. For authentication and a first end-to-end request, see the [Getting started guide](/vantage/developer/getting-started).",
+    "version": "1.0",
+    "x-application-version": "1.0.0-20251028.13+6e102d0c2a7a440df9ee9615e09b3c8c333587ac"
+  },
+  "paths": {
+    "/api/publicapi/v1/catalogs/{catalogId}/records": {
+      "post": {
+        "tags": [
+          "CatalogRecords"
+        ],
+        "summary": "Adds records to the specified catalog",
+        "description": "Adds up to 5000 records to the data catalog in one request. Each record's `id` is chosen by you and becomes the record's identifier. The endpoint returns HTTP 200 even when records are rejected: check `insertedRowCount` and `errorRows` in the response. Rows are rejected individually with reasons such as `CannotBeEmpty Column: <name>` (a required column is missing) or `UnknownColumn Column: <name>`. After you finish updating the catalog, start a reindex operation so that skills search the updated data.",
+        "operationId": "AddRecords",
+        "parameters": [
+          {
+            "name": "catalogId",
+            "in": "path",
+            "description": "Catalog identifier. You can find it in the list of all catalogs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Records to add",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "maxItems": 5000,
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel"
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "maxItems": 5000,
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "maxItems": 5000,
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "maxItems": 5000,
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Operation completed successfully. The details can be found in the response.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.AddRecordsResultResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.AddRecordsResultResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.AddRecordsResultResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Wrong number of records",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Catalog not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "CatalogRecords"
+        ],
+        "summary": "Lists a portion of the records in the specified catalog",
+        "operationId": "GetRecords",
+        "parameters": [
+          {
+            "name": "catalogId",
+            "in": "path",
+            "description": "Catalog identifier. You can find it in the list of all catalogs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Pagination offset",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns a page of records from the data catalog. Use the `offset` and `limit` query parameters to page through large catalogs. Each record contains the column values defined by the catalog structure."
+      }
+    },
+    "/api/publicapi/v1/catalogs/{catalogId}/records/{recordId}": {
+      "get": {
+        "tags": [
+          "CatalogRecords"
+        ],
+        "summary": "Gets a record",
+        "operationId": "GetRecord",
+        "parameters": [
+          {
+            "name": "catalogId",
+            "in": "path",
+            "description": "Catalog identifier. You can find it in the list of all catalogs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recordId",
+            "in": "path",
+            "description": "Record identifier. You can find it in the list of records.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns a single record from the data catalog by its identifier. You can find record identifiers in the response of the list records request."
+      }
+    },
+    "/api/publicapi/v1/catalogs/{catalogId}/records/delete": {
+      "post": {
+        "tags": [
+          "CatalogRecords"
+        ],
+        "summary": "Deletes the specified records from the catalog",
+        "operationId": "DeleteRecords",
+        "parameters": [
+          {
+            "name": "catalogId",
+            "in": "path",
+            "description": "Catalog identifier. You can find it in the list of all catalogs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "An array of record identifiers to delete",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "maxItems": 5000,
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "maxItems": 5000,
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "maxItems": 5000,
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "maxItems": 5000,
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deletion completed. The response body is empty; unlike adding records, no per-record report is returned."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Deletes up to 5000 records from the data catalog in one request. Pass the identifiers of the records to delete as a JSON array in the request body. After you finish updating the catalog, start a reindex operation so that skills search the updated data."
+      }
+    },
+    "/api/publicapi/v1/catalogs": {
+      "get": {
+        "tags": [
+          "Catalogs"
+        ],
+        "summary": "Lists all available catalogs",
+        "operationId": "GetCatalogs",
+        "responses": {
+          "200": {
+            "description": "All catalogs are successfully returned",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns all data catalogs available to your tenant. Use the returned `id` values as the `catalogId` in other catalog requests. Catalog ids are the catalog names (they can contain spaces, so URL-encode them in request paths). For more on managing catalogs through the API, see [Data catalogs and the Vantage API](/vantage/documentation/skill-designer/document/using-data-catalogs/use-with-api)."
+      }
+    },
+    "/api/publicapi/v1/catalogs/{catalogId}": {
+      "get": {
+        "tags": [
+          "Catalogs"
+        ],
+        "summary": "Gets detailed information about the catalog",
+        "description": "Gets detailed information about the catalog structure, e.g. required column set",
+        "operationId": "GetCatalog",
+        "parameters": [
+          {
+            "name": "catalogId",
+            "in": "path",
+            "description": "Catalog identifier. You can find it in the list of all catalogs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catalog info is successfully returned",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Catalog not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/publicapi/v1/catalogs/{catalogId}/clear": {
+      "post": {
+        "tags": [
+          "Catalogs"
+        ],
+        "summary": "Deletes all records from the catalog",
+        "operationId": "ClearCatalog",
+        "parameters": [
+          {
+            "name": "catalogId",
+            "in": "path",
+            "description": "Catalog identifier. You can find it in the list of all catalogs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All records are successfully deleted from the catalog"
+          },
+          "404": {
+            "description": "Catalog not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Deletes every record from the data catalog while keeping the catalog itself and its column structure. This operation cannot be undone. After clearing and repopulating the catalog, start a reindex operation so that skills search the updated data."
+      }
+    },
+    "/api/publicapi/v1/catalogs/{catalogId}/reindex": {
+      "post": {
+        "tags": [
+          "Catalogs"
+        ],
+        "summary": "Starts a catalog reindex operation",
+        "description": "Starts an asynchronous reindex of the catalog. The response contains the operation's `id`; poll the reindex status endpoint with it until `currentState` is `Completed` (observed transitional value: `InProgress`). Until reindexing completes, skills continue to search the previous version of the catalog data.",
+        "operationId": "StartCatalogReindex",
+        "parameters": [
+          {
+            "name": "catalogId",
+            "in": "path",
+            "description": "Catalog identifier. You can find it in the list of all catalogs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/publicapi/v1/catalogs/{catalogId}/reindex/{reindexOperationId}": {
+      "get": {
+        "tags": [
+          "Catalogs"
+        ],
+        "summary": "Gets detailed information of reindex operation",
+        "operationId": "GetReindexOperation",
+        "parameters": [
+          {
+            "name": "catalogId",
+            "in": "path",
+            "description": "Catalog identifier. You can find it in the list of all catalogs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reindexOperationId",
+            "in": "path",
+            "description": "Operation identifier. You can find it in response to start reindex operation.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns the status of a catalog reindex operation started with the reindex request. Poll this endpoint until `currentState` is `Completed` (or `Failed`). Until reindexing completes, skills continue to search the previous version of the catalog data."
+      }
+    },
+    "/api/publicapi/v1/invites": {
+      "post": {
+        "tags": [
+          "Invites"
+        ],
+        "summary": "Creates invite for new tenant",
+        "description": "To access this method, you need to contact support",
+        "operationId": "CreateInvite",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Model": {
+                    "required": [
+                      "email",
+                      "tenantName"
+                    ],
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Email to send invite to",
+                        "format": "email"
+                      },
+                      "validWithin": {
+                        "type": "string",
+                        "description": "Time when the invite will be valid",
+                        "nullable": true,
+                        "example": "14.00:00:00"
+                      },
+                      "tenantName": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Name of tenant to be created"
+                      },
+                      "useMySubscription": {
+                        "type": "boolean",
+                        "description": "Use active subscription from current tenant",
+                        "default": false
+                      },
+                      "tenantDescription": {
+                        "type": "string",
+                        "description": "Description of tenant to be created",
+                        "nullable": true
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "See CreateAdminInviteData model."
+                  },
+                  "File": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "Model": {
+                  "contentType": "application/json",
+                  "style": "form",
+                  "explode": true
+                },
+                "File": {
+                  "contentType": "application/octet-stream",
+                  "style": "form",
+                  "explode": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/publicapi/v1/skills": {
+      "get": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Lists all available skills",
+        "operationId": "GetAvailableSkills",
+        "responses": {
+          "200": {
+            "description": "All skills are successfully returned",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns all published skills available to your account, with their identifiers, names, and types. Skills that have never been published are not included. Use the returned `id` as the `skillId` when creating or launching transactions. Note that `id` is not always a GUID; built-in skills use ids such as `workspace.default.processing`."
+      }
+    },
+    "/api/publicapi/v1/skills/{skillId}": {
+      "get": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Gets the detailed information about a skill",
+        "operationId": "GetSkillInfo",
+        "parameters": [
+          {
+            "name": "skillId",
+            "in": "path",
+            "description": "Skill identifier. You can find it in the list of all skills.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Skill info is successfully returned",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skill not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns detailed information about a skill. For document skills the response includes the extracted field structure, and for classification skills it includes the list of classes. Requesting a skill that exists but has never been published returns 404."
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}/documents": {
+      "post": {
+        "tags": [
+          "TransactionDocuments"
+        ],
+        "summary": "Creates a transaction document that will be used to group some files in single processing unit",
+        "description": "Non-process skills allow only one document",
+        "operationId": "CreateTransactionDocument",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier. You receive it in the response after the transaction has been\r\nsuccessfully created.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentCreateRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentCreateRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentCreateRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction document successfully added",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionDocumentResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionDocumentResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionDocumentResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Some parameters are invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "TransactionDocuments"
+        ],
+        "summary": "Gets transaction documents",
+        "operationId": "GetTransactionDocuments",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier. You receive it in the response after the transaction has been\r\nsuccessfully created.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction documents",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDocumentResult"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDocumentResult"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDocumentResult"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Some parameters are invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns the documents that belong to the transaction, including the files attached to each document. Use this to check how uploaded files were grouped into documents before or after processing."
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}/documents/{documentId}": {
+      "get": {
+        "tags": [
+          "TransactionDocuments"
+        ],
+        "summary": "Gets transaction document info",
+        "operationId": "GetTransactionDocument",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "documentId",
+            "in": "path",
+            "description": "Transaction document identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction document info",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDocumentResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDocumentResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDocumentResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Some parameters are invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns information about a single document in the transaction, including the files it contains. You can find document identifiers in the response of the list transaction documents request."
+      },
+      "delete": {
+        "tags": [
+          "TransactionDocuments"
+        ],
+        "summary": "Deletes the document from specified transaction",
+        "operationId": "DeleteTransactionDocument",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "documentId",
+            "in": "path",
+            "description": "Transaction document identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction document successfully deleted"
+          },
+          "400": {
+            "description": "Some parameters are invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Removes the document and its files from the transaction. Use this to drop a document that should not be processed before you start the transaction."
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}/documents/{documentId}/sourceFiles": {
+      "post": {
+        "tags": [
+          "TransactionDocuments"
+        ],
+        "summary": "Adds files to the transaction document",
+        "description": "Uploads a set of files to be processed in the specified transaction document.\r\nThe maximum size of processed files should not exceed 2 GB.\r\nThe maximum count per transaction should not exceed 1000 for process skill.",
+        "operationId": "AddFilesToTransactionDocument",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "documentId",
+            "in": "path",
+            "description": "Transaction document identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Model": {
+                    "type": "object",
+                    "properties": {
+                      "files": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentFileMetadataDto"
+                        },
+                        "description": "Files processing parameters",
+                        "nullable": true
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Additional processing parameters for transaction document. See TransactionDocumentMetadataDto model."
+                  },
+                  "Files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "Model for getting file passed in multipart/* content",
+                      "format": "binary"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "Model": {
+                  "contentType": "application/json",
+                  "style": "form",
+                  "explode": true
+                },
+                "Files": {
+                  "contentType": "application/octet-stream",
+                  "style": "form",
+                  "explode": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Files successfully added to a transaction document"
+          },
+          "400": {
+            "description": "Invalid required parameter or max file size exceeded",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Transaction belongs to another tenant",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Max files count exceeded",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}/documents/{documentId}/sourceFiles/{fileId}/download": {
+      "get": {
+        "tags": [
+          "TransactionDocuments"
+        ],
+        "summary": "Downloads the source file of the transaction",
+        "operationId": "DownloadTransactionDocumentSourceFile",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "documentId",
+            "in": "path",
+            "description": "Transaction document identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "fileId",
+            "in": "path",
+            "description": "Blob identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File content is successfully returned",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Transaction belongs to another tenant",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Downloads the original file that was uploaded to the transaction document, returned as a binary stream. You can find file identifiers in the transaction document info."
+      }
+    },
+    "/api/publicapi/v1/transactions": {
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Creates a processing transaction",
+        "description": "Creates a transaction that will be used to process some files.",
+        "operationId": "CreateTransaction",
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction successfully created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Some parameters are invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skill with specified skillId not found or not published",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "content": "<Note>For a step-by-step walkthrough of the create, upload, and start sequence, see [Processing documents with separate API calls](/vantage/developer/processing-documents/processing-documents-with-separate-api-calls).</Note>"
+        }
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}/files": {
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Adds files to the transaction",
+        "description": "Uploads a set of files to be processed in the specified transaction.\r\nThe maximum size of processed files should not exceed 2 GB.\r\nThe maximum count per transaction should not exceed 1000 for process skill.",
+        "operationId": "AddFilesToTransaction",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier. You receive it in the response after the transaction has been\r\nsuccessfully created.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Model": {
+                    "type": "object",
+                    "properties": {
+                      "files": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileMetadataDto"
+                        },
+                        "description": "Files processing parameters",
+                        "nullable": true
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Additional transaction processing parameters. See TransactionMetadataDto model."
+                  },
+                  "Files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "Model for getting file passed in multipart/* content",
+                      "format": "binary"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "Model": {
+                  "contentType": "application/json",
+                  "style": "form",
+                  "explode": true
+                },
+                "Files": {
+                  "contentType": "application/octet-stream",
+                  "style": "form",
+                  "explode": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Files successfully added. The response body is empty."
+          },
+          "400": {
+            "description": "Invalid required parameter or max file size exceeded",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A file with the same name already exists in the transaction. File names must be unique within a transaction.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}/start": {
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Starts the transaction",
+        "description": "Starts processing with the specified transaction.",
+        "operationId": "StartTransaction",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier. You receive it in the response after the transaction has been\r\nsuccessfully created.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction successfully started. The response body is empty."
+          },
+          "400": {
+            "description": "Transaction cannot be started",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "content": "<Note>For where this call fits in the processing sequence, see [Processing documents with separate API calls](/vantage/developer/processing-documents/processing-documents-with-separate-api-calls).</Note>"
+        }
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}/mobileInputLink": {
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Generates link to run mobile input with one time auth token to inject image to specific transaction",
+        "description": "Link can be requested for a non-running transaction.\r\nThe token in the link gives the right to add files and start a specific transaction without the ability to get processing results.",
+        "operationId": "GenerateMobileInputLink",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier. You receive it in the response after the transaction has been\r\nsuccessfully created.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New link successfully generated",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.MobileInputLinkResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.MobileInputLinkResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.MobileInputLinkResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Link can not be generated because transaction has invalid status",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/publicapi/v1/transactions/launch": {
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Starts processing of the files in new transaction",
+        "description": "Creates a transaction that will be used to process some files.\r\nThe maximum size of request body should not exceed 2 GB.\r\nThe transaction will start automatically.",
+        "operationId": "LaunchTransaction",
+        "parameters": [
+          {
+            "name": "skillId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Identifier of the skill to process the files with. You can find it in the list of all skills returned by `GET /api/publicapi/v1/skills`."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Model": {
+                    "type": "object",
+                    "properties": {
+                      "files": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileMetadataDto"
+                        },
+                        "description": "Files processing parameters",
+                        "nullable": true
+                      },
+                      "registrationParameters": {
+                        "maxItems": 10,
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionRegistrationParameter"
+                        },
+                        "description": "Additional registration parameters for transaction",
+                        "nullable": true
+                      },
+                      "skillParameters": {
+                        "maxItems": 10,
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionSkillParameter"
+                        },
+                        "description": "Skill parameters for transaction",
+                        "nullable": true
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Additional transaction processing parameters. See TransactionLaunchMetadataDto model."
+                  },
+                  "Files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "Model for getting file passed in multipart/* content",
+                      "format": "binary"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "Model": {
+                  "contentType": "application/json",
+                  "style": "form",
+                  "explode": true
+                },
+                "Files": {
+                  "contentType": "application/octet-stream",
+                  "style": "form",
+                  "explode": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction successfully created and started",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.CreatedTransactionResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.CreatedTransactionResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.CreatedTransactionResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Some files are invalid or skillId is not specified",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skill with specified skillId not found or not published",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "content": "<Note>For a step-by-step walkthrough of the single-call scenario, see [Processing documents with a single API call](/vantage/developer/processing-documents/processing-documents-single-api). New to the API? Start with the [Getting started guide](/vantage/developer/getting-started).</Note>"
+        }
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Gets transaction info",
+        "description": "Gets the details of the transaction, including the link to the results if processing has finished, or the manual\r\nreview link if manual review is needed.",
+        "operationId": "GetTransactionInfo",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier. You receive it in the response after the transaction has been\r\nsuccessfully created.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction info is successfully returned",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Deletes the transaction",
+        "description": "The transaction will be deleted within a few minutes",
+        "operationId": "DeleteTransaction",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier. You receive it in the response after the transaction has been\r\nsuccessfully created.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deletion accepted. The response body is empty. Deletion is asynchronous: the transaction remains readable for a short time (typically under a minute, at most a few minutes) and then returns 404."
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}/files/{fileId}/download": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Downloads the result files",
+        "description": "Downloads the result file of the transaction.",
+        "operationId": "DownloadFile",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier. You receive it in the response after the transaction has been successfully created.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "fileId",
+            "in": "path",
+            "description": "File identifier. You can find it in the transaction details, under documents - resultFiles.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the raw bytes of the requested result file. The `fileId` comes from the transaction status response (`documents[].resultFiles[]`), where each entry also has a `type`: a Document skill produces a `Json` file (full results and field metadata; structure described in the [JSON schema reference](/vantage/developer/output/json/json-schema)) and a `FieldsJson` file (extracted values only). Other formats (XML, and so on) depend on the skill's export settings. The example below shows an abridged values-only (`FieldsJson`) result.",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                },
+                "example": {
+                  "Version": "3.0",
+                  "Fields": {
+                    "Invoice Number": "INV-2024-0042",
+                    "Invoice Date": "01/15/2024",
+                    "Currency": "USD",
+                    "Total": "1,250.00",
+                    "Business Unit": {
+                      "Name": "Acme Corp",
+                      "City": "Springfield",
+                      "CountryCode": "US"
+                    },
+                    "Line Items": [
+                      {
+                        "Description": "Widget, industrial grade",
+                        "Quantity": "2",
+                        "Unit Price": "625.00",
+                        "Total Price": "1,250.00"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction or file not found",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-mint": {
+          "content": "<Note>For how to find result file identifiers and download extracted data, see [Processing documents with a single API call](/vantage/developer/processing-documents/processing-documents-single-api).</Note>"
+        }
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}/registrationParameters": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Gets registration parameters for the transaction",
+        "operationId": "GetTransactionRegistrationParameters",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier. You receive it in the response after the transaction has been\r\nsuccessfully created.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction registration parameters successfully returned",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionRegistrationParameterDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionRegistrationParameterDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionRegistrationParameterDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Some parameters are invalid",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns the registration parameters (key-value pairs) attached to the transaction, such as `SourceFileName` or custom parameters you set when creating the transaction. For how registration parameters work, see [Using registration parameters](/vantage/developer/using-registration-params)."
+      }
+    },
+    "/api/publicapi/v1/transactions/{transactionId}/skillParameters": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Gets the skill parameters that are set for the transaction",
+        "description": "The passed parameters take precedence over the default parameters of the skill",
+        "operationId": "GetTransactionSkillParameters",
+        "parameters": [
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "Transaction identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Skill parameters successfully returned",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionSkillParameterDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionSkillParameterDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionSkillParameterDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transaction not found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/publicapi/v1/transactions/active": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Returns active transactions with specified parameters",
+        "operationId": "GetActiveTransactions",
+        "parameters": [
+          {
+            "name": "StageType",
+            "in": "query",
+            "description": "Actual stage of transaction",
+            "schema": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.StageType"
+            }
+          },
+          {
+            "name": "StageName",
+            "in": "query",
+            "description": "Actual stage's name of transaction",
+            "schema": {
+              "type": "string",
+              "description": "Actual stage's name of transaction"
+            }
+          },
+          {
+            "name": "SkillId",
+            "in": "query",
+            "description": "Available skill's ID (according to permissions). If this field is empty,\r\nthen all the available skills will be used as filter.",
+            "schema": {
+              "type": "string",
+              "description": "Available skill's ID (according to permissions). If this field is empty,\r\nthen all the available skills will be used as filter."
+            }
+          },
+          {
+            "name": "SkillVersion",
+            "in": "query",
+            "description": "Only available skills can be filtered by their versions",
+            "schema": {
+              "type": "integer",
+              "description": "Only available skills can be filtered by their versions",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "description": "Minimum creation time of the transactions.\r\nTime must be defined in UTC format.",
+            "schema": {
+              "type": "string",
+              "description": "Minimum creation time of the transactions.\r\nTime must be defined in UTC format.",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "description": "Maximum creation time of the transactions.\r\nTime must be defined in UTC format.\r\nIf not given, the current UTC time will be used.",
+            "schema": {
+              "type": "string",
+              "description": "Maximum creation time of the transactions.\r\nTime must be defined in UTC format.\r\nIf not given, the current UTC time will be used.",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "TransactionParameters",
+            "in": "query",
+            "description": "List of transaction parameters.\r\nRetrieved transactions should contain all the parameters",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter"
+              },
+              "description": "List of transaction parameters.\r\nRetrieved transactions should contain all the parameters"
+            }
+          },
+          {
+            "name": "DocumentParameters",
+            "in": "query",
+            "description": "List of document parameters.\r\nRetrieved transactions should contain all the parameters",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter"
+              },
+              "description": "List of document parameters.\r\nRetrieved transactions should contain all the parameters"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "Pagination offset (default: 0)",
+            "schema": {
+              "type": "integer",
+              "description": "Pagination offset (default: 0)",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The pagination limit. Required; accepted values are 1 to 1000.",
+            "schema": {
+              "type": "integer",
+              "description": "Pagination limit",
+              "format": "int32"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the matching active transactions as JSON. The upstream API specification does not declare a response schema for this endpoint; the example below shows the observed response shape. For field-level details, see [Working with transactions](/vantage/developer/transactions).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "items": [
+                    {
+                      "stage": "ManualReview",
+                      "stageName": "Review",
+                      "transactionId": "56a50415-fe1d-4493-81ba-97ff07e3ffce",
+                      "createTimeUtc": "2023-09-11T13:53:30.633Z",
+                      "transactionParameters": [
+                        {
+                          "isReadOnly": true,
+                          "key": "App",
+                          "value": "PublicAPI"
+                        }
+                      ],
+                      "fileParameters": [
+                        {
+                          "isReadOnly": true,
+                          "key": "Index",
+                          "value": "0"
+                        },
+                        {
+                          "isReadOnly": true,
+                          "key": "SourceFileName",
+                          "value": "BillofLading_1.pdf"
+                        },
+                        {
+                          "isReadOnly": true,
+                          "key": "SourceType",
+                          "value": "PublicAPI"
+                        }
+                      ],
+                      "skillId": "workspace.default.processing",
+                      "skillVersion": 18,
+                      "documentCount": 1
+                    }
+                  ],
+                  "totalItemCount": 7
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "EndDate must be greater than start date",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns transactions that are currently being processed, filtered by stage, skill, creation time, or registration parameters. Use this to track transactions waiting at the Manual Review stage. For a walkthrough, see [Getting a list of transactions](/vantage/developer/transactions)."
+      }
+    },
+    "/api/publicapi/v1/transactions/completed": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Returns completed transactions with specified parameters",
+        "operationId": "GetCompletedTransactions",
+        "parameters": [
+          {
+            "name": "TransactionStatus",
+            "in": "query",
+            "description": "Active Transactions status",
+            "schema": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.CompletedTransactionStatus"
+            }
+          },
+          {
+            "name": "SkillId",
+            "in": "query",
+            "description": "Available skill's ID (according to permissions). If this field is empty,\r\nthen all the available skills will be used as filter.",
+            "schema": {
+              "type": "string",
+              "description": "Available skill's ID (according to permissions). If this field is empty,\r\nthen all the available skills will be used as filter."
+            }
+          },
+          {
+            "name": "SkillVersion",
+            "in": "query",
+            "description": "Only available skills can be filtered by their versions",
+            "schema": {
+              "type": "integer",
+              "description": "Only available skills can be filtered by their versions",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "StartDate",
+            "in": "query",
+            "description": "Minimum creation time of the transactions.\r\nTime must be defined in UTC format.",
+            "schema": {
+              "type": "string",
+              "description": "Minimum creation time of the transactions.\r\nTime must be defined in UTC format.",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "EndDate",
+            "in": "query",
+            "description": "Maximum creation time of the transactions.\r\nTime must be defined in UTC format.\r\nIf not given, the current UTC time will be used.",
+            "schema": {
+              "type": "string",
+              "description": "Maximum creation time of the transactions.\r\nTime must be defined in UTC format.\r\nIf not given, the current UTC time will be used.",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "TransactionParameters",
+            "in": "query",
+            "description": "List of transaction parameters.\r\nRetrieved transactions should contain all the parameters",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter"
+              },
+              "description": "List of transaction parameters.\r\nRetrieved transactions should contain all the parameters"
+            }
+          },
+          {
+            "name": "DocumentParameters",
+            "in": "query",
+            "description": "List of document parameters.\r\nRetrieved transactions should contain all the parameters",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter"
+              },
+              "description": "List of document parameters.\r\nRetrieved transactions should contain all the parameters"
+            }
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "description": "Pagination offset (default: 0)",
+            "schema": {
+              "type": "integer",
+              "description": "Pagination offset (default: 0)",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Limit",
+            "in": "query",
+            "description": "The pagination limit. Required; accepted values are 1 to 1000.",
+            "schema": {
+              "type": "integer",
+              "description": "Pagination limit",
+              "format": "int32"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the matching completed transactions and their processed page counts as JSON. The upstream API specification does not declare a response schema for this endpoint; the example below shows the observed response shape. For field-level details, see [Working with transactions](/vantage/developer/transactions).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "items": [
+                    {
+                      "status": "Processed",
+                      "pageCount": 1,
+                      "transactionId": "fc9920fe-f788-47f8-9972-b767493faed9",
+                      "createTimeUtc": "2023-09-11T13:47:50.273Z",
+                      "transactionParameters": [
+                        {
+                          "isReadOnly": true,
+                          "key": "App",
+                          "value": "PublicAPI"
+                        }
+                      ],
+                      "fileParameters": [
+                        {
+                          "isReadOnly": true,
+                          "key": "Index",
+                          "value": "0"
+                        },
+                        {
+                          "isReadOnly": true,
+                          "key": "SourceFileName",
+                          "value": "BillofLading_1.pdf"
+                        },
+                        {
+                          "isReadOnly": true,
+                          "key": "SourceType",
+                          "value": "PublicAPI"
+                        }
+                      ],
+                      "skillId": "3f6b1c2a-8d4e-4f5a-9b0c-7e1d2a3b4c5d",
+                      "skillVersion": 1,
+                      "documentCount": 1
+                    }
+                  ],
+                  "totalItemCount": 7
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "EndDate must be greater than start date",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns transactions that have finished processing (processed, cancelled, or failed), filtered by status, skill, creation time, or registration parameters. Use this to find transactions whose result files are ready to download. For a walkthrough, see [Getting a list of transactions](/vantage/developer/transactions)."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Abbyy.Vantage.PublicApi.Contract.Catalogs.ColumnType": {
+        "enum": [
+          "Text",
+          "Double",
+          "Integer",
+          "Date"
+        ],
+        "type": "string"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Catalogs.ReindexState": {
+        "enum": [
+          "InProgress",
+          "Failed",
+          "Completed"
+        ],
+        "type": "string"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel": {
+        "required": [
+          "fields",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Unique id of the record"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Record fields"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.AddRecordsResultResult": {
+        "required": [
+          "errorRows",
+          "insertedRowCount"
+        ],
+        "type": "object",
+        "properties": {
+          "insertedRowCount": {
+            "type": "integer",
+            "description": "Number of successfully inserted rows",
+            "format": "int32"
+          },
+          "errorRows": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "List of the errors occurred"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto": {
+        "required": [
+          "columns",
+          "id",
+          "name",
+          "rowCount"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Unique identifier of the catalog"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Name of the catalog"
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ColumnDto"
+            },
+            "description": "Columns of the catalog"
+          },
+          "rowCount": {
+            "type": "integer",
+            "description": "Total number of rows in the catalog",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Unique identifier of the catalog"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Name of the catalog"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ColumnDto": {
+        "required": [
+          "name",
+          "notEmpty",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Name of the catalog column"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.ColumnType",
+            "description": "Data type of the values stored in the column. One of `Text`, `Double`, `Integer`, or `Date`."
+          },
+          "notEmpty": {
+            "type": "boolean",
+            "description": ""
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto": {
+        "required": [
+          "fields",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Id of the catalog record"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Record fields"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique id of the operation",
+            "format": "uuid"
+          },
+          "indexModelId": {
+            "type": "string",
+            "description": "Id of the index model used to analyze documents",
+            "format": "uuid",
+            "nullable": true
+          },
+          "workflowProcessingId": {
+            "type": "string",
+            "description": "Id of the operation workflow",
+            "format": "uuid",
+            "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "description": "Time when operation was created",
+            "format": "date-time"
+          },
+          "completed": {
+            "type": "string",
+            "description": "Time when operation was completed",
+            "format": "date-time",
+            "nullable": true
+          },
+          "currentState": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.ReindexState",
+            "description": "Current state of the reindex operation. One of `InProgress`, `Failed`, or `Completed`. Skills search the updated catalog data only after the state is `Completed`."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.FieldType": {
+        "enum": [
+          "Barcode",
+          "Checkmark",
+          "CheckmarkGroup",
+          "Group",
+          "Picture",
+          "Text"
+        ],
+        "type": "string"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Invites.Requests.CreateAdminInviteData": {
+        "required": [
+          "email",
+          "tenantName"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Email to send invite to",
+            "format": "email"
+          },
+          "validWithin": {
+            "type": "string",
+            "description": "Time when the invite will be valid",
+            "nullable": true,
+            "example": "14.00:00:00"
+          },
+          "tenantName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Name of tenant to be created"
+          },
+          "useMySubscription": {
+            "type": "boolean",
+            "description": "Use active subscription from current tenant",
+            "default": false
+          },
+          "tenantDescription": {
+            "type": "string",
+            "description": "Description of tenant to be created",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "See CreateAdminInviteData model."
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Skills.Results.FieldDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of the field as defined in the skill."
+          },
+          "type": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.FieldType",
+            "description": "Type of the field. One of `Barcode`, `Checkmark`, `CheckmarkGroup`, `Group`, `Picture`, or `Text`."
+          },
+          "textFormat": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.TextFieldFormat",
+            "description": "Format of the field value for text fields. One of `Text`, `Date`, `Amount`, or `Number`."
+          },
+          "isRepeatable": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Indicates whether the field can occur multiple times in a document, for example a repeating group such as a table row."
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.FieldDto"
+            },
+            "nullable": true,
+            "description": "Child fields of a group field, such as the columns of a table. Empty for simple fields."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Skills.Results.InnerSkillDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Identifier of a skill included in the process skill."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillClassDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Identifier of the class defined in the classification skill."
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of the class defined in the classification skill."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id of the skill",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the skill",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.SkillType",
+            "description": "Type of the skill. One of `Classification`, `Document`, `Process`, `Ocr`, or `Assembling`."
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.FieldDto"
+            },
+            "description": "For document skills.",
+            "nullable": true
+          },
+          "classes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillClassDto"
+            },
+            "description": "For classification skills.",
+            "nullable": true
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.InnerSkillDto"
+            },
+            "nullable": true,
+            "description": "For process skills. Lists the skills that the process skill includes."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Identifier of the skill. Use this value as the `skillId` in transaction requests."
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Name of the skill as shown in Vantage."
+          },
+          "type": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.SkillType",
+            "description": "Type of the skill. One of `Classification`, `Document`, `Process`, `Ocr`, or `Assembling`."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Skills.SkillType": {
+        "enum": [
+          "Classification",
+          "Document",
+          "Process",
+          "Ocr",
+          "Assembling"
+        ],
+        "type": "string"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Skills.TextFieldFormat": {
+        "enum": [
+          "Text",
+          "Date",
+          "Amount",
+          "Number"
+        ],
+        "type": "string"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.CompletedTransactionStatus": {
+        "enum": [
+          "Processed",
+          "Cancelled",
+          "Failed"
+        ],
+        "type": "string"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions": {
+        "type": "object",
+        "properties": {
+          "autoCrop": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher",
+            "description": "Controls automatic cropping of images during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill."
+          },
+          "autoOrientation": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher",
+            "description": "Controls automatic page orientation correction during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Image preprocessing settings for import"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "nullable": true,
+            "description": "Key (name) of the registration parameter to filter by, for example `SourceFileName`."
+          },
+          "value": {
+            "type": "string",
+            "nullable": true,
+            "description": "Value of the registration parameter to filter by. Returned transactions must contain the parameter with this exact value."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher": {
+        "enum": [
+          "Default",
+          "Yes",
+          "No"
+        ],
+        "type": "string",
+        "description": "Switcher of image preprocessing operations"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.StageType": {
+        "enum": [
+          "ManualReview",
+          "CustomActivity",
+          "Automatic"
+        ],
+        "type": "string"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest": {
+        "required": [
+          "skillId"
+        ],
+        "type": "object",
+        "properties": {
+          "skillId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Id of the skill to be applied to the files"
+          },
+          "generateMobileInputLink": {
+            "type": "boolean",
+            "description": "Generate URL to run mobile input with one time auth token to inject image to specific transaction",
+            "default": false
+          },
+          "registrationParameters": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionRegistrationParameter"
+            },
+            "description": "Additional registration parameters for transaction",
+            "nullable": true
+          },
+          "skillParameters": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionSkillParameter"
+            },
+            "description": "Skill parameters for transaction",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Transaction creation parameters"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentCreateRequest": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Documents in transaction will be ordered by this parameter",
+            "format": "int32",
+            "nullable": true
+          },
+          "imageProcessingOptions": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions",
+            "description": "Image preprocessing settings (automatic cropping and orientation correction) applied to files imported into this document."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentFileMetadataDto": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Files in document in transaction will be ordered by this parameter",
+            "format": "int32",
+            "nullable": true
+          },
+          "registrationParameters": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter"
+            },
+            "description": "Additional file registration parameters. Predefined parameters:\r\n            \r\nSourceType: Where the file came from, usually the connector name (scanning station);\r\n            \r\nSourceDetails: How the file was received;\r\n            \r\nSourceFileName: The name of the file being added (invoice.jfif)\r\n            \r\nSourceFilePath: The path to the file\r\n            \r\nSourceArchiveName: The name of the archive containing the file being added\r\n            \r\nSourceFolderName: The name of the subfolder which containing the file being added",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Additional file processing parameters"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentMetadataDto": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentFileMetadataDto"
+            },
+            "description": "Files processing parameters",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Additional processing parameters for transaction document. See TransactionDocumentMetadataDto model."
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileMetadataDto": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Documents in transaction will be ordered by this parameter",
+            "format": "int32",
+            "nullable": true
+          },
+          "imageProcessingOptions": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions",
+            "description": "Image preprocessing settings (automatic cropping and orientation correction) applied to this file on import."
+          },
+          "registrationParameters": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter"
+            },
+            "description": "Additional file registration parameters. Predefined parameters:\r\n            \r\nSourceType: Where the file came from, usually the connector name (scanning station);\r\n            \r\nSourceDetails: How the file was received;\r\n            \r\nSourceFileName: The name of the file being added (invoice.jfif)\r\n            \r\nSourceFilePath: The path to the file\r\n            \r\nSourceArchiveName: The name of the archive containing the file being added\r\n            \r\nSourceFolderName: The name of the subfolder which containing the file being added",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Additional file processing parameters"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter": {
+        "required": [
+          "key",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Key (name) of the parameter"
+          },
+          "value": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Value of the parameter"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionLaunchMetadataDto": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileMetadataDto"
+            },
+            "description": "Files processing parameters",
+            "nullable": true
+          },
+          "registrationParameters": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionRegistrationParameter"
+            },
+            "description": "Additional registration parameters for transaction",
+            "nullable": true
+          },
+          "skillParameters": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionSkillParameter"
+            },
+            "description": "Skill parameters for transaction",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Additional transaction processing parameters. See TransactionLaunchMetadataDto model."
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionMetadataDto": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileMetadataDto"
+            },
+            "description": "Files processing parameters",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Additional transaction processing parameters. See TransactionMetadataDto model."
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionRegistrationParameter": {
+        "required": [
+          "key",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Key (name) of the parameter"
+          },
+          "value": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Value of the parameter"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Transaction registration parameter"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionSkillParameter": {
+        "required": [
+          "key",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Key (name) of the parameter"
+          },
+          "value": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Value of the parameter"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Skill parameter for transaction"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.ResultFileType": {
+        "enum": [
+          "Json",
+          "Pdf",
+          "Text",
+          "Docx",
+          "Xlsx",
+          "OcrJson",
+          "FieldsJson",
+          "FieldPicture",
+          "Xml",
+          "Tiff",
+          "Jpeg",
+          "Csv",
+          "Html",
+          "Pptx",
+          "Alto",
+          "Png"
+        ],
+        "type": "string"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Identifier of the class assigned by the classification skill."
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of the class assigned by the classification skill."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationConfidenceDto": {
+        "required": [
+          "classId",
+          "className",
+          "confidence"
+        ],
+        "type": "object",
+        "properties": {
+          "classId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Identifier of the candidate class."
+          },
+          "className": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Name of the candidate class."
+          },
+          "confidence": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Classification confidence for this class, an integer from 0 to 100."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationDto": {
+        "required": [
+          "classConfidences",
+          "isResultClassConfident",
+          "resultClass"
+        ],
+        "type": "object",
+        "properties": {
+          "isResultClassConfident": {
+            "type": "boolean",
+            "description": "Indicates whether the document was assigned to the result class with sufficient confidence."
+          },
+          "resultClass": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassDto",
+            "description": "Class that the classification skill assigned to the document."
+          },
+          "classConfidences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationConfidenceDto"
+            },
+            "description": "List of all classes available in the applied classification skill, together with the classification confidence for each class."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.CreatedTransactionResult": {
+        "required": [
+          "transactionId"
+        ],
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the created transaction. Use it in subsequent requests to add files, start processing, and download results."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.DocumentBusinessRulesErrorDto": {
+        "required": [
+          "currentFieldId",
+          "errorType",
+          "ruleId"
+        ],
+        "type": "object",
+        "properties": {
+          "errorType": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Normalization, Condition, Unknown..."
+          },
+          "customMessage": {
+            "type": "string",
+            "description": "Custom error message",
+            "nullable": true
+          },
+          "ruleId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "ID of the rule that encountered the error"
+          },
+          "currentFieldId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "ID of the field in the context that the rule was run and the error was generated"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ExtractedDocumentDto": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the document within the transaction."
+          },
+          "resultFiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ResultFileDto"
+            },
+            "description": "Will be empty for classification skill",
+            "nullable": true
+          },
+          "classification": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationDto",
+            "description": "Classification result for the document. Returned when the applied skill performs classification."
+          },
+          "businessRulesErrors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.DocumentBusinessRulesErrorDto"
+            },
+            "nullable": true,
+            "description": "Business rule errors raised while processing the document. Empty when all rules passed."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Unique identifier of the file"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Name of the file. Must be unique to transaction"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.MobileInputLinkResult": {
+        "required": [
+          "transactionId"
+        ],
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "description": "Transaction identifier.\r\nYou receive it in the response after the transaction has been successfully created.",
+            "format": "uuid"
+          },
+          "mobileInputLink": {
+            "type": "string",
+            "description": "Mobile input link which contains one time authorization token for current transaction.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Result of link generation"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionDocumentResult": {
+        "required": [
+          "documentId"
+        ],
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document Id",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionResult": {
+        "required": [
+          "transactionId"
+        ],
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the new transaction. Use it to monitor the transaction status and download result files."
+          },
+          "mobileInputLink": {
+            "type": "string",
+            "description": "Mobile input link which contains one time authorization token for current transaction.\r\nParameter is returned if generateMobileInputLink=true",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ResultFileDto": {
+        "required": [
+          "fileId",
+          "fileName",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "fileId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Uuid in storage"
+          },
+          "fileName": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Predefined scheme: [documents skill name].[extension]"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.ResultFileType",
+            "description": "Format of the result file, for example `Json`, `Pdf`, `Xlsx`, or `OcrJson`. The formats produced depend on the export settings of the skill. See [Output file types](/vantage/developer/output/output-file-types)."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.SkillParameterType": {
+        "enum": [
+          "String",
+          "Catalog",
+          "Bool"
+        ],
+        "type": "string"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDocumentResult": {
+        "required": [
+          "documentId",
+          "sourceFiles"
+        ],
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "description": "Document Id",
+            "format": "uuid"
+          },
+          "sourceFiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto"
+            },
+            "description": "Source files collection"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDto": {
+        "required": [
+          "id",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the transaction."
+          },
+          "status": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.TransactionStatus",
+            "description": "Current status of the transaction. One of `New`, `Processing`, `Processed`, `Failed`, or `Canceled`."
+          },
+          "manualReviewLink": {
+            "type": "string",
+            "nullable": true,
+            "description": "Link to the Manual Review client with a one-time access token, returned when the transaction requires manual review. The link is valid for 168 hours. See [Integrating manual review](/vantage/developer/integrating-manual-review)."
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ExtractedDocumentDto"
+            },
+            "nullable": true,
+            "description": "Documents produced by the transaction, each with its result files, classification result, and business rule errors."
+          },
+          "error": {
+            "type": "string",
+            "nullable": true,
+            "description": "Error message describing why the transaction failed, if it failed."
+          },
+          "sourceFiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto"
+            },
+            "nullable": true,
+            "description": "Source files that were uploaded to the transaction."
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionRegistrationParameterDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Key (name) of the parameter",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "description": "Value of the parameter",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Transaction registration parameter"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionSkillParameterDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Key (name) of the parameter",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "description": "Value of the parameter",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.SkillParameterType",
+            "description": "Type of the parameter value. One of `String`, `Catalog`, or `Bool`."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Transaction skill parameter"
+      },
+      "Abbyy.Vantage.PublicApi.Contract.Transactions.TransactionStatus": {
+        "enum": [
+          "New",
+          "Processing",
+          "Processed",
+          "Failed",
+          "Canceled"
+        ],
+        "type": "string"
+      },
+      "Microsoft.AspNetCore.Mvc.ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true,
+            "description": "URI reference that identifies the problem type."
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Short, human-readable summary of the problem type."
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true,
+            "description": "HTTP status code for this occurrence of the problem."
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true,
+            "description": "Human-readable explanation specific to this occurrence of the problem."
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true,
+            "description": "URI reference that identifies this specific occurrence of the problem."
+          }
+        },
+        "additionalProperties": {}
+      }
+    },
+    "securitySchemes": {
+      "OAuth2Security": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://vantage-us.abbyy.com/auth2/connect/authorize",
+            "tokenUrl": "https://vantage-us.abbyy.com/auth2/connect/token",
+            "scopes": {
+              "global.wildcard": "Global wildcard",
+              "openid": "User Id",
+              "permissions": "User permissions"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "OAuth2Security": [
+        "global.wildcard",
+        "openid",
+        "permissions"
+      ]
+    }
+  ]
+}

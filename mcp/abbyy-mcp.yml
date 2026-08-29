@@ -1,0 +1,76 @@
+generated: '2026-08-29'
+method: probed
+source: >-
+  https://docs.abbyy.com/vantage/developer/mcp-server (docs) and a live MCP initialize + tools/list +
+  resources/list against https://docs.abbyy.com/mcp on 2026-08-29
+provider: ABBYY
+providerId: abbyy
+name: ABBYY Documentation MCP Server
+status: published
+deployment:
+  mode: remote
+  endpoint: https://docs.abbyy.com/mcp
+  auth: none
+  verified: probed
+x-evidence:
+  fetched: '2026-08-29'
+  url: https://docs.abbyy.com/mcp
+  method: 'POST jsonrpc initialize / tools/list / resources/list'
+  http_status: 200
+  content_type: text/event-stream
+  serverInfo:
+    name: ABBYY Documentation
+    version: 1.0.0
+  protocolVersion: '2025-06-18'
+install_documented: 'claude mcp add abbyy-vantage https://docs.abbyy.com/mcp --transport http'
+transport: streamable-http
+capabilities:
+  tools: true
+  resources: true
+  prompts: false
+  streaming: true
+instructions: >-
+  Server-supplied: read-only search and retrieval over the ABBYY Documentation site; apart from
+  submit_feedback it performs no actions and does not access authenticated content.
+tools:
+  - name: search_abbyy_documentation
+    title: Search documentation
+    category: discovery
+    inputSchema:
+      query: string (required) — search query
+      version: string — filter to a specific docs version
+      language: string — filter to a language code, defaults to en
+    annotations:
+      readOnly: true
+      idempotent: true
+  - name: query_docs_filesystem_abbyy_documentation
+    category: discovery
+    inputSchema:
+      command: string (required) — read-only shell-like query (rg, grep, find, tree, ls, cat, head, tail, jq)
+        against an in-memory filesystem of the documentation pages and OpenAPI specs
+    annotations:
+      readOnly: true
+  - name: submit_feedback
+    title: Submit documentation feedback
+    category: feedback
+    inputSchema:
+      path: string — documentation page path
+      feedback: string — the feedback text
+    annotations:
+      readOnly: false
+resources:
+  - uri: mintlify://skills/abbyy
+    name: abbyy
+    mimeType: text/markdown
+    note: >-
+      ABBYY's published Agent Skill for Vantage, byte-identical to the copy served at
+      https://docs.abbyy.com/.well-known/agent-skills/abbyy/skill.md. Saved to skills/abbyy-vantage.md.
+platform: Mintlify-hosted documentation MCP (x-matched-path /_mintlify/mcp/[subdomain]/[transport])
+gap: >-
+  This server exposes ABBYY's DOCUMENTATION, not its product. None of its three tools can list skills,
+  create a transaction, upload a file or download extracted data — the 30 operations of the Vantage
+  Processing API have no MCP surface. An agent can read about ABBYY through MCP but must fall back to raw
+  OAuth 2.0 REST calls to actually process a document.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

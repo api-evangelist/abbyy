@@ -1,0 +1,152 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  openapi/_original/abbyy-vantage-processing-openapi.json,
+  openapi/_original/abbyy-vantage-reporting-openapi.json,
+  https://docs.abbyy.com/vantage/developer/api-introduction,
+  https://docs.abbyy.com/vantage/developer/processing-documents/processing-documents,
+  https://docs.abbyy.com/api-reference (all fetched 2026-08-29)
+provider: ABBYY
+providerId: abbyy
+authentication:
+  style: oauth2-bearer
+  header: 'Authorization: Bearer {access_token}'
+  flows: [authorizationCode, clientCredentials, password]
+  token_url: https://vantage-{region}.abbyy.com/auth2/connect/token
+  authorization_model: role-based
+  note: >-
+    Scopes are three coarse values (global.wildcard, openid, permissions); real authorization is by Vantage
+    tenant role. See authentication/abbyy-authentication.yml and scopes/abbyy-scopes.yml.
+  cross_reference: authentication/abbyy-authentication.yml
+idempotency:
+  supported: false
+  header: none
+  note: >-
+    No Idempotency-Key header, no client-supplied request id, and no dedupe semantics anywhere in either
+    OpenAPI or the developer docs. CreateTransaction and LaunchTransaction are unguarded POSTs: a retried
+    LaunchTransaction after a timeout creates a SECOND billable transaction over the same document, and
+    nothing in the API lets a client detect or collapse the duplicate. The one place ABBYY does enforce
+    uniqueness is file names within a transaction (409 Conflict), which is a data constraint, not idempotency.
+    Catalog record ids ARE caller-chosen, so AddRecords behaves upsert-like at the row level — the closest
+    thing to an idempotent write in the API.
+pagination:
+  style: offset-limit
+  parameters: [offset, limit]
+  operations: [GetRecords, GetActiveTransactions, GetCompletedTransactions]
+  response_fields: []
+  note: >-
+    Collection endpoints take skip/take. No cursor, no next-page link, and no total-count field is declared
+    in the response schemas, so a client cannot tell whether a short page is the last page without an
+    extra call.
+filtering:
+  date_range: [StartDate, EndDate]
+  other: [StageType, StageName, SkillId, SkillVersion, TransactionStatus, TransactionParameters, DocumentParameters]
+  note: Transaction listing filters by date window; endDate must be greater than startDate (400 otherwise).
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  supported: true
+  mechanism: registration parameters
+  note: >-
+    Arbitrary key-value metadata can be attached to a transaction and read back with
+    GetTransactionRegistrationParameters. Used for correlation, filtering and reporting.
+  docs: https://docs.abbyy.com/vantage/developer/using-registration-params
+request_tracing:
+  request_id_header: none
+  note: >-
+    No X-Request-Id or correlation header is documented or declared. The only durable handle on a unit of
+    work is the transactionId returned by CreateTransaction/LaunchTransaction.
+versioning:
+  style: uri-path
+  current:
+    processing: /api/publicapi/v1/
+    reporting: /api/reporting/v2/
+  prior:
+    reporting: /api/reporting/v1/
+  product_version: '3.4.0'
+  note: >-
+    API version lives in the URI path. The product ships on a separate, faster train (Vantage 3.4.0,
+    August 2026) whose release notes carry API changes; the path version has not moved with it.
+error_envelope:
+  schema: Microsoft.AspNetCore.Mvc.ProblemDetails
+  media_type: application/json
+  problem_json: false
+  cross_reference: errors/abbyy-problem-types.yml
+rate_limit_signaling:
+  headers: []
+  retry_after: false
+  note: >-
+    The Vantage API publishes no rate-limit headers and no documented numeric limit. The only published
+    runtime guidance is a polling cadence (5-10 seconds) and a 5,000-record batch ceiling. The sibling
+    FlexiCapture Cloud API does return 429/503 with a published backoff schedule but likewise no headers.
+  cross_reference: rate-limits/abbyy-rate-limits.yml
+async_pattern:
+  style: submit-and-poll
+  note: >-
+    Document processing is asynchronous with no callback: start a transaction, then poll
+    GetTransactionInfo until the status resolves. Reporting exports follow the same shape
+    (CreateTransactionStepsExportRequest -> GetExportStatus -> GetExportResult). There are no webhooks and
+    no event stream, so an agent must hold a polling loop open for the whole processing window.
+dry_run_mode:
+  supported: false
+  note: >-
+    No validation-only or preview mode on any write operation. The nearest equivalent is running a skill in
+    the web UI against a sample document before wiring the API.
+reversibility:
+  grade: verified
+  summary: >-
+    Every destructive operation in the Vantage Processing API is a hard delete with an explicit,
+    documented window — the window is simply "before processing starts" rather than a period of days. That
+    boundary is stated in the contract itself, which is why this grades verified rather than documented.
+  write_surfaces:
+    - operation: CreateTransaction
+      reversal: DeleteTransaction
+      window: >-
+        Any time before StartTransaction. Once processing has begun the transaction still deletes, but the
+        pages it consumed are already spent — deletion removes the data, not the consumption.
+      recoverable: false
+      docs: https://docs.abbyy.com/api-reference/transactions
+    - operation: LaunchTransaction
+      reversal: DeleteTransaction
+      window: >-
+        None before billing. LaunchTransaction creates AND starts in one call, so there is no interval in
+        which the work can be called back. This is the single highest-risk operation in the API for an agent.
+      recoverable: false
+    - operation: StartTransaction
+      reversal: none
+      window: none
+      note: Processing cannot be cancelled once started; only the transaction record can be deleted afterwards.
+    - operation: AddFilesToTransaction
+      reversal: DeleteTransactionDocument
+      window: While the transaction has not been started.
+      recoverable: false
+    - operation: CreateTransactionDocument
+      reversal: DeleteTransactionDocument
+      window: While the transaction has not been started.
+      recoverable: false
+    - operation: AddRecords
+      reversal: DeleteRecords
+      window: Any time. Records are addressed by caller-supplied id, so a batch can be reversed exactly.
+      recoverable: false
+      note: >-
+        ClearCatalog empties an entire catalog with no undo and no confirmation parameter. StartCatalogReindex
+        must be run afterwards for skills to see the change.
+    - operation: CreateInvite
+      reversal: none
+      window: none
+      note: No revoke-invite operation is exposed on the public API.
+  no_soft_delete: true
+  no_restore_endpoint: true
+  caveat: >-
+    Nothing in the API is soft-deleted and there is no restore operation anywhere. "Reversible" here means
+    the resource can be removed before it is acted on, not that it can be brought back.
+data_residency:
+  regions: [US, EU, AU]
+  note: >-
+    Region is chosen by base URL, not by a parameter. A tenant lives in exactly one region; there is no
+    cross-region operation.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

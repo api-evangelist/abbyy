@@ -1,0 +1,100 @@
+generated: '2026-08-29'
+method: probed
+source: live GET of each /.well-known/ path with a browser User-Agent, 2026-08-29
+provider: ABBYY
+providerId: abbyy
+note: >-
+  One real document was served: the A2A agent card at https://docs.abbyy.com/.well-known/agent-card.json
+  (HTTP 200, application/json, 981 bytes, valid AgentCard shape) — saved to a2a/abbyy-agent-card.json and
+  graded in a2a/abbyy-a2a.yml. It also names a second served document,
+  /.well-known/agent-skills/abbyy/skill.md (HTTP 200, text/markdown), saved to skills/abbyy-vantage.md.
+  Everything else 404s. www.abbyy.com answers every /.well-known/ path with a 290KB HTML 404 page, and
+  vantage-us/vantage-eu with a 548-byte HTML 404 — neither is a document. No security.txt is served on any
+  ABBYY host, and no OpenID/OAuth discovery document is exposed even though the Vantage API is OAuth 2.0
+  (the authorize and token endpoints live under /auth2/connect/, undiscoverable without the OpenAPI).
+hosts:
+  - host: docs.abbyy.com
+    documents:
+      - path: /.well-known/agent-card.json
+        status: 200
+        content_type: application/json
+        file: ../a2a/abbyy-agent-card.json
+      - path: /.well-known/agent-skills/abbyy/skill.md
+        status: 200
+        content_type: text/markdown
+        file: ../skills/abbyy-vantage.md
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: www.abbyy.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: vantage-us.abbyy.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: vantage-eu.abbyy.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: api-us.flexicapture.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 0
+        note: no response — connection did not complete (host does not answer anonymous GET)
+  - host: flexicapture.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 301
+        note: redirects; no document served
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

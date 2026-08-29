@@ -1,0 +1,128 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  openapi/_original/abbyy-vantage-processing-openapi.json and
+  openapi/_original/abbyy-vantage-reporting-openapi.json (4xx/5xx responses), enriched from
+  https://docs.abbyy.com/flexi-capture/cloud/rest-api-errors and the API reference operation descriptions
+provider: ABBYY
+providerId: abbyy
+format: problem-details
+envelope_schema: Microsoft.AspNetCore.Mvc.ProblemDetails
+media_types:
+  - application/json
+  - text/json
+  - text/plain
+  - application/octet-stream
+rfc9457_compliant: false
+rfc9457_note: >-
+  The Vantage Processing API returns the ASP.NET Core ProblemDetails object — the RFC 7807/9457 member set
+  (type, title, status, detail, instance) with additionalProperties allowed — but it is served as
+  application/json, never application/problem+json, and the spec also lists text/plain and, on the download
+  operations, application/octet-stream as error content types for the SAME ProblemDetails schema. A client
+  cannot content-negotiate its way to a machine-readable error, and no `type` URI registry is published, so
+  the `type` member is effectively unusable for programmatic branching. Errors must be discriminated on the
+  HTTP status code plus prose in `detail`.
+problem_types:
+  - status: 400
+    title: Bad Request
+    schema: ProblemDetails
+    occurrences: 12
+    variants:
+      - detail: Some files are invalid or skillId is not specified
+        operations: [LaunchTransaction, CreateTransaction]
+      - detail: Transaction cannot be started
+        operations: [StartTransaction]
+      - detail: Invalid required parameter or max file size exceeded
+        operations: [AddFilesToTransaction, AddFilesToTransactionDocument]
+      - detail: Link can not be generated because transaction has invalid status
+        operations: [GenerateMobileInputLink]
+      - detail: Wrong number of records
+        operations: [AddRecords]
+        remediation: A single AddRecords call accepts at most 5,000 catalog records.
+      - detail: EndDate must be greater than start date
+        operations: [GetActiveTransactions, GetCompletedTransactions]
+      - detail: Some parameters are invalid
+        operations: [CreateInvite]
+    remediation: Validate request parameters, file count and file size before retrying. Not retryable unchanged.
+  - status: 403
+    title: Forbidden
+    schema: ProblemDetails
+    occurrences: 11
+    variants:
+      - detail: Transaction belongs to another tenant
+        operations: [GetTransactionInfo, DeleteTransaction, StartTransaction, AddFilesToTransaction,
+          DownloadFile, GetTransactionDocuments, GetTransactionDocument, DeleteTransactionDocument,
+          AddFilesToTransactionDocument, DownloadTransactionDocumentSourceFile, GenerateMobileInputLink]
+      - detail: Forbidden
+        operations: [CreateInvite]
+        remediation: Creating invites requires an administrative role on the tenant.
+    remediation: >-
+      Confirm the access token was issued for the tenant that owns the resource, and that the caller's
+      Vantage role permits the operation. Authorization is by ROLE, not by OAuth scope — re-requesting a
+      different scope will not fix a 403.
+  - status: 404
+    title: Not Found
+    schema: ProblemDetails
+    occurrences: 19
+    variants:
+      - detail: Transaction not found
+      - detail: Transaction or file not found
+      - detail: Catalog not found
+      - detail: Skill not found
+      - detail: Skill with specified skillId not found or not published
+        remediation: >-
+          A skill that exists but is not PUBLISHED is indistinguishable from a missing skill. Verify the
+          skill status in the Skill Catalog before treating this as a bad id.
+  - status: 409
+    title: Conflict
+    schema: ProblemDetails
+    occurrences: 2
+    variants:
+      - detail: Max files count exceeded
+        operations: [AddFilesToTransaction, AddFilesToTransactionDocument]
+      - detail: A file with the same name already exists in the transaction. File names must be unique within a transaction.
+        operations: [AddFilesToTransaction, AddFilesToTransactionDocument]
+    remediation: Rename the file or start a new transaction. Retrying the identical request will fail identically.
+silent_failures:
+  - operation: AddRecords
+    status: 200
+    note: >-
+      Documented by ABBYY as returning HTTP 200 even when rows are REJECTED. Callers must read
+      insertedRowCount and errorRows in the 200 body; per-row reasons include "CannotBeEmpty Column:<name>"
+      and "UnknownColumn Column:<name>". A client that branches on status code alone will silently drop data.
+    source: https://docs.abbyy.com/api-reference/catalogrecords/adds-records-to-the-specified-catalog
+business_rule_errors:
+  schema: Abbyy.Vantage.PublicApi.Contract.Transactions.Results.DocumentBusinessRulesErrorDto
+  note: >-
+    Extraction-time rule violations are NOT HTTP errors — they are returned inside a successful result with
+    errorType (Normalization, Condition, Unknown), ruleId, currentFieldId and an optional customMessage.
+    Agents must inspect results as well as status codes.
+other_surfaces:
+  - api: ABBYY FlexiCapture Cloud for Invoices API
+    docs: https://docs.abbyy.com/flexi-capture/cloud/rest-api-errors
+    codes:
+      - status: 400
+        title: Bad Request
+        schema: BadRequestBodyModel
+      - status: 403
+        title: Forbidden
+      - status: 404
+        title: Not Found
+      - status: 409
+        title: Conflict
+        detail: Returned if the resource is not ready.
+      - status: 429
+        title: Too Many Requests
+        detail: Workload spike while Azure Resource Manager allocates processing resources.
+        remediation: >-
+          ABBYY-published backoff: first retry after 5 seconds, increasing the wait for subsequent retries
+          up to 1 minute.
+      - status: 500
+        title: Internal Server Error
+        schema: InternalServerErrorModel
+      - status: 503
+        title: Service Unavailable
+        remediation: Handle exactly as a 429.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

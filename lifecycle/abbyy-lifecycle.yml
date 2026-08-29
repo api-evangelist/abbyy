@@ -1,0 +1,86 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://docs.abbyy.com/vantage/release-notes/release-notes (HTTP 200),
+  https://status.abbyy.com/ and https://status.abbyy.com/api/v2/status.json (HTTP 200),
+  https://docs.abbyy.com/vantage/developer/api-introduction (HTTP 200),
+  openapi/_original/*.json — all fetched 2026-08-29
+provider: ABBYY
+providerId: abbyy
+versioning:
+  scheme: uri-path
+  current:
+    - api: ABBYY Vantage Processing REST API
+      version: v1
+      path: /api/publicapi/v1/
+      spec_version: '1.0'
+      build: 1.0.0-20251028.13
+    - api: ABBYY Vantage Reporting API
+      version: v2
+      path: /api/reporting/v2/
+      spec_version: '2.0'
+      build: 1.5.2
+  superseded:
+    - api: ABBYY Vantage Reporting API
+      version: v1
+      path: /api/reporting/v1/
+      spec_version: '1.0'
+      spec: openapi/abbyy-vantage-reporting-v1-openapi.yml
+      status: still published, still served
+      note: >-
+        ABBYY publishes openapi-reporting-v1.json alongside openapi-reporting.json. v1 exposes
+        /qa/process-skills/documents, /qa/process-skills/fields and a synchronous /transaction-steps;
+        v2 replaces the last with an asynchronous three-call export flow. No sunset date, no Deprecation
+        header and no migration note accompanies the older document — a consumer reading the docs cannot
+        tell that v1 is the older surface except by the number.
+deprecation_policy:
+  published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    Searched the developer docs, the release notes and both OpenAPI documents on 2026-08-29: no deprecation
+    policy page, no `deprecated: true` on any of the 36 operations, and no Sunset or Deprecation response
+    header anywhere. The only visible lifecycle signal is that a v1 reporting spec still sits next to v2.
+sla:
+  published: false
+  note: >-
+    No public SLA document. Availability commitments are described as part of the negotiated tenant
+    agreement; ABBYY's public subscription terms are at https://www.abbyy.com/legal/subscription-terms/.
+status_page:
+  url: https://status.abbyy.com/
+  provider: Atlassian Statuspage
+  machine_readable: true
+  api: https://status.abbyy.com/api/v2/status.json
+  components_api: https://status.abbyy.com/api/v2/components.json
+  probed: '2026-08-29'
+  http_status: 200
+  page_id: j43dvs8nnzmy
+  components:
+    - Vantage Cloud 3
+    - Vantage Cloud 2.7
+    - FlexiCapture Cloud (EU, EU2, US, AU)
+    - Timeline Cloud (US, JP, EU, AU)
+    - Proof of Identity US
+    - Online Licensing Service
+  subscriptions: [email, sms, webhook]
+  rss: false
+  note: >-
+    Statuspage's standard JSON API answers anonymously, so status is machine-readable even though ABBYY
+    does not advertise it. history.rss returned 404.
+release_cadence:
+  observed: monthly-to-six-weekly
+  current_release: 3.4.0
+  current_release_date: '2026-08'
+  window_observed: '2026-03 (3.0.1) through 2026-08 (3.4.0) — twelve releases in six months'
+  changelog: changelog/abbyy-changelog.yml
+support:
+  contact: https://www.abbyy.com/company/contact-us/
+  help_center: https://support.abbyy.com/
+  help_center_note: >-
+    support.abbyy.com returned HTTP 403 to a browser User-Agent on 2026-08-29 (Zendesk edge policy). Not
+    recorded as a pointer because liveness could not be established from outside a browser session.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

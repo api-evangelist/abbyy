@@ -1,0 +1,125 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  openapi/_original/abbyy-vantage-processing-openapi.json,
+  openapi/_original/abbyy-vantage-reporting-openapi.json,
+  a2a/abbyy-agent-card.json, mcp/abbyy-mcp.yml, security/abbyy-trust-center.yml,
+  https://docs.abbyy.com/vantage/developer/authentication/authentication (fetched 2026-08-29)
+provider: ABBYY
+providerId: abbyy
+standards:
+  - id: openapi
+    conforms: true
+    version: 3.0.1 / 3.0.4
+    evidence: >-
+      Three machine-readable OpenAPI documents published anonymously at docs.abbyy.com — openapi.json
+      (Processing, 3.0.1, 30 operations), openapi-reporting.json (Reporting v2, 3.0.4, 6 operations) and
+      openapi-reporting-v1.json (Reporting v1, 3 operations). All parse and all declare abbyy.com servers.
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      securitySchemes declares OAuth2Security with the authorizationCode flow against
+      https://vantage-us.abbyy.com/auth2/connect/authorize and /auth2/connect/token. ABBYY additionally
+      documents client-credentials and resource-owner-password flows, and PKCE for the authorization-code
+      flow.
+  - id: oidc
+    conforms: partial
+    evidence: >-
+      The `openid` scope is declared and the auth server path shape (/connect/authorize, /connect/token) is
+      IdentityServer's, but no /.well-known/openid-configuration is served on any ABBYY host (probed
+      2026-08-29, 404 on www, docs, vantage-us and vantage-eu). Discovery is impossible without the OpenAPI.
+  - id: rfc7807
+    conforms: partial
+    evidence: >-
+      Errors use the ASP.NET Core ProblemDetails member set (type/title/status/detail/instance) but are
+      served as application/json, never application/problem+json, and no `type` URI registry is published.
+      See errors/abbyy-problem-types.yml.
+  - id: rfc9457
+    conforms: false
+    evidence: Same as rfc7807 — the media type required by RFC 9457 is never used.
+  - id: rfc8594
+    conforms: false
+    evidence: No Sunset or Deprecation response headers on any operation; no deprecation policy published.
+  - id: idempotency
+    conforms: false
+    evidence: >-
+      No Idempotency-Key header and no dedupe semantics on any POST. LaunchTransaction is an unguarded
+      billable write. See conventions/abbyy-conventions.yml.
+  - id: pagination
+    conforms: true
+    style: offset-limit
+    evidence: >-
+      Offset/Limit query parameters on GetRecords, GetActiveTransactions and GetCompletedTransactions. No
+      cursor and no total-count or next-link field in the response schemas.
+  - id: mcp
+    conforms: true
+    version: '2025-06-18'
+    evidence: >-
+      Live initialize handshake against https://docs.abbyy.com/mcp returned protocolVersion 2025-06-18,
+      serverInfo "ABBYY Documentation" 1.0.0, and a tools+resources capability set. Streamable HTTP
+      transport, no auth. Scope is documentation, not the product API.
+  - id: a2a
+    conforms: true
+    version: '0.3'
+    grade: conformant
+    evidence: >-
+      https://docs.abbyy.com/.well-known/agent-card.json, HTTP 200, valid AgentCard: capabilities is an
+      object, protocolVersion is present, skills is an array, and preferredTransport plus default input and
+      output modes are all declared. Declares A2A 0.3 rather than 1.0.0. See a2a/abbyy-a2a.yml.
+  - id: llmstxt
+    conforms: true
+    evidence: >-
+      https://docs.abbyy.com/llms.txt, HTTP 200, text/plain — a genuine index that fans out to per-product
+      section files each kept under 50,000 characters, with every documentation page also served as .md.
+      Saved to llms/abbyy-llms.txt.
+  - id: agent-skills
+    conforms: true
+    evidence: >-
+      A provider-authored Agent Skill is served three ways: at
+      /.well-known/agent-skills/abbyy/skill.md, as MCP resource mintlify://skills/abbyy, and by reference
+      from the A2A card. Saved verbatim to skills/abbyy-vantage.md.
+  - id: asyncapi
+    conforms: false
+    evidence: >-
+      No event surface exists to describe. Searched the docs corpus for webhook, callback and asyncapi on
+      2026-08-29: the only hits are Kubernetes admission webhooks in the self-hosted Helm chart and an
+      Azure monitoring page. Vantage is submit-and-poll. Not a penalty — there is nothing to specify.
+  - id: json-schema
+    conforms: true
+    evidence: >-
+      ABBYY publishes a documented JSON Schema for extraction output (ExtractedDataTransaction,
+      ExtractedDataDocument, DocumentDefinition, ExtractedObject, confidence scores) and an XML Schema for
+      the OCR/Process output, at https://docs.abbyy.com/vantage/developer/output/json/json-schema and
+      .../output/xml/xml-schema. These describe the RESULT PAYLOAD, which the OpenAPI itself does not
+      model — the API returns result files, not typed extraction bodies.
+  - id: scim
+    conforms: false
+    evidence: >-
+      No SCIM schema URN anywhere in either spec. User provisioning is via SAML SSO External Identity
+      Providers configured in the tenant UI, not a standards-based provisioning API.
+  - id: odata
+    conforms: false
+    evidence: No $metadata surface and no OData query conventions.
+  - id: fapi
+    conforms: false
+    evidence: Not a financial-grade API; no FAPI profile claimed.
+domain_standard:
+  market: intelligent document processing / enterprise content capture
+  declared: false
+  evidence: >-
+    Probed the two Vantage specs for a domain-standard signature and found none — no UN/EDIFACT or X12
+    message type, no ISO 20022 identifier, no PEPPOL/UBL invoice schema, no CMIS or Content Management
+    Interoperability binding, no OAI-PMH verb. This matters most on the invoice surface: ABBYY's
+    FlexiCapture Cloud for Invoices API and Vantage's invoice skills exchange invoice data through an
+    ABBYY-proprietary JSON/XML shape rather than UBL, EDIFACT INVOIC or a Peppol BIS profile, so a buyer
+    who already speaks e-invoicing standards needs a bespoke connector either way. Recorded as an honest
+    absence, not a penalty — IDP has no single ratified interchange standard, and the extraction-output
+    JSON/XML schemas ABBYY does publish are the closest thing it offers.
+  candidates_probed: [ubl, peppol-bis, edifact-invoic, x12-810, iso-20022, cmis, oai-pmh]
+compliance:
+  certifications: [SOC 2, ISO 27001, GDPR]
+  source: https://trust.abbyy.com/
+  cross_reference: security/abbyy-trust-center.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

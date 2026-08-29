@@ -1,0 +1,41 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for ABBYY Vantage Reporting API
+  version: 1.0.0
+extends: openapi/abbyy-vantage-reporting-openapi.yml
+x-provenance:
+  generated: '2026-08-29'
+  method: generated
+  source: API Evangelist enrichment pass 2026-08-29; targets only the verbatim ABBYY spec, never mutates it.
+actions:
+- target: $.info
+  description: Record provenance of the harvested contract on the info object
+  update:
+    x-apis-io-provider: abbyy
+    x-apis-io-harvested-from: https://docs.abbyy.com/openapi-reporting.json
+    x-apis-io-harvested-on: '2026-08-29'
+    x-apis-io-ownership: servers[], info.title and the OAuth authorize/token URLs all resolve to abbyy.com hosts
+- target: $.info
+  description: Point at the derived artifacts that describe runtime semantics this spec omits
+  update:
+    x-apis-io-artifacts:
+      authentication: authentication/abbyy-authentication.yml
+      scopes: scopes/abbyy-scopes.yml
+      errors: errors/abbyy-problem-types.yml
+      conventions: conventions/abbyy-conventions.yml
+      lifecycle: lifecycle/abbyy-lifecycle.yml
+      rate_limits: rate-limits/abbyy-rate-limits.yml
+      data_model: data-model/abbyy-data-model.yml
+- target: $.info
+  description: Flag the runtime gaps a generated client cannot infer from this document
+  update:
+    x-apis-io-gaps:
+    - No idempotency key on any write; a retried POST creates a duplicate billable transaction.
+    - No rate-limit headers and no 429 response declared on any operation.
+    - Errors use the ProblemDetails member set but are served as application/json, not application/problem+json.
+    - No Sunset or Deprecation headers; no operation is marked deprecated.
+    - Authorization is by Vantage tenant role, not by the three declared OAuth scopes.
+- target: $.servers
+  description: Note that region selection is by base URL and a tenant lives in exactly one region
+  update:
+  - x-apis-io-note: US, EU and AU are separate tenancies. A transaction is not addressable across regions.

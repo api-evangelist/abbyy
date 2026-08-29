@@ -1,0 +1,2997 @@
+{
+  "openapi": "3.0.4",
+  "servers": [
+    {
+      "url": "https://vantage-us.abbyy.com",
+      "description": "Production United States"
+    },
+    {
+      "url": "https://vantage-eu.abbyy.com",
+      "description": "Production Europe"
+    },
+    {
+      "url": "https://vantage-au.abbyy.com",
+      "description": "Production Australia"
+    }
+  ],
+  "info": {
+    "title": "Abbyy.Vantage.Reporting.Service",
+    "description": "Version 1 of the Vantage Reporting API. This version is deprecated and is documented for existing integrations only: use the Vantage Reporting API (v2) for new development. The v1 QA report endpoints have direct v2 equivalents, and the synchronous transaction steps report is replaced by the asynchronous v2 export workflow starting with [Create transaction steps export](/api-reference/report/create-transaction-steps-export). Only users with the Tenant Administrator or Processing Supervisor role can download data reports. For an overview of the reporting warehouses, see the [Reporting service](/vantage/developer/reporting/reporting-service) guide.",
+    "version": "1.0",
+    "x-application-version": "1.5.2"
+  },
+  "paths": {
+    "/api/reporting/v1/qa/process-skills/documents": {
+      "get": {
+        "tags": [
+          "Report v1"
+        ],
+        "operationId": "GetDocumentsAsCsv",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Minimum transaction completion date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Maximum transaction completion date",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "processSkillId",
+            "in": "query",
+            "description": "ID of the process skill used in the transactions",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "imageType",
+            "in": "query",
+            "description": "Image type of the document, e.g. receipt, business card, etc.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "imageColority",
+            "in": "query",
+            "description": "Colority of the document, e.g. color, black and white, etc.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "imageSource",
+            "in": "query",
+            "description": "Source of the document, e.g. scan, photo, etc.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wasCorrectedInManualReview",
+            "in": "query",
+            "description": "Only show documents that were corrected during manual review",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wasDocumentTypeChangedInManualReview",
+            "in": "query",
+            "description": "Only show documents, where the document type was changed during manual review",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document report",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true,
+        "summary": "Download document changes report",
+        "description": "Deprecated. Use the v2 [Download document changes report](/api-reference/report/download-document-changes-report) endpoint for new development; it accepts the same filters. Downloads a CSV report from the Analytics Reporting Warehouse about documents processed by a Process skill. Each row describes one document, including whether its fields were corrected or its document type was changed during Manual Review. For the full column reference, see [Analytics Reporting Warehouse](/vantage/developer/reporting/analytics-reporting)."
+      }
+    },
+    "/api/reporting/v1/qa/process-skills/fields": {
+      "get": {
+        "tags": [
+          "Report v1"
+        ],
+        "operationId": "GetFieldsAsCsv",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Minimum transaction completion date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Maximum transaction completion date",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "processSkillId",
+            "in": "query",
+            "description": "ID of the process skill used in the transactions",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "documentSkillId",
+            "in": "query",
+            "description": "ID of the document skill used in the transactions",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "imageType",
+            "in": "query",
+            "description": "Image type of the document, e.g. receipt, business card, etc.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "imageColority",
+            "in": "query",
+            "description": "Colority of the document, e.g. color, black and white, etc.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "imageSource",
+            "in": "query",
+            "description": "Source of the document, e.g. scan, photo, etc.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wasCorrectedInManualReview",
+            "in": "query",
+            "description": "Only show documents that were corrected during manual review",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wasDocumentTypeChangedInManualReview",
+            "in": "query",
+            "description": "Only show documents, where the document type was changed during manual review",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Field report",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true,
+        "summary": "Download field changes report",
+        "description": "Deprecated. Use the v2 [Download field changes report](/api-reference/report/download-field-changes-report) endpoint for new development; it accepts the same filters. Downloads a CSV report from the Analytics Reporting Warehouse about document fields processed by Process and Document skills. Each row describes one field, including whether its value was correct, had recognition issues, was located incorrectly, or was not detected before Manual Review. For the full column reference, see [Analytics Reporting Warehouse](/vantage/developer/reporting/analytics-reporting)."
+      }
+    },
+    "/api/reporting/v1/transaction-steps": {
+      "get": {
+        "tags": [
+          "Report v1"
+        ],
+        "operationId": "GetTransactionStepsCsv",
+        "parameters": [
+          {
+            "name": "skillId",
+            "in": "query",
+            "description": "Filter by transaction skill ID. {NULL} if skill Id filter should not be applied",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transactionId",
+            "in": "query",
+            "description": "Filter by transaction ID. {NULL} if Id filter should not be applied",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Minimum transaction date, defined by RFC 3339",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Maximum transaction date, defined by RFC 3339 (UtcNow if empty)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction steps"
+          }
+        },
+        "deprecated": true,
+        "summary": "Download transaction steps report",
+        "description": "Deprecated. Synchronously downloads a CSV report of transaction step data from the Business Processing Reporting Warehouse. This endpoint is replaced by the asynchronous v2 export workflow, which handles large date ranges reliably: create an export with [Create transaction steps export](/api-reference/report/create-transaction-steps-export), poll its status, then download the result files. For the CSV column reference, see [Business Processing Reporting](/vantage/developer/reporting/business-reporting)."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActiveTransaction": {
+        "type": "object",
+        "properties": {
+          "stage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StageType"
+              }
+            ],
+            "description": "Current stage of the transaction"
+          },
+          "stageName": {
+            "type": "string",
+            "description": "Current stage's name of the transaction in manual reviewer stage",
+            "nullable": true
+          },
+          "reviewerEmail": {
+            "type": "string",
+            "description": "Email of the reviewer in manual review stage",
+            "nullable": true
+          },
+          "reviewerName": {
+            "type": "string",
+            "description": "Name of the reviewer in manual review stage",
+            "nullable": true
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "ID of the transaction",
+            "format": "uuid"
+          },
+          "createTimeUtc": {
+            "type": "string",
+            "description": "Time of creation",
+            "format": "date-time"
+          },
+          "transactionParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Parameter"
+            },
+            "description": "Registration parameters of the transaction",
+            "nullable": true
+          },
+          "fileParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Parameter"
+            },
+            "description": "Registration parameters of the file in for transaction",
+            "nullable": true
+          },
+          "skillId": {
+            "type": "string",
+            "description": "Skill Id of the transaction",
+            "nullable": true
+          },
+          "skillVersion": {
+            "type": "integer",
+            "description": "Version of the transaction's skill",
+            "format": "int32"
+          },
+          "documentCount": {
+            "type": "integer",
+            "description": "Initial document count of the transaction",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Active transactions"
+      },
+      "AggregationContext": {
+        "enum": [
+          "Documents",
+          "Fields"
+        ],
+        "type": "string"
+      },
+      "AvailableDimensionFieldFilterStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AvailableFilterStatistics"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DimensionFieldDescriptor"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "AvailableDocumentFieldFilterStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AvailableFilterStatistics"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "AvailableDocumentTypeFilterStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AvailableFilterStatistics"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "AvailableFilterStatistics": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "filterType": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FilterType"
+              }
+            ],
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "AvailablePredefinedFilterStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AvailableFilterStatistics"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PredefinedFilterDescriptor"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "AvailableReports": {
+        "type": "object",
+        "properties": {
+          "classificationReport": {
+            "type": "boolean"
+          },
+          "documentSkillReports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentSkillReference"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AvailableTransactionParameterFilterStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AvailableFilterStatistics"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/TransactionParameterDescriptor"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "CompletedTransaction": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Finished transaction status",
+            "nullable": true
+          },
+          "pageCount": {
+            "type": "integer",
+            "description": "Page count of the transaction",
+            "format": "int32"
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "ID of the transaction",
+            "format": "uuid"
+          },
+          "createTimeUtc": {
+            "type": "string",
+            "description": "Time of creation",
+            "format": "date-time"
+          },
+          "transactionParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Parameter"
+            },
+            "description": "Registration parameters of the transaction",
+            "nullable": true
+          },
+          "fileParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Parameter"
+            },
+            "description": "Registration parameters of the file in for transaction",
+            "nullable": true
+          },
+          "skillId": {
+            "type": "string",
+            "description": "Skill Id of the transaction",
+            "nullable": true
+          },
+          "skillVersion": {
+            "type": "integer",
+            "description": "Version of the transaction's skill",
+            "format": "int32"
+          },
+          "documentCount": {
+            "type": "integer",
+            "description": "Initial document count of the transaction",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Finished transactions"
+      },
+      "ConfusionMatrix": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "rowsHeaders": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HeaderDescriptor"
+                }
+              },
+              "columnHeaders": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HeaderDescriptor"
+                }
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Value"
+                  }
+                }
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DefaultWidgetDescriptor"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DataPoint": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rate": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Datapoint represents a given measured quality\nand it's rate relatively to the total amount in the given interval\n            \nFor example Straight-trough processing transactions in a given interval\nand it's rate relative to all transactions."
+      },
+      "DefaultWidgetDescriptor": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StatisticsType"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "DimensionFieldDescriptor": {
+        "type": "object",
+        "properties": {
+          "documentSkillName": {
+            "type": "string"
+          },
+          "documentSkillId": {
+            "type": "string"
+          },
+          "fieldName": {
+            "type": "string"
+          },
+          "fieldId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DimensionFieldFilter": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              "documentSkillId": {
+                "type": "string"
+              },
+              "fieldId": {
+                "type": "string"
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DimensionFieldFilterAggregatedStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aggregation": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AggregationContext"
+                  }
+                ]
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DimensionFieldDescriptor"
+                  }
+                ]
+              },
+              "groups": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FilterAggregatedStatisticsGroup"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DimensionFieldFilterReference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterReference"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ]
+              },
+              "documentSkillId": {
+                "type": "string"
+              },
+              "fieldId": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DimensionFieldFilterStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aggregation": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AggregationContext"
+                  }
+                ]
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DimensionFieldDescriptor"
+                  }
+                ]
+              },
+              "slices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SliceOfDimensionFieldFilterValue"
+                }
+              },
+              "remaining": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RemainingSliceOfFilterStatistics"
+                  }
+                ],
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DimensionFieldFilterValue": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DimensionFieldFilterValues": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterValues"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "documentSkillId": {
+                "type": "string"
+              },
+              "documentSkillName": {
+                "type": "string"
+              },
+              "fieldId": {
+                "type": "string"
+              },
+              "fieldName": {
+                "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentFieldFilter": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentFieldFilterAggregatedStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aggregation": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AggregationContext"
+                  }
+                ],
+                "readOnly": true
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "groups": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FilterAggregatedStatisticsGroup"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentFieldFilterReference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterReference"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentFieldFilterStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aggregation": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AggregationContext"
+                  }
+                ],
+                "readOnly": true
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "slices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SliceOfDocumentFieldFilterValue"
+                }
+              },
+              "remaining": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RemainingSliceOfFilterStatistics"
+                  }
+                ],
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentFieldFilterValue": {
+        "type": "object",
+        "properties": {
+          "fieldId": {
+            "type": "string"
+          },
+          "fieldName": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DocumentFieldFilterValues": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterValues"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FieldReference"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentSkillCorrections": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DocumentSkillCorrectionsDescriptor"
+                  }
+                ]
+              },
+              "slices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SliceOfDocumentSkillCorrectionsDetails"
+                }
+              },
+              "remaining": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RemainingSliceOfDocumentSkillCorrectionsStatistics"
+                  }
+                ],
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentSkillCorrectionsDescriptor": {
+        "type": "object",
+        "properties": {
+          "detailedReportAvailable": {
+            "type": "boolean"
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StatisticsType"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "DocumentSkillCorrectionsDetails": {
+        "type": "object",
+        "properties": {
+          "documentSkillId": {
+            "type": "string"
+          },
+          "documentSkillName": {
+            "type": "string"
+          },
+          "correctedDocuments": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accuracy": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DocumentSkillCorrectionsStatistics": {
+        "type": "object",
+        "properties": {
+          "correctedDocuments": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accuracy": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DocumentSkillReference": {
+        "type": "object",
+        "properties": {
+          "documentSkillId": {
+            "type": "string"
+          },
+          "documentSkillName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DocumentTypeFilter": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentTypeFilterAggregatedStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aggregation": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AggregationContext"
+                  }
+                ],
+                "readOnly": true
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "groups": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FilterAggregatedStatisticsGroup"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentTypeFilterReference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterReference"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentTypeFilterStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aggregation": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AggregationContext"
+                  }
+                ],
+                "readOnly": true
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "slices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SliceOfDocumentTypeFilterValue"
+                }
+              },
+              "remaining": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RemainingSliceOfFilterStatistics"
+                  }
+                ],
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DocumentTypeFilterValue": {
+        "type": "object",
+        "properties": {
+          "documentSkillId": {
+            "type": "string"
+          },
+          "documentSkillName": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DocumentTypeFilterValues": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterValues"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DocumentSkillReference"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "FieldReference": {
+        "type": "object",
+        "properties": {
+          "fieldId": {
+            "type": "string"
+          },
+          "fieldName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Filter": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FilterType"
+              }
+            ]
+          },
+          "group": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "FilterAggregatedStatisticsGroup": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ValueGroup"
+              }
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rate": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FilterReference": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FilterType"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "FilterStatistics": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FilterType": {
+        "enum": [
+          "Predefined",
+          "DimensionField",
+          "TransactionParameter",
+          "DocumentType",
+          "DocumentField",
+          "TimeRange"
+        ],
+        "type": "string"
+      },
+      "FilterValues": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FilterType"
+              }
+            ],
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "FiltersRequest": {
+        "type": "object",
+        "properties": {
+          "applyTimeRange": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TimeRangeFilter"
+              }
+            ]
+          },
+          "apply": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/PredefinedFilter"
+                },
+                {
+                  "$ref": "#/components/schemas/DimensionFieldFilter"
+                },
+                {
+                  "$ref": "#/components/schemas/TransactionParameterFilter"
+                },
+                {
+                  "$ref": "#/components/schemas/DocumentTypeFilter"
+                },
+                {
+                  "$ref": "#/components/schemas/DocumentFieldFilter"
+                }
+              ]
+            },
+            "nullable": true
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/PredefinedFilterReference"
+                },
+                {
+                  "$ref": "#/components/schemas/DimensionFieldFilterReference"
+                },
+                {
+                  "$ref": "#/components/schemas/TransactionParameterFilterReference"
+                },
+                {
+                  "$ref": "#/components/schemas/DocumentTypeFilterReference"
+                },
+                {
+                  "$ref": "#/components/schemas/DocumentFieldFilterReference"
+                }
+              ]
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FiltersResponse": {
+        "type": "object",
+        "properties": {
+          "applied": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DocumentTypeFilterValues"
+                },
+                {
+                  "$ref": "#/components/schemas/DocumentFieldFilterValues"
+                },
+                {
+                  "$ref": "#/components/schemas/DimensionFieldFilterValues"
+                },
+                {
+                  "$ref": "#/components/schemas/TimeRangeFilterValues"
+                },
+                {
+                  "$ref": "#/components/schemas/TransactionParameterFilterValues"
+                },
+                {
+                  "$ref": "#/components/schemas/PredefinedFilterValues"
+                }
+              ]
+            }
+          },
+          "available": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/AvailableDocumentTypeFilterStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/AvailableDocumentFieldFilterStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/AvailableDimensionFieldFilterStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/AvailableTransactionParameterFilterStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/AvailablePredefinedFilterStatistics"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "Granularity": {
+        "enum": [
+          "Hours",
+          "Days",
+          "Months"
+        ],
+        "type": "string"
+      },
+      "HeaderDescriptor": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Interval": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "DocumentWithoutCorrections": {
+                "$ref": "#/components/schemas/DataPoint"
+              },
+              "DocumentCorrected": {
+                "$ref": "#/components/schemas/DataPoint"
+              },
+              "DocumentTypeCorrected": {
+                "$ref": "#/components/schemas/DataPoint"
+              },
+              "DocumentFieldCorrected": {
+                "$ref": "#/components/schemas/DataPoint"
+              },
+              "TransactionStraightTroughProcessing": {
+                "$ref": "#/components/schemas/DataPoint"
+              },
+              "FieldCorrected": {
+                "$ref": "#/components/schemas/DataPoint"
+              }
+            },
+            "additionalProperties": false,
+            "nullable": true
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MetricType": {
+        "enum": [
+          "DocumentWithoutCorrections",
+          "DocumentCorrected",
+          "DocumentTypeCorrected",
+          "DocumentFieldCorrected",
+          "TransactionStraightTroughProcessing",
+          "FieldCorrected"
+        ],
+        "type": "string"
+      },
+      "Parameter": {
+        "type": "object",
+        "properties": {
+          "isReadOnly": {
+            "type": "boolean"
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PartialResultOfActiveTransaction": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActiveTransaction"
+            }
+          },
+          "totalItemCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PartialResultOfCompletedTransaction": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompletedTransaction"
+            }
+          },
+          "totalItemCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Period": {
+        "enum": [
+          "Custom",
+          "EightHours",
+          "OneDay",
+          "OneWeek",
+          "TwoWeeks",
+          "OneMonth",
+          "SixMonths",
+          "OneYear",
+          "TwoYears",
+          "ThreeYears"
+        ],
+        "type": "string"
+      },
+      "PredefinedFilter": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PredefinedFilterType"
+                  }
+                ],
+                "description": "Source of the type\nhttps://wiki.abbyy.com/pages/viewpage.action?spaceKey=Vantage&title=VAN-26910+Quality+Analytics+UI+contract"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "PredefinedFilterAggregatedStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aggregation": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AggregationContext"
+                  }
+                ]
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PredefinedFilterDescriptor"
+                  }
+                ]
+              },
+              "groups": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FilterAggregatedStatisticsGroup"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "PredefinedFilterDescriptor": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PredefinedFilterType"
+              }
+            ],
+            "description": "Source of the type\nhttps://wiki.abbyy.com/pages/viewpage.action?spaceKey=Vantage&title=VAN-26910+Quality+Analytics+UI+contract"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PredefinedFilterReference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterReference"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ]
+              },
+              "id": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PredefinedFilterType"
+                  }
+                ],
+                "description": "Source of the type\nhttps://wiki.abbyy.com/pages/viewpage.action?spaceKey=Vantage&title=VAN-26910+Quality+Analytics+UI+contract"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "PredefinedFilterStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aggregation": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AggregationContext"
+                  }
+                ]
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PredefinedFilterDescriptor"
+                  }
+                ]
+              },
+              "slices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SliceOfPredefinedFilterValue"
+                }
+              },
+              "remaining": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RemainingSliceOfFilterStatistics"
+                  }
+                ],
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "PredefinedFilterType": {
+        "enum": [
+          "CorrectionsPerDocument",
+          "FieldIssueType",
+          "ImageSource",
+          "ImageType",
+          "ImageColority",
+          "ImageDPI"
+        ],
+        "type": "string",
+        "description": "Source of the type\nhttps://wiki.abbyy.com/pages/viewpage.action?spaceKey=Vantage&title=VAN-26910+Quality+Analytics+UI+contract"
+      },
+      "PredefinedFilterValue": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PredefinedFilterValues": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterValues"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/PredefinedFilterType"
+                  }
+                ],
+                "description": "Source of the type\nhttps://wiki.abbyy.com/pages/viewpage.action?spaceKey=Vantage&title=VAN-26910+Quality+Analytics+UI+contract"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "ProcessingSkill": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProcessingSkillStpRate": {
+        "type": "object",
+        "properties": {
+          "processingSkillId": {
+            "type": "string"
+          },
+          "stpRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "trend": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Trend"
+              }
+            ],
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProcessingSkillsResponse": {
+        "type": "object",
+        "properties": {
+          "processingSkills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcessingSkill"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "QualityAnalyticsRequest": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FiltersRequest"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "QualityAnalyticsResponse": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FiltersResponse"
+              }
+            ]
+          },
+          "widgets": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/TimeSeriesChart"
+                },
+                {
+                  "$ref": "#/components/schemas/ConfusionMatrix"
+                },
+                {
+                  "$ref": "#/components/schemas/DocumentSkillCorrections"
+                },
+                {
+                  "$ref": "#/components/schemas/SummaryWithTrend"
+                },
+                {
+                  "$ref": "#/components/schemas/DocumentTypeFilterAggregatedStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/DocumentFieldFilterAggregatedStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/DimensionFieldFilterAggregatedStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/PredefinedFilterAggregatedStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/PredefinedFilterStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/DocumentTypeFilterStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/DocumentFieldFilterStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/DimensionFieldFilterStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/TransactionParameterFilterStatistics"
+                },
+                {
+                  "$ref": "#/components/schemas/TransactionParameterFilterAggregatedStatistics"
+                }
+              ]
+            }
+          },
+          "emptyResultReason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RemainingSliceOfDocumentSkillCorrectionsStatistics": {
+        "type": "object",
+        "properties": {
+          "elementCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "details": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DocumentSkillCorrectionsStatistics"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "RemainingSliceOfFilterStatistics": {
+        "type": "object",
+        "properties": {
+          "elementCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "details": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FilterStatistics"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReportType": {
+        "enum": [
+          "ProcessSkillReport",
+          "ClassificationReport",
+          "DocumentSkillReport"
+        ],
+        "type": "string"
+      },
+      "RequestParameter": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Severity": {
+        "enum": [
+          "Correct",
+          "CorrectAbsent",
+          "IncorrectAbsent",
+          "IncorrectWarning",
+          "IncorrectError",
+          "IncorrectCritical"
+        ],
+        "type": "string"
+      },
+      "SliceOfDimensionFieldFilterValue": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "details": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DimensionFieldFilterValue"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "SliceOfDocumentFieldFilterValue": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "details": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DocumentFieldFilterValue"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "SliceOfDocumentSkillCorrectionsDetails": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "details": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DocumentSkillCorrectionsDetails"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "SliceOfDocumentTypeFilterValue": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "details": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DocumentTypeFilterValue"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "SliceOfPredefinedFilterValue": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "details": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PredefinedFilterValue"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "SliceOfTransactionParameterFilterValue": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "details": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TransactionParameterFilterValue"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "StageType": {
+        "enum": [
+          "ManualReview",
+          "CustomActivity",
+          "Automatic"
+        ],
+        "type": "string"
+      },
+      "StatisticsType": {
+        "enum": [
+          "StraightTroughProcessingRateOfTransactions",
+          "DocumentsWithoutCorrections",
+          "DocumentClassifierAccuracy",
+          "ProcessedDocuments",
+          "FieldExtractionAccuracy",
+          "DocumentTypeCorrections",
+          "DocumentFieldCorrections",
+          "DocumentsWithCorrectedTypes",
+          "TransactionsWithCorrectedTypes",
+          "CorrectedDocumentTypes",
+          "CorrectedFields",
+          "DocumentsWithCorrectedFields",
+          "DocumentsWithCorrectedFieldsRelativeToAll"
+        ],
+        "type": "string"
+      },
+      "SummaryWithTrend": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "amount": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "rate": {
+                "type": "string",
+                "nullable": true
+              },
+              "trend": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Trend"
+                  }
+                ],
+                "nullable": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DefaultWidgetDescriptor"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "TimeRangeFilter": {
+        "required": [
+          "period"
+        ],
+        "type": "object",
+        "properties": {
+          "period": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Period"
+              }
+            ]
+          },
+          "startDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "endDate": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TimeRangeFilterValues": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterValues"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "period": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Period"
+                  }
+                ]
+              },
+              "startDate": {
+                "type": "string",
+                "nullable": true
+              },
+              "endDate": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "TimeSeriesChart": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "granularity": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Granularity"
+                  }
+                ]
+              },
+              "intervals": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Interval"
+                }
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/TimeSeriesChartDescriptor"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "TimeSeriesChartDescriptor": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StatisticsType"
+              }
+            ]
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricType"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionParameterDescriptor": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionParameterFilter": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Filter"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              "key": {
+                "type": "string"
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "TransactionParameterFilterAggregatedStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aggregation": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AggregationContext"
+                  }
+                ]
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/TransactionParameterDescriptor"
+                  }
+                ]
+              },
+              "groups": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FilterAggregatedStatisticsGroup"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "TransactionParameterFilterReference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterReference"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ]
+              },
+              "key": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "TransactionParameterFilterStatistics": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Widget"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "aggregation": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AggregationContext"
+                  }
+                ]
+              },
+              "filterType": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "id": {
+                "type": "string",
+                "readOnly": true
+              },
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/WidgetType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "subType": {
+                "type": "string",
+                "nullable": true,
+                "readOnly": true
+              },
+              "descriptor": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/TransactionParameterDescriptor"
+                  }
+                ]
+              },
+              "slices": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SliceOfTransactionParameterFilterValue"
+                }
+              },
+              "remaining": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RemainingSliceOfFilterStatistics"
+                  }
+                ],
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "TransactionParameterFilterValue": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionParameterFilterValues": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilterValues"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/FilterType"
+                  }
+                ],
+                "readOnly": true
+              },
+              "key": {
+                "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "Trend": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TrendDirection"
+              }
+            ]
+          },
+          "difference": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TrendDirection": {
+        "enum": [
+          "Neutral",
+          "Up",
+          "Down"
+        ],
+        "type": "string"
+      },
+      "Value": {
+        "type": "object",
+        "properties": {
+          "rowId": {
+            "type": "string"
+          },
+          "columnId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "severity": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Severity"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValueGroup": {
+        "enum": [
+          "Top10",
+          "Top100",
+          "Top1000",
+          "Others"
+        ],
+        "type": "string"
+      },
+      "Widget": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WidgetType"
+              }
+            ],
+            "readOnly": true
+          },
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "subType": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "WidgetType": {
+        "enum": [
+          "TimeSeriesChart",
+          "ConfusionMatrix",
+          "DocumentSkillCorrections",
+          "SummaryWithTrend",
+          "DocumentTypeFilterAggregatedStatistics",
+          "DocumentFieldFilterAggregatedStatistics",
+          "DimensionFieldFilterAggregatedStatistics",
+          "PredefinedFilterAggregatedStatistics",
+          "PredefinedFilterStatistics",
+          "DocumentTypeFilterStatistics",
+          "DocumentFieldFilterStatistics",
+          "DimensionFieldFilterStatistics",
+          "TransactionParameterFilterAggregatedStatistics",
+          "TransactionParameterFilterStatistics"
+        ],
+        "type": "string"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2Security": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://vantage-us.abbyy.com/auth2/connect/authorize",
+            "tokenUrl": "https://vantage-us.abbyy.com/auth2/connect/token",
+            "scopes": {
+              "global.wildcard": "Global wildcard",
+              "openid": "User Id",
+              "permissions": "User permissions"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "OAuth2Security": [
+        "global.wildcard",
+        "openid",
+        "permissions"
+      ]
+    }
+  ]
+}

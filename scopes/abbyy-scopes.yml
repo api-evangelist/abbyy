@@ -1,0 +1,58 @@
+generated: '2026-08-29'
+method: searched
+source: openapi/_original/abbyy-vantage-processing-openapi.json (https://docs.abbyy.com/openapi.json, HTTP 200)
+  plus the ABBYY Vantage authentication docs
+schemes:
+- name: OAuth2Security
+  source: openapi/abbyy-vantage-processing-openapi.yml
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+    tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+- name: OAuth2Security
+  source: openapi/abbyy-vantage-reporting-openapi.yml
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+    tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+- name: OAuth2Security
+  source: openapi/abbyy-vantage-reporting-v1-openapi.yml
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+    tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+scopes:
+- scope: global.wildcard
+  description: Global wildcard
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/abbyy-vantage-processing-openapi.yml
+  - openapi/abbyy-vantage-reporting-openapi.yml
+  - openapi/abbyy-vantage-reporting-v1-openapi.yml
+- scope: openid
+  description: User Id
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/abbyy-vantage-processing-openapi.yml
+  - openapi/abbyy-vantage-reporting-openapi.yml
+  - openapi/abbyy-vantage-reporting-v1-openapi.yml
+- scope: permissions
+  description: User permissions
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/abbyy-vantage-processing-openapi.yml
+  - openapi/abbyy-vantage-reporting-openapi.yml
+  - openapi/abbyy-vantage-reporting-v1-openapi.yml
+docs: https://docs.abbyy.com/vantage/developer/authentication/authentication
+note: 'ABBYY publishes exactly three OAuth scopes and no per-resource scope taxonomy: authorization is enforced
+  by Vantage tenant ROLES (Tenant Administrator, Processing Supervisor, and so on) rather than by scope. global.wildcard
+  grants the whole API surface — there is no read-only or per-resource scope a client can request instead, which
+  is a real least-privilege gap for agent integrations. No scopes/permissions reference page exists in the public
+  docs; searched 2026-08-29 and none found.'
+role_based_restrictions:
+- api: ABBYY Vantage Reporting API
+  restriction: Tenant Administrator or Processing Supervisor role required to download data reports
+  evidence: info.description of openapi-reporting.json

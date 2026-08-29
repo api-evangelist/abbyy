@@ -1,0 +1,2128 @@
+openapi: 3.0.4
+servers:
+- url: https://vantage-us.abbyy.com
+  description: Production United States
+- url: https://vantage-eu.abbyy.com
+  description: Production Europe
+- url: https://vantage-au.abbyy.com
+  description: Production Australia
+info:
+  title: Abbyy.Vantage.Reporting.Service
+  description: The Vantage Reporting API provides data for retrospective analysis of document processing. Use it to download
+    CSV reports from the Business Processing Reporting Warehouse (transaction-level step data) and the Analytics Reporting
+    Warehouse (document and field changes made during Manual Review). Only users with the Tenant Administrator or Processing
+    Supervisor role can download data reports. For an overview of both warehouses, see the [Reporting service](/vantage/developer/reporting/reporting-service)
+    guide.
+  version: '2.0'
+  x-application-version: 1.5.2
+paths:
+  /api/reporting/v2/qa/process-skills/documents:
+    get:
+      tags:
+      - Report
+      operationId: GetDocumentsAsCsv
+      parameters:
+      - name: startDate
+        in: query
+        description: Minimum transaction completion date
+        schema:
+          type: string
+        required: true
+      - name: endDate
+        in: query
+        description: Maximum transaction completion date
+        schema:
+          type: string
+          format: date-time
+      - name: processSkillId
+        in: query
+        description: ID of the process skill used in the transactions
+        schema:
+          type: string
+      - name: imageType
+        in: query
+        description: Image type of the document, e.g. receipt, business card, etc.
+        schema:
+          type: string
+      - name: imageColority
+        in: query
+        description: Colority of the document, e.g. color, black and white, etc.
+        schema:
+          type: string
+      - name: imageSource
+        in: query
+        description: Source of the document, e.g. scan, photo, etc.
+        schema:
+          type: string
+      - name: wasCorrectedInManualReview
+        in: query
+        description: Only show documents that were corrected during manual review
+        schema:
+          type: string
+      - name: wasDocumentTypeChangedInManualReview
+        in: query
+        description: Only show documents, where the document type was changed during manual review
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the document changes report as a CSV file with a header row. Each row describes one processed
+            document. The example below shows a subset of columns; for the full column reference, see [Analytics Reporting
+            Warehouse](/vantage/developer/reporting/analytics-reporting).
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+              example: 'ProcessSkillId,ProcessSkillName,TransactionId,HasManualReview,DocumentId,DocumentName,ImageSource,DocumentSkillChanged,NumberOfExportedFields,NumberOfChangedFields
+
+                9f0b2a1c-...,Invoice Processing,6d7e9eeb-...,1,c4a01f7d-...,Invoice CA_2.pdf,PDF file,false,12,2'
+            application/json:
+              schema:
+                type: string
+                format: binary
+            text/json:
+              schema:
+                type: string
+                format: binary
+      summary: Download document changes report
+      description: Downloads a CSV report from the Analytics Reporting Warehouse about documents processed by a Process skill.
+        Each row describes one document, including whether its fields were corrected or its document type was changed during
+        Manual Review. For the full column reference, see [Analytics Reporting Warehouse](/vantage/developer/reporting/analytics-reporting).
+  /api/reporting/v2/qa/process-skills/fields:
+    get:
+      tags:
+      - Report
+      operationId: GetFieldsAsCsv
+      parameters:
+      - name: startDate
+        in: query
+        description: Minimum transaction completion date
+        schema:
+          type: string
+        required: true
+      - name: endDate
+        in: query
+        description: Maximum transaction completion date
+        schema:
+          type: string
+          format: date-time
+      - name: processSkillId
+        in: query
+        description: ID of the process skill used in the transactions
+        schema:
+          type: string
+        required: true
+      - name: documentSkillId
+        in: query
+        description: ID of the document skill used in the transactions
+        schema:
+          type: string
+      - name: imageType
+        in: query
+        description: Image type of the document, e.g. receipt, business card, etc.
+        schema:
+          type: string
+      - name: imageColority
+        in: query
+        description: Colority of the document, e.g. color, black and white, etc.
+        schema:
+          type: string
+      - name: imageSource
+        in: query
+        description: Source of the document, e.g. scan, photo, etc.
+        schema:
+          type: string
+      - name: wasCorrectedInManualReview
+        in: query
+        description: Only show documents that were corrected during manual review
+        schema:
+          type: string
+      - name: wasDocumentTypeChangedInManualReview
+        in: query
+        description: Only show documents, where the document type was changed during manual review
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the field changes report as a CSV file with a header row. Each row describes one extracted
+            field and how it fared in Manual Review. The example below shows a subset of columns; for the full column reference,
+            see [Analytics Reporting Warehouse](/vantage/developer/reporting/analytics-reporting).
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+              example: 'ProcessSkillId,ProcessSkillName,TransactionId,DocumentId,DocumentName,FieldID,FieldName,Correct,RecognitionIssue,DetectedIncorrectly,NotDetected,IsInDocument
+
+                9f0b2a1c-...,Invoice Processing,6d7e9eeb-...,c4a01f7d-...,Invoice CA_2.pdf,f81d4fae-...,TotalAmount,1,0,0,0,1'
+            application/json:
+              schema:
+                type: string
+                format: binary
+            text/json:
+              schema:
+                type: string
+                format: binary
+      summary: Download field changes report
+      description: Downloads a CSV report from the Analytics Reporting Warehouse about document fields processed by Process
+        and Document skills. Each row describes one field, including whether its value was correct, had recognition issues,
+        was located incorrectly, or was not detected before Manual Review. For the full column reference, see [Analytics Reporting
+        Warehouse](/vantage/developer/reporting/analytics-reporting).
+  /api/reporting/v2/exports/transaction-steps:
+    post:
+      tags:
+      - Report
+      operationId: CreateTransactionStepsExportRequest
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateTransactionStepsCsvRequest'
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateTransactionStepsCsvRequest'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateTransactionStepsCsvRequest'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateTransactionStepsCsvRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CreateReportRequestResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateReportRequestResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CreateReportRequestResponse'
+      summary: Create transaction steps export
+      description: Starts an asynchronous CSV export of transaction step data from the Business Processing Reporting Warehouse.
+        The response returns a `requestId` that you use to poll the export status and download the result files once the export
+        succeeds. For the full workflow and CSV column reference, see [Business Processing Reporting](/vantage/developer/reporting/business-reporting).
+    get:
+      tags:
+      - Report
+      operationId: ListExportRequests
+      parameters:
+      - name: statusFilter
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Return only export requests with the given statuses. Allowed values: `New`, `Queued`, `Processing`,
+          `Succeeded`, `Failed`, `Cancelled`.'
+      - name: createdFrom
+        in: query
+        schema:
+          type: string
+        description: Earliest request creation date to include, for example `2025-11-05`.
+      - name: createdTo
+        in: query
+        schema:
+          type: string
+        description: Latest request creation date to include, for example `2025-11-17`.
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ListReportRequestsResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListReportRequestsResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ListReportRequestsResponse'
+      summary: List export requests
+      description: Returns the transaction steps export requests created by the current user, optionally filtered by status
+        and creation date. Use this endpoint to recover a `requestId` if you no longer have it.
+  /api/reporting/v2/exports/transaction-steps/{requestId}/status:
+    get:
+      tags:
+      - Report
+      operationId: GetExportStatus
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID of the export request, as returned in the response when the export was created.
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ReportRequestStatusResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportRequestStatusResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ReportRequestStatusResponse'
+      summary: Get export request status
+      description: Returns the current status of a transaction steps export request. Poll this endpoint until the status is
+        `Succeeded`, then use `totalFileCount` from the response to download each result file by its zero-based index.
+  /api/reporting/v2/exports/transaction-steps/{requestId}/result/{fileIndex}:
+    get:
+      tags:
+      - Report
+      operationId: GetExportResult
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID of the export request, as returned in the response when the export was created.
+      - name: fileIndex
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+        description: Zero-based index of the result file to download. The `totalFileCount` value from the status response
+          gives the number of available files, so valid indexes run from `0` to `totalFileCount - 1`.
+      responses:
+        '200':
+          description: Returns one result file of a succeeded export request as a CSV file with a header row. Each row describes
+            one processing step of a transaction. Download one file per `fileIndex`, from 0 up to `totalFileCount - 1` reported
+            by the status endpoint. For the full column reference, see [Business Processing Reporting](/vantage/developer/reporting/business-reporting).
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+              example: 'SkillId,SkillVersion,SkillName,TransactionId,StepName,StepType,ManualReviewOperatorName,ManualReviewOperatorEmail,StartedUtc,CompletedUtc,Status,Duration,DocumentsCount,PagesCount,document_SourceFileName,document_SourceType,transaction_App
+
+                d0e27b2d-...,1,Redaction Test,6d7e9eeb-...,Input,Input,,,11/17/2025 19:37:52,11/17/2025 19:38:01,FinishedSuccessfully,9,,,Invoice
+                CA_2.pdf,PublicAPI,PublicAPI
+
+                d0e27b2d-...,1,Redaction Test,6d7e9eeb-...,OCR,Ocr,,,11/17/2025 19:38:02,11/17/2025 19:38:17,FinishedSuccessfully,15,,,Invoice
+                CA_2.pdf,PublicAPI,PublicAPI'
+            application/json:
+              schema:
+                type: string
+                format: binary
+            text/json:
+              schema:
+                type: string
+                format: binary
+      summary: Download export result file
+      description: Downloads one CSV result file of a completed transaction steps export. Each row is one processing step
+        of a transaction, such as OCR, classification, or Manual Review. Result files are stored for 2 weeks after the export
+        request completes.
+components:
+  schemas:
+    ActiveTransaction:
+      type: object
+      properties:
+        stage:
+          allOf:
+          - $ref: '#/components/schemas/StageType'
+          description: Current stage of the transaction
+        stageName:
+          type: string
+          description: Current stage's name of the transaction in manual reviewer stage
+          nullable: true
+        reviewerEmail:
+          type: string
+          description: Email of the reviewer in manual review stage
+          nullable: true
+        reviewerName:
+          type: string
+          description: Name of the reviewer in manual review stage
+          nullable: true
+        transactionId:
+          type: string
+          description: ID of the transaction
+          format: uuid
+        createTimeUtc:
+          type: string
+          description: Time of creation
+          format: date-time
+        transactionParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parameter'
+          description: Registration parameters of the transaction
+          nullable: true
+        fileParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parameter'
+          description: Registration parameters of the file in for transaction
+          nullable: true
+        skillId:
+          type: string
+          description: Skill Id of the transaction
+          nullable: true
+        skillVersion:
+          type: integer
+          description: Version of the transaction's skill
+          format: int32
+        documentCount:
+          type: integer
+          description: Initial document count of the transaction
+          format: int32
+      additionalProperties: false
+      description: Active transactions
+    AggregationContext:
+      enum:
+      - Documents
+      - Fields
+      type: string
+    AsyncStepReportFilters:
+      required:
+      - startDate
+      type: object
+      properties:
+        skillId:
+          type: string
+          description: Filter by transaction skill ID. {NULL} if skill ID filter should not be applied
+          nullable: true
+        transactionId:
+          type: string
+          description: Filter by transaction ID. {NULL} if ID filter should not be applied
+          nullable: true
+        startDate:
+          type: string
+          description: Minimum transaction step completion date
+          format: date-time
+        endDate:
+          type: string
+          description: Maximum step completion date (current UTC time if empty)
+          format: date-time
+      additionalProperties: false
+    AvailableDimensionFieldFilterStatistics:
+      allOf:
+      - $ref: '#/components/schemas/AvailableFilterStatistics'
+      - type: object
+        properties:
+          id:
+            type: string
+            readOnly: true
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/DimensionFieldDescriptor'
+        additionalProperties: false
+    AvailableDocumentFieldFilterStatistics:
+      allOf:
+      - $ref: '#/components/schemas/AvailableFilterStatistics'
+      - type: object
+        properties:
+          id:
+            type: string
+            readOnly: true
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+        additionalProperties: false
+    AvailableDocumentTypeFilterStatistics:
+      allOf:
+      - $ref: '#/components/schemas/AvailableFilterStatistics'
+      - type: object
+        properties:
+          id:
+            type: string
+            readOnly: true
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+        additionalProperties: false
+    AvailableFilterStatistics:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+        id:
+          type: string
+          readOnly: true
+        filterType:
+          allOf:
+          - $ref: '#/components/schemas/FilterType'
+          readOnly: true
+      additionalProperties: false
+      discriminator:
+        propertyName: type
+      description: Base type for statistics about a filter that can be applied to Quality Analytics data. The `type` discriminator
+        identifies the concrete filter statistics variant, and `filterType` categorizes the filter.
+    AvailablePredefinedFilterStatistics:
+      allOf:
+      - $ref: '#/components/schemas/AvailableFilterStatistics'
+      - type: object
+        properties:
+          id:
+            type: string
+            readOnly: true
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/PredefinedFilterDescriptor'
+        additionalProperties: false
+    AvailableReports:
+      type: object
+      properties:
+        classificationReport:
+          type: boolean
+        documentSkillReports:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentSkillReference'
+          nullable: true
+      additionalProperties: false
+      description: 'Indicates which detailed correction reports are available for the current selection: a classification
+        report and per-Document-skill field reports.'
+    AvailableTransactionParameterFilterStatistics:
+      allOf:
+      - $ref: '#/components/schemas/AvailableFilterStatistics'
+      - type: object
+        properties:
+          id:
+            type: string
+            readOnly: true
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/TransactionParameterDescriptor'
+        additionalProperties: false
+    CompletedTransaction:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Finished transaction status
+          nullable: true
+        pageCount:
+          type: integer
+          description: Page count of the transaction
+          format: int32
+        transactionId:
+          type: string
+          description: ID of the transaction
+          format: uuid
+        createTimeUtc:
+          type: string
+          description: Time of creation
+          format: date-time
+        transactionParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parameter'
+          description: Registration parameters of the transaction
+          nullable: true
+        fileParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parameter'
+          description: Registration parameters of the file in for transaction
+          nullable: true
+        skillId:
+          type: string
+          description: Skill Id of the transaction
+          nullable: true
+        skillVersion:
+          type: integer
+          description: Version of the transaction's skill
+          format: int32
+        documentCount:
+          type: integer
+          description: Initial document count of the transaction
+          format: int32
+      additionalProperties: false
+      description: Finished transactions
+    ConfusionMatrix:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          rowsHeaders:
+            type: array
+            items:
+              $ref: '#/components/schemas/HeaderDescriptor'
+          columnHeaders:
+            type: array
+            items:
+              $ref: '#/components/schemas/HeaderDescriptor'
+          rows:
+            type: array
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Value'
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/DefaultWidgetDescriptor'
+        additionalProperties: false
+    CreateReportRequestResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Unique identifier of the report generation request. Pass it to the status and result endpoints.
+      additionalProperties: false
+      description: Response returned after a transaction steps export request is created. Contains the request ID used to
+        poll the export status and download the result files.
+    CreateTransactionStepsCsvRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/AsyncStepReportFilters'
+          description: Transaction steps filters
+          nullable: true
+        sendEmailNotification:
+          type: boolean
+          description: Enables to send notification on request processing completion
+      additionalProperties: false
+    DataPoint:
+      type: object
+      properties:
+        amount:
+          type: integer
+          format: int64
+          description: Number of items with the measured quality in the interval.
+        rate:
+          type: number
+          format: double
+          description: Share of the measured items relative to the total amount in the interval, as a fraction.
+      additionalProperties: false
+      description: "Datapoint represents a given measured quality\nand it's rate relatively to the total amount in the given\
+        \ interval\n            \nFor example Straight-trough processing transactions in a given interval\nand it's rate relative\
+        \ to all transactions."
+    DefaultWidgetDescriptor:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/StatisticsType'
+      additionalProperties: false
+      description: Describes a default Quality Analytics widget by the type of statistics it shows, for example STP rate of
+        transactions or field extraction accuracy.
+    DimensionFieldDescriptor:
+      type: object
+      properties:
+        documentSkillName:
+          type: string
+        documentSkillId:
+          type: string
+        fieldName:
+          type: string
+        fieldId:
+          type: string
+      additionalProperties: false
+      description: Identifies a dimension field by the Document skill it belongs to and the field's name and ID. Dimension
+        fields are document fields used to slice analytics data.
+    DimensionFieldFilter:
+      allOf:
+      - $ref: '#/components/schemas/Filter'
+      - type: object
+        properties:
+          values:
+            type: array
+            items:
+              type: string
+            nullable: true
+          documentSkillId:
+            type: string
+          fieldId:
+            type: string
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+        additionalProperties: false
+    DimensionFieldFilterAggregatedStatistics:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          aggregation:
+            allOf:
+            - $ref: '#/components/schemas/AggregationContext'
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/DimensionFieldDescriptor'
+          groups:
+            type: array
+            items:
+              $ref: '#/components/schemas/FilterAggregatedStatisticsGroup'
+        additionalProperties: false
+    DimensionFieldFilterReference:
+      allOf:
+      - $ref: '#/components/schemas/FilterReference'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+          documentSkillId:
+            type: string
+          fieldId:
+            type: string
+        additionalProperties: false
+    DimensionFieldFilterStatistics:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          aggregation:
+            allOf:
+            - $ref: '#/components/schemas/AggregationContext'
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/DimensionFieldDescriptor'
+          slices:
+            type: array
+            items:
+              $ref: '#/components/schemas/SliceOfDimensionFieldFilterValue'
+          remaining:
+            allOf:
+            - $ref: '#/components/schemas/RemainingSliceOfFilterStatistics'
+            nullable: true
+        additionalProperties: false
+    DimensionFieldFilterValue:
+      type: object
+      properties:
+        value:
+          type: string
+        count:
+          type: integer
+          format: int64
+      additionalProperties: false
+      description: A single dimension field value and the number of items that match it.
+    DimensionFieldFilterValues:
+      allOf:
+      - $ref: '#/components/schemas/FilterValues'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          documentSkillId:
+            type: string
+          documentSkillName:
+            type: string
+          fieldId:
+            type: string
+          fieldName:
+            type: string
+          values:
+            type: array
+            items:
+              type: string
+        additionalProperties: false
+    DocumentFieldFilter:
+      allOf:
+      - $ref: '#/components/schemas/Filter'
+      - type: object
+        properties:
+          values:
+            type: array
+            items:
+              type: string
+            nullable: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+        additionalProperties: false
+    DocumentFieldFilterAggregatedStatistics:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          aggregation:
+            allOf:
+            - $ref: '#/components/schemas/AggregationContext'
+            readOnly: true
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          groups:
+            type: array
+            items:
+              $ref: '#/components/schemas/FilterAggregatedStatisticsGroup'
+        additionalProperties: false
+    DocumentFieldFilterReference:
+      allOf:
+      - $ref: '#/components/schemas/FilterReference'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+        additionalProperties: false
+    DocumentFieldFilterStatistics:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          aggregation:
+            allOf:
+            - $ref: '#/components/schemas/AggregationContext'
+            readOnly: true
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          slices:
+            type: array
+            items:
+              $ref: '#/components/schemas/SliceOfDocumentFieldFilterValue'
+          remaining:
+            allOf:
+            - $ref: '#/components/schemas/RemainingSliceOfFilterStatistics'
+            nullable: true
+        additionalProperties: false
+    DocumentFieldFilterValue:
+      type: object
+      properties:
+        fieldId:
+          type: string
+        fieldName:
+          type: string
+        count:
+          type: integer
+          format: int64
+      additionalProperties: false
+      description: A document field, identified by ID and name, and the number of items that match it.
+    DocumentFieldFilterValues:
+      allOf:
+      - $ref: '#/components/schemas/FilterValues'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          values:
+            type: array
+            items:
+              $ref: '#/components/schemas/FieldReference'
+        additionalProperties: false
+    DocumentSkillCorrections:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/DocumentSkillCorrectionsDescriptor'
+          slices:
+            type: array
+            items:
+              $ref: '#/components/schemas/SliceOfDocumentSkillCorrectionsDetails'
+          remaining:
+            allOf:
+            - $ref: '#/components/schemas/RemainingSliceOfDocumentSkillCorrectionsStatistics'
+            nullable: true
+        additionalProperties: false
+    DocumentSkillCorrectionsDescriptor:
+      type: object
+      properties:
+        detailedReportAvailable:
+          type: boolean
+        type:
+          allOf:
+          - $ref: '#/components/schemas/StatisticsType'
+      additionalProperties: false
+      description: 'Describes a Document skill corrections widget: the type of statistics it shows and whether a detailed
+        report is available for it.'
+    DocumentSkillCorrectionsDetails:
+      type: object
+      properties:
+        documentSkillId:
+          type: string
+        documentSkillName:
+          type: string
+        correctedDocuments:
+          type: integer
+          format: int64
+        accuracy:
+          type: number
+          format: double
+      additionalProperties: false
+      description: 'Correction statistics for a single Document skill: the number of documents corrected during Manual Review
+        and the resulting accuracy.'
+    DocumentSkillCorrectionsStatistics:
+      type: object
+      properties:
+        correctedDocuments:
+          type: integer
+          format: int64
+        accuracy:
+          type: number
+          format: double
+      additionalProperties: false
+      description: 'Aggregated correction statistics: the number of documents corrected during Manual Review and the resulting
+        accuracy rate.'
+    DocumentSkillReference:
+      type: object
+      properties:
+        documentSkillId:
+          type: string
+          description: The ID of the Document skill.
+        documentSkillName:
+          type: string
+          description: The name of the Document skill.
+      additionalProperties: false
+      description: Reference to a Document skill by ID and name.
+    DocumentTypeFilter:
+      allOf:
+      - $ref: '#/components/schemas/Filter'
+      - type: object
+        properties:
+          values:
+            type: array
+            items:
+              type: string
+            nullable: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+        additionalProperties: false
+    DocumentTypeFilterAggregatedStatistics:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          aggregation:
+            allOf:
+            - $ref: '#/components/schemas/AggregationContext'
+            readOnly: true
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          groups:
+            type: array
+            items:
+              $ref: '#/components/schemas/FilterAggregatedStatisticsGroup'
+        additionalProperties: false
+    DocumentTypeFilterReference:
+      allOf:
+      - $ref: '#/components/schemas/FilterReference'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+        additionalProperties: false
+    DocumentTypeFilterStatistics:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          aggregation:
+            allOf:
+            - $ref: '#/components/schemas/AggregationContext'
+            readOnly: true
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          slices:
+            type: array
+            items:
+              $ref: '#/components/schemas/SliceOfDocumentTypeFilterValue'
+          remaining:
+            allOf:
+            - $ref: '#/components/schemas/RemainingSliceOfFilterStatistics'
+            nullable: true
+        additionalProperties: false
+    DocumentTypeFilterValue:
+      type: object
+      properties:
+        documentSkillId:
+          type: string
+        documentSkillName:
+          type: string
+        count:
+          type: integer
+          format: int64
+      additionalProperties: false
+      description: A document type, identified by its Document skill ID and name, and the number of documents that match it.
+    DocumentTypeFilterValues:
+      allOf:
+      - $ref: '#/components/schemas/FilterValues'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          values:
+            type: array
+            items:
+              $ref: '#/components/schemas/DocumentSkillReference'
+        additionalProperties: false
+    FieldReference:
+      type: object
+      properties:
+        fieldId:
+          type: string
+          description: The ID of the document field.
+        fieldName:
+          type: string
+          description: The name of the document field.
+      additionalProperties: false
+      description: Reference to a document field by ID and name.
+    Filter:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FilterType'
+        group:
+          type: string
+          nullable: true
+      additionalProperties: false
+      discriminator:
+        propertyName: type
+      description: Base type for a filter applied to Quality Analytics data. The `type` discriminator identifies the concrete
+        filter kind, and `group` optionally associates related filters.
+    FilterAggregatedStatisticsGroup:
+      type: object
+      properties:
+        key:
+          allOf:
+          - $ref: '#/components/schemas/ValueGroup'
+        count:
+          type: integer
+          format: int64
+        rate:
+          type: number
+          format: double
+      additionalProperties: false
+      description: 'One group in an aggregated filter statistics breakdown: the group key (for example Top10 or Others) with
+        its item count and its rate relative to the total.'
+    FilterReference:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FilterType'
+      additionalProperties: false
+      discriminator:
+        propertyName: type
+      description: Base type for referencing a filter by its `type` discriminator, used to request statistics for additional
+        filters without applying them.
+    FilterStatistics:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+          description: The number of items that match the filter.
+      additionalProperties: false
+      description: Statistics for a filter.
+    FilterType:
+      enum:
+      - Predefined
+      - DimensionField
+      - TransactionParameter
+      - DocumentType
+      - DocumentField
+      - TimeRange
+      type: string
+    FilterValues:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FilterType'
+          readOnly: true
+      additionalProperties: false
+      discriminator:
+        propertyName: type
+      description: Base type for the set of values of an applied filter. The `type` discriminator identifies the concrete
+        filter kind.
+    FiltersRequest:
+      type: object
+      properties:
+        applyTimeRange:
+          allOf:
+          - $ref: '#/components/schemas/TimeRangeFilter'
+        apply:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/PredefinedFilter'
+            - $ref: '#/components/schemas/DimensionFieldFilter'
+            - $ref: '#/components/schemas/TransactionParameterFilter'
+            - $ref: '#/components/schemas/DocumentTypeFilter'
+            - $ref: '#/components/schemas/DocumentFieldFilter'
+          nullable: true
+        include:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/PredefinedFilterReference'
+            - $ref: '#/components/schemas/DimensionFieldFilterReference'
+            - $ref: '#/components/schemas/TransactionParameterFilterReference'
+            - $ref: '#/components/schemas/DocumentTypeFilterReference'
+            - $ref: '#/components/schemas/DocumentFieldFilterReference'
+          nullable: true
+      additionalProperties: false
+      description: 'Filters for a Quality Analytics query: the time range to apply, the filters to apply to the data, and
+        additional filters to include statistics for.'
+    FiltersResponse:
+      type: object
+      properties:
+        applied:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/DocumentTypeFilterValues'
+            - $ref: '#/components/schemas/DocumentFieldFilterValues'
+            - $ref: '#/components/schemas/DimensionFieldFilterValues'
+            - $ref: '#/components/schemas/TimeRangeFilterValues'
+            - $ref: '#/components/schemas/TransactionParameterFilterValues'
+            - $ref: '#/components/schemas/PredefinedFilterValues'
+        available:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/AvailableDocumentTypeFilterStatistics'
+            - $ref: '#/components/schemas/AvailableDocumentFieldFilterStatistics'
+            - $ref: '#/components/schemas/AvailableDimensionFieldFilterStatistics'
+            - $ref: '#/components/schemas/AvailableTransactionParameterFilterStatistics'
+            - $ref: '#/components/schemas/AvailablePredefinedFilterStatistics'
+      additionalProperties: false
+      description: 'Filter information returned with a Quality Analytics result: the values of the applied filters and statistics
+        for the filters that are available.'
+    Granularity:
+      enum:
+      - Hours
+      - Days
+      - Months
+      type: string
+    HeaderDescriptor:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      additionalProperties: false
+      description: Identifies a row or column header in a matrix widget, such as a confusion matrix, by ID and display name.
+    Interval:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        data:
+          type: object
+          properties:
+            DocumentWithoutCorrections:
+              $ref: '#/components/schemas/DataPoint'
+            DocumentCorrected:
+              $ref: '#/components/schemas/DataPoint'
+            DocumentTypeCorrected:
+              $ref: '#/components/schemas/DataPoint'
+            DocumentFieldCorrected:
+              $ref: '#/components/schemas/DataPoint'
+            TransactionStraightTroughProcessing:
+              $ref: '#/components/schemas/DataPoint'
+            FieldCorrected:
+              $ref: '#/components/schemas/DataPoint'
+          additionalProperties: false
+          nullable: true
+        total:
+          type: integer
+          format: int64
+      additionalProperties: false
+      description: 'A single interval in a time series chart: its start time, the measured data points keyed by metric, and
+        the total number of items in the interval.'
+    ListReportRequestsResponse:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListReportRequestsResponseReportRequestDto'
+          description: Details about available requests created by the current user
+          nullable: true
+      additionalProperties: false
+    ListReportRequestsResponseReportRequestDto:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: The unique identifier of the report generation request
+          format: uuid
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ReportRequestStatus'
+          description: Actual status of the request
+        completedUtc:
+          type: string
+          description: Date time (UTC) when the request processing has finished (Only available for completed requests)
+          nullable: true
+        createdUtc:
+          type: string
+          description: Date time (UTC) when the request was made
+          format: date-time
+        totalFileCount:
+          type: string
+          description: 'Number of result files in case of successfully finished processing
+
+            Result files can be accessed by their indexes'
+          nullable: true
+        filters:
+          description: All the filter parameters which were given for report creation
+          nullable: true
+      additionalProperties: false
+    MetricType:
+      enum:
+      - DocumentWithoutCorrections
+      - DocumentCorrected
+      - DocumentTypeCorrected
+      - DocumentFieldCorrected
+      - TransactionStraightTroughProcessing
+      - FieldCorrected
+      type: string
+    Parameter:
+      type: object
+      properties:
+        isReadOnly:
+          type: boolean
+        key:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+      additionalProperties: false
+      description: A key-value registration parameter of a transaction or document, with a flag indicating whether the parameter
+        is read-only.
+    PartialResultOfActiveTransaction:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActiveTransaction'
+        totalItemCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+      description: A page of active (in-progress) transactions, together with the total number of matching transactions.
+    PartialResultOfCompletedTransaction:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompletedTransaction'
+        totalItemCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+      description: A page of completed transactions, together with the total number of matching transactions.
+    Period:
+      enum:
+      - Custom
+      - EightHours
+      - OneDay
+      - OneWeek
+      - TwoWeeks
+      - OneMonth
+      - SixMonths
+      - OneYear
+      - TwoYears
+      - ThreeYears
+      type: string
+    PredefinedFilter:
+      allOf:
+      - $ref: '#/components/schemas/Filter'
+      - type: object
+        properties:
+          id:
+            allOf:
+            - $ref: '#/components/schemas/PredefinedFilterType'
+            description: 'Source of the type
+
+              https://wiki.abbyy.com/pages/viewpage.action?spaceKey=Vantage&title=VAN-26910+Quality+Analytics+UI+contract'
+          values:
+            type: array
+            items:
+              type: string
+            nullable: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+        additionalProperties: false
+    PredefinedFilterAggregatedStatistics:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          aggregation:
+            allOf:
+            - $ref: '#/components/schemas/AggregationContext'
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/PredefinedFilterDescriptor'
+          groups:
+            type: array
+            items:
+              $ref: '#/components/schemas/FilterAggregatedStatisticsGroup'
+        additionalProperties: false
+    PredefinedFilterDescriptor:
+      type: object
+      properties:
+        id:
+          allOf:
+          - $ref: '#/components/schemas/PredefinedFilterType'
+          description: 'Source of the type
+
+            https://wiki.abbyy.com/pages/viewpage.action?spaceKey=Vantage&title=VAN-26910+Quality+Analytics+UI+contract'
+      additionalProperties: false
+    PredefinedFilterReference:
+      allOf:
+      - $ref: '#/components/schemas/FilterReference'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+          id:
+            allOf:
+            - $ref: '#/components/schemas/PredefinedFilterType'
+            description: 'Source of the type
+
+              https://wiki.abbyy.com/pages/viewpage.action?spaceKey=Vantage&title=VAN-26910+Quality+Analytics+UI+contract'
+        additionalProperties: false
+    PredefinedFilterStatistics:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          aggregation:
+            allOf:
+            - $ref: '#/components/schemas/AggregationContext'
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/PredefinedFilterDescriptor'
+          slices:
+            type: array
+            items:
+              $ref: '#/components/schemas/SliceOfPredefinedFilterValue'
+          remaining:
+            allOf:
+            - $ref: '#/components/schemas/RemainingSliceOfFilterStatistics'
+            nullable: true
+        additionalProperties: false
+    PredefinedFilterType:
+      enum:
+      - CorrectionsPerDocument
+      - FieldIssueType
+      - ImageSource
+      - ImageType
+      - ImageColority
+      - ImageDPI
+      type: string
+      description: 'Source of the type
+
+        https://wiki.abbyy.com/pages/viewpage.action?spaceKey=Vantage&title=VAN-26910+Quality+Analytics+UI+contract'
+    PredefinedFilterValue:
+      type: object
+      properties:
+        id:
+          type: string
+        count:
+          type: integer
+          format: int64
+      additionalProperties: false
+      description: A value of a predefined filter (for example an image source or image type), identified by ID, and the number
+        of items that match it.
+    PredefinedFilterValues:
+      allOf:
+      - $ref: '#/components/schemas/FilterValues'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            allOf:
+            - $ref: '#/components/schemas/PredefinedFilterType'
+            description: 'Source of the type
+
+              https://wiki.abbyy.com/pages/viewpage.action?spaceKey=Vantage&title=VAN-26910+Quality+Analytics+UI+contract'
+          values:
+            type: array
+            items:
+              type: string
+        additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          nullable: true
+          description: A short, human-readable summary of the problem.
+        status:
+          type: string
+          nullable: true
+          description: The HTTP status code generated for this occurrence of the problem.
+        detail:
+          type: string
+          nullable: true
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          nullable: true
+          description: A URI reference that identifies this specific occurrence of the problem.
+      additionalProperties: {}
+      description: Error response in the problem details format (RFC 7807), returned when a request cannot be processed.
+    ProcessingSkill:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the Process skill.
+        name:
+          type: string
+          description: The name of the Process skill.
+      additionalProperties: false
+      description: A Process skill identified by ID and name.
+    ProcessingSkillStpRate:
+      type: object
+      properties:
+        processingSkillId:
+          type: string
+        stpRate:
+          type: number
+          format: double
+        trend:
+          allOf:
+          - $ref: '#/components/schemas/Trend'
+          nullable: true
+      additionalProperties: false
+      description: The straight-through processing (STP) rate of a Process skill, with an optional trend showing how the rate
+        has changed.
+    ProcessingSkillsResponse:
+      type: object
+      properties:
+        processingSkills:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProcessingSkill'
+      additionalProperties: false
+      description: A list of Process skills for which analytics data is available.
+    QualityAnalyticsRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/FiltersRequest'
+      additionalProperties: false
+      description: A request for Quality Analytics data, specifying the filters to apply.
+    QualityAnalyticsResponse:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/FiltersResponse'
+        widgets:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/TimeSeriesChart'
+            - $ref: '#/components/schemas/ConfusionMatrix'
+            - $ref: '#/components/schemas/DocumentSkillCorrections'
+            - $ref: '#/components/schemas/SummaryWithTrend'
+            - $ref: '#/components/schemas/DocumentTypeFilterAggregatedStatistics'
+            - $ref: '#/components/schemas/DocumentFieldFilterAggregatedStatistics'
+            - $ref: '#/components/schemas/DimensionFieldFilterAggregatedStatistics'
+            - $ref: '#/components/schemas/PredefinedFilterAggregatedStatistics'
+            - $ref: '#/components/schemas/PredefinedFilterStatistics'
+            - $ref: '#/components/schemas/DocumentTypeFilterStatistics'
+            - $ref: '#/components/schemas/DocumentFieldFilterStatistics'
+            - $ref: '#/components/schemas/DimensionFieldFilterStatistics'
+            - $ref: '#/components/schemas/TransactionParameterFilterStatistics'
+            - $ref: '#/components/schemas/TransactionParameterFilterAggregatedStatistics'
+        emptyResultReason:
+          type: string
+          nullable: true
+      additionalProperties: false
+      description: 'A Quality Analytics result: the applied and available filters, the widgets with their statistics, and
+        a reason when the result is empty.'
+    RemainingSliceOfDocumentSkillCorrectionsStatistics:
+      type: object
+      properties:
+        elementCount:
+          type: integer
+          format: int64
+        rate:
+          type: number
+          format: double
+        details:
+          allOf:
+          - $ref: '#/components/schemas/DocumentSkillCorrectionsStatistics'
+      additionalProperties: false
+      description: 'Aggregate for the Document skills not shown individually in a corrections breakdown: the number of remaining
+        elements, their combined rate, and their summary correction statistics.'
+    RemainingSliceOfFilterStatistics:
+      type: object
+      properties:
+        elementCount:
+          type: integer
+          format: int64
+        rate:
+          type: number
+          format: double
+        details:
+          allOf:
+          - $ref: '#/components/schemas/FilterStatistics'
+      additionalProperties: false
+      description: 'Aggregate for the filter values not shown individually in a statistics breakdown: the number of remaining
+        elements, their combined rate, and their summary statistics.'
+    ReportRequestStatus:
+      enum:
+      - New
+      - Queued
+      - Processing
+      - Succeeded
+      - Failed
+      - Cancelled
+      type: string
+    ReportRequestStatusResponse:
+      type: object
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ReportRequestStatus'
+          description: Actual status of the request
+        totalFileCount:
+          type: string
+          description: 'Number of result files in case of successfully finished processing
+
+            Result files can be accessed by their indexes'
+          nullable: true
+        correlationId:
+          type: string
+          description: 'Correlation ID of the report creation procedure
+
+            In case of failure or cancellation correlation ID helps for further investigation'
+          nullable: true
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/AsyncStepReportFilters'
+          description: The filters used, to generate the report
+          nullable: true
+      additionalProperties: false
+    ReportType:
+      enum:
+      - ProcessSkillReport
+      - ClassificationReport
+      - DocumentSkillReport
+      type: string
+    RequestParameter:
+      type: object
+      properties:
+        key:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+      additionalProperties: false
+      description: A key-value parameter supplied with a request.
+    Severity:
+      enum:
+      - Correct
+      - CorrectAbsent
+      - IncorrectAbsent
+      - IncorrectWarning
+      - IncorrectError
+      - IncorrectCritical
+      type: string
+    SliceOfDimensionFieldFilterValue:
+      type: object
+      properties:
+        rate:
+          type: number
+          format: double
+        details:
+          allOf:
+          - $ref: '#/components/schemas/DimensionFieldFilterValue'
+      additionalProperties: false
+      description: 'One slice of a statistics breakdown: a dimension field value with its share (rate) of the total.'
+    SliceOfDocumentFieldFilterValue:
+      type: object
+      properties:
+        rate:
+          type: number
+          format: double
+        details:
+          allOf:
+          - $ref: '#/components/schemas/DocumentFieldFilterValue'
+      additionalProperties: false
+      description: 'One slice of a statistics breakdown: a document field with its share (rate) of the total.'
+    SliceOfDocumentSkillCorrectionsDetails:
+      type: object
+      properties:
+        rate:
+          type: number
+          format: double
+        details:
+          allOf:
+          - $ref: '#/components/schemas/DocumentSkillCorrectionsDetails'
+      additionalProperties: false
+      description: 'One slice of a corrections breakdown: a Document skill''s correction details with its share (rate) of
+        the total.'
+    SliceOfDocumentTypeFilterValue:
+      type: object
+      properties:
+        rate:
+          type: number
+          format: double
+        details:
+          allOf:
+          - $ref: '#/components/schemas/DocumentTypeFilterValue'
+      additionalProperties: false
+      description: 'One slice of a statistics breakdown: a document type with its share (rate) of the total.'
+    SliceOfPredefinedFilterValue:
+      type: object
+      properties:
+        rate:
+          type: number
+          format: double
+        details:
+          allOf:
+          - $ref: '#/components/schemas/PredefinedFilterValue'
+      additionalProperties: false
+      description: 'One slice of a statistics breakdown: a predefined filter value with its share (rate) of the total.'
+    SliceOfTransactionParameterFilterValue:
+      type: object
+      properties:
+        rate:
+          type: number
+          format: double
+        details:
+          allOf:
+          - $ref: '#/components/schemas/TransactionParameterFilterValue'
+      additionalProperties: false
+      description: 'One slice of a statistics breakdown: a transaction parameter value with its share (rate) of the total.'
+    StageType:
+      enum:
+      - ManualReview
+      - CustomActivity
+      - Automatic
+      type: string
+    StatisticsType:
+      enum:
+      - StraightTroughProcessingRateOfTransactions
+      - DocumentsWithoutCorrections
+      - DocumentClassifierAccuracy
+      - ProcessedDocuments
+      - FieldExtractionAccuracy
+      - DocumentTypeCorrections
+      - DocumentFieldCorrections
+      - DocumentsWithCorrectedTypes
+      - TransactionsWithCorrectedTypes
+      - CorrectedDocumentTypes
+      - CorrectedFields
+      - DocumentsWithCorrectedFields
+      - DocumentsWithCorrectedFieldsRelativeToAll
+      type: string
+    SummaryWithTrend:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          total:
+            type: integer
+            format: int64
+          amount:
+            type: integer
+            format: int64
+          rate:
+            type: string
+            nullable: true
+          trend:
+            allOf:
+            - $ref: '#/components/schemas/Trend'
+            nullable: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/DefaultWidgetDescriptor'
+        additionalProperties: false
+    TimeRangeFilter:
+      required:
+      - period
+      type: object
+      properties:
+        period:
+          allOf:
+          - $ref: '#/components/schemas/Period'
+        startDate:
+          type: string
+          nullable: true
+        endDate:
+          type: string
+          nullable: true
+      additionalProperties: false
+      description: 'The time range to filter analytics data by: a named period (for example `OneWeek` or `OneMonth`), or `Custom`
+        with explicit start and end dates.'
+    TimeRangeFilterValues:
+      allOf:
+      - $ref: '#/components/schemas/FilterValues'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          period:
+            allOf:
+            - $ref: '#/components/schemas/Period'
+          startDate:
+            type: string
+            nullable: true
+          endDate:
+            type: string
+            nullable: true
+        additionalProperties: false
+    TimeSeriesChart:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          granularity:
+            allOf:
+            - $ref: '#/components/schemas/Granularity'
+          intervals:
+            type: array
+            items:
+              $ref: '#/components/schemas/Interval'
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/TimeSeriesChartDescriptor'
+        additionalProperties: false
+    TimeSeriesChartDescriptor:
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/StatisticsType'
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricType'
+      additionalProperties: false
+      description: 'Describes a time series chart widget: the type of statistics it shows and the metrics it plots.'
+    TransactionParameterDescriptor:
+      type: object
+      properties:
+        key:
+          type: string
+      additionalProperties: false
+      description: Identifies a transaction parameter by its key.
+    TransactionParameterFilter:
+      allOf:
+      - $ref: '#/components/schemas/Filter'
+      - type: object
+        properties:
+          values:
+            type: array
+            items:
+              type: string
+            nullable: true
+          key:
+            type: string
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+        additionalProperties: false
+    TransactionParameterFilterAggregatedStatistics:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          aggregation:
+            allOf:
+            - $ref: '#/components/schemas/AggregationContext'
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/TransactionParameterDescriptor'
+          groups:
+            type: array
+            items:
+              $ref: '#/components/schemas/FilterAggregatedStatisticsGroup'
+        additionalProperties: false
+    TransactionParameterFilterReference:
+      allOf:
+      - $ref: '#/components/schemas/FilterReference'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+          key:
+            type: string
+        additionalProperties: false
+    TransactionParameterFilterStatistics:
+      allOf:
+      - $ref: '#/components/schemas/Widget'
+      - type: object
+        properties:
+          aggregation:
+            allOf:
+            - $ref: '#/components/schemas/AggregationContext'
+          filterType:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          id:
+            type: string
+            readOnly: true
+          type:
+            allOf:
+            - $ref: '#/components/schemas/WidgetType'
+            readOnly: true
+          subType:
+            type: string
+            nullable: true
+            readOnly: true
+          descriptor:
+            allOf:
+            - $ref: '#/components/schemas/TransactionParameterDescriptor'
+          slices:
+            type: array
+            items:
+              $ref: '#/components/schemas/SliceOfTransactionParameterFilterValue'
+          remaining:
+            allOf:
+            - $ref: '#/components/schemas/RemainingSliceOfFilterStatistics'
+            nullable: true
+        additionalProperties: false
+    TransactionParameterFilterValue:
+      type: object
+      properties:
+        value:
+          type: string
+        count:
+          type: integer
+          format: int64
+      additionalProperties: false
+      description: A transaction parameter value and the number of items that match it.
+    TransactionParameterFilterValues:
+      allOf:
+      - $ref: '#/components/schemas/FilterValues'
+      - type: object
+        properties:
+          type:
+            allOf:
+            - $ref: '#/components/schemas/FilterType'
+            readOnly: true
+          key:
+            type: string
+          values:
+            type: array
+            items:
+              type: string
+        additionalProperties: false
+    Trend:
+      type: object
+      properties:
+        direction:
+          allOf:
+          - $ref: '#/components/schemas/TrendDirection'
+          description: 'The direction of the change: `Up`, `Down`, or `Neutral`.'
+        difference:
+          type: number
+          format: double
+          description: The size of the change.
+      additionalProperties: false
+      description: The change of a metric relative to its previous value.
+    TrendDirection:
+      enum:
+      - Neutral
+      - Up
+      - Down
+      type: string
+    Value:
+      type: object
+      properties:
+        rowId:
+          type: string
+        columnId:
+          type: string
+        amount:
+          type: integer
+          format: int64
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/Severity'
+      additionalProperties: false
+      description: A single cell in a matrix widget, such as a confusion matrix, addressed by row and column ID, with its
+        amount and a severity classification.
+    ValueGroup:
+      enum:
+      - Top10
+      - Top100
+      - Top1000
+      - Others
+      type: string
+    Widget:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/WidgetType'
+          readOnly: true
+        id:
+          type: string
+          readOnly: true
+        subType:
+          type: string
+          nullable: true
+          readOnly: true
+      additionalProperties: false
+      discriminator:
+        propertyName: type
+      description: Base type for Quality Analytics widgets. The `type` discriminator identifies the widget kind, and `subType`
+        optionally refines it.
+    WidgetType:
+      enum:
+      - TimeSeriesChart
+      - ConfusionMatrix
+      - DocumentSkillCorrections
+      - SummaryWithTrend
+      - DocumentTypeFilterAggregatedStatistics
+      - DocumentFieldFilterAggregatedStatistics
+      - DimensionFieldFilterAggregatedStatistics
+      - PredefinedFilterAggregatedStatistics
+      - PredefinedFilterStatistics
+      - DocumentTypeFilterStatistics
+      - DocumentFieldFilterStatistics
+      - DimensionFieldFilterStatistics
+      - TransactionParameterFilterAggregatedStatistics
+      - TransactionParameterFilterStatistics
+      type: string
+  securitySchemes:
+    OAuth2Security:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+          tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+          scopes:
+            global.wildcard: Global wildcard
+            openid: User Id
+            permissions: User permissions
+security:
+- OAuth2Security:
+  - global.wildcard
+  - openid
+  - permissions

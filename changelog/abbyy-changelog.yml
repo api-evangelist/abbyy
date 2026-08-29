@@ -1,0 +1,122 @@
+generated: '2026-08-29'
+method: searched
+source: https://docs.abbyy.com/vantage/release-notes/release-notes (HTTP 200, fetched 2026-08-29)
+provider: ABBYY
+providerId: abbyy
+url: https://docs.abbyy.com/vantage/release-notes
+scheme: semver-product
+current_version: 3.4.0
+dated: true
+date_granularity: month
+machine_readable: false
+note: >-
+  ABBYY keeps a real, dated release-notes stream for Vantage — twelve releases between March and August
+  2026 — but it is product-level, not API-level: entries name features and fixes, and API changes appear
+  inside them rather than as a versioned API changelog. There is no feed, no per-endpoint change record,
+  and no breaking-change flag. Dates are month-precision only. Separate release-note streams exist for
+  each RPA connector and for the self-hosted builds.
+entries:
+  - version: 3.4.0
+    date: '2026-08'
+    breaking: false
+    highlights:
+      - Export and import with labeling extended to Splitter (Assembling) skills
+      - Fixes across Advanced Designer, document processing, Online learning, and skill import
+    url: https://docs.abbyy.com/vantage/release-notes/3-4-0
+  - version: 3.3.0
+    date: '2026-08'
+    breaking: false
+    highlights:
+      - New Anthropic and Mistral AI LLM connections
+      - Enhanced Vantage API documentation
+      - New docs for the Blue Prism, KYC Agent and Microsoft Power Automate connectors
+      - Self-hosted option to hide the Analytics UI
+    url: https://docs.abbyy.com/vantage/release-notes/3-3-0
+  - version: 3.2.3
+    date: '2026-07'
+    breaking: false
+    highlights:
+      - Dutch added as an interface language (12 total)
+      - New ABBYY Vantage Connector for Pega documentation
+      - Clearer Document Splitter page counting
+    url: https://docs.abbyy.com/vantage/release-notes/3-2-3
+  - version: 3.2.2
+    date: '2026-07'
+    breaking: false
+    highlights:
+      - Sortable columns in the Users table
+      - More reliable SFTP output connections
+      - Fewer server-issue alerts during version releases
+    url: https://docs.abbyy.com/vantage/release-notes/3-2-2
+  - version: 3.2.1
+    date: '2026-06'
+    breaking: false
+    highlights:
+      - Expandable Security Log rows
+      - Security updates
+      - Fixes across External Identity Providers (SAML SSO), Manual Review, Search and Skill Monitor
+    url: https://docs.abbyy.com/vantage/release-notes/3-2-1
+  - version: 3.2.0
+    date: '2026-06'
+    breaking: false
+    highlights:
+      - Google AI Studio LLM connections and model selection for LLM connections
+      - Masked connection API keys
+    url: https://docs.abbyy.com/vantage/release-notes/3-2-0
+  - version: 3.1.1
+    date: '2026-05'
+    breaking: false
+    highlights:
+      - Default OCR skill moved to Technology Core 3.0
+      - PDF Processing Mode extended to Technology Core 2.4
+    url: https://docs.abbyy.com/vantage/release-notes/3-1-1
+  - version: 3.1.0
+    date: '2026-04'
+    breaking: false
+    highlights:
+      - PDF Processing Mode
+      - Critical security updates and 50+ fixes across Advanced Designer, API, built-in skills, Manual Review
+    url: https://docs.abbyy.com/vantage/release-notes/3-1-0
+  - version: 3.0.4
+    date: '2026-04'
+    breaking: false
+    highlights:
+      - Critical security updates
+      - Custom activity HTTP header fixes
+    url: https://docs.abbyy.com/vantage/release-notes/3-0-4
+  - version: 3.0.3
+    date: '2026-03'
+    breaking: false
+    highlights:
+      - Keyboard navigation for extracted tables
+      - RuleErrors.CustomMessage restored
+      - API tenant fix
+    url: https://docs.abbyy.com/vantage/release-notes/3-0-3
+  - version: 3.0.2
+    date: '2026-03'
+    breaking: false
+    highlights:
+      - Critical security updates
+      - External Identity Provider role fixes
+    url: https://docs.abbyy.com/vantage/release-notes/3-0-2
+  - version: 3.0.1
+    date: '2026-03'
+    breaking: false
+    highlights:
+      - Vantage 3.0 Migrator enhancements
+      - External Identity Provider API fix
+    url: https://docs.abbyy.com/vantage/release-notes/3-0-1
+  - version: '3.0'
+    date: '2026'
+    breaking: true
+    highlights:
+      - 'Vantage 3 GA: derived skills, 5 new built-in skills, LLMs in skills'
+      - Analytics GUI, deep learning from as few as 10 documents
+      - Custom token lifetimes, advanced accuracy reports, 100+ fixes
+    url: https://docs.abbyy.com/vantage/release-notes/3-0
+    note: >-
+      Major version with a dedicated Migrator tool, which is the clearest breaking-change signal ABBYY
+      publishes. The release notes do not flag it as breaking explicitly.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
