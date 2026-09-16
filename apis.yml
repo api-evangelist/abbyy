@@ -48,71 +48,14 @@ created: '2026-03-27'
 modified: '2026-08-29'
 specificationVersion: '0.23'
 apis:
-- aid: abbyy:abbyy-vantage-processing
-  name: ABBYY Vantage Processing REST API
-  description: Public REST API for ABBYY Vantage intelligent document processing. Create transactions, upload and
-    order files, launch AI skills for classification, extraction and OCR, poll transaction status, download extracted
-    JSON/XML results, generate mobile-input links, and manage data catalogs and their records. OAuth 2.0 authorization-code
-    flow against the tenant auth server; 30 operations across six resource groups.
-  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
-  baseURL: https://vantage-us.abbyy.com
-  tags:
-  - Document Processing
-  - OCR
-  - Intelligent Document Processing
-  - Data Extraction
-  - AI Automation
-  properties:
-  - type: OpenAPI
-    url: openapi/abbyy-vantage-processing-openapi.yml
-  - type: Documentation
-    url: https://docs.abbyy.com/vantage/developer/api-introduction
-  - type: APIReference
-    url: https://docs.abbyy.com/api-reference
-  - type: GettingStarted
-    url: https://docs.abbyy.com/vantage/developer/getting-started
-  - type: Postman
-    url: https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
-  - type: Authentication
-    url: authentication/abbyy-authentication.yml
-  - type: OAuthScopes
-    url: scopes/abbyy-scopes.yml
-  - type: ErrorCatalog
-    url: errors/abbyy-problem-types.yml
-  - type: DataModel
-    url: data-model/abbyy-data-model.yml
-  - type: Overlay
-    url: overlays/abbyy-vantage-processing-overlay.yaml
-- aid: abbyy:abbyy-vantage-reporting
-  name: ABBYY Vantage Reporting API
-  description: Reporting REST API for ABBYY Vantage. Downloads CSV extracts from the Business Processing Reporting
-    Warehouse (transaction-level step timings, skill versions, reviewer detail) and the Analytics Reporting Warehouse
-    (document and field changes made during Manual Review). Restricted to Tenant Administrator and Processing Supervisor
-    roles. v2 is current; v1 remains published alongside it.
-  humanURL: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
-  baseURL: https://vantage-us.abbyy.com
-  tags:
-  - Process Intelligence
-  - Analytics
-  - Document Processing
-  - Reporting
-  - AI Automation
-  properties:
-  - type: OpenAPI
-    url: openapi/abbyy-vantage-reporting-openapi.yml
-  - type: OpenAPI
-    url: openapi/abbyy-vantage-reporting-v1-openapi.yml
-  - type: Documentation
-    url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
-  - type: Overlay
-    url: overlays/abbyy-vantage-reporting-overlay.yaml
 - aid: abbyy:abbyy-flexicapture-invoices
   name: ABBYY FlexiCapture Cloud for Invoices API
-  description: REST API for ABBYY FlexiCapture Cloud for Invoices. Uploads files, runs invoice capture tasks, downloads
-    results, and maintains business-unit and vendor master-data sets plus model training. HTTP Basic auth using
-    an application id and token. Regional endpoints api-us / api-eu / api-au .flexicapture.com. ABBYY states the
-    FlexiCapture Cloud web portal publishes the API scheme in Swagger format, but that scheme sits behind the portal
-    login and no anonymous OpenAPI document was retrievable.
+  description: >-
+    REST API for ABBYY FlexiCapture Cloud for Invoices. Uploads files, runs invoice capture tasks, downloads
+    results, and maintains business-unit and vendor master-data sets plus model training. HTTP Basic auth
+    using an application id and token. Regional endpoints api-us / api-eu / api-au .flexicapture.com.
+    ABBYY states the FlexiCapture Cloud web portal publishes the API scheme in Swagger format, but that
+    scheme sits behind the portal login and no anonymous OpenAPI document was retrievable.
   humanURL: https://docs.abbyy.com/flexi-capture/cloud/cloud-f-cfor-invoices-api
   baseURL: https://api-us.flexicapture.com
   tags:
@@ -130,9 +73,11 @@ apis:
     url: https://docs.abbyy.com/flexi-capture/cloud/cloud-f-cfor-invoices-quick-start
 - aid: abbyy:abbyy-docs-mcp
   name: ABBYY Documentation MCP Server
-  description: 'Hosted, unauthenticated Model Context Protocol server over the public ABBYY documentation corpus.
-    Exposes semantic search, a read-only virtual documentation filesystem, and a feedback tool, plus an MCP resource
-    carrying ABBYY’s published Agent Skill. Read-only: it does not reach a Vantage tenant or process documents.'
+  description: >-
+    Hosted, unauthenticated Model Context Protocol server over the public ABBYY documentation corpus.
+    Exposes semantic search, a read-only virtual documentation filesystem, and a feedback tool, plus an
+    MCP resource carrying ABBYY’s published Agent Skill. Read-only: it does not reach a Vantage tenant
+    or process documents.
   humanURL: https://docs.abbyy.com/vantage/developer/mcp-server
   baseURL: https://docs.abbyy.com/mcp
   tags:
@@ -148,7 +93,243 @@ apis:
     url: mcp/abbyy-tool-crosswalk.yml
   - type: Documentation
     url: https://docs.abbyy.com/vantage/developer/mcp-server
+- aid: abbyy:abbyy-catalogrecords-api
+  name: ABBYY Catalog Records API
+  description: The CatalogRecords API from ABBYY — 3 operation(s) for catalogrecords.
+  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
+  baseURL: https://vantage-us.abbyy.com
+  tags:
+  - CatalogRecords
+  properties:
+  - type: OpenAPI
+    url: openapi/abbyy-catalogrecords-api-openapi.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/api-introduction
+  - type: APIReference
+    url: https://docs.abbyy.com/api-reference
+  - type: GettingStarted
+    url: https://docs.abbyy.com/vantage/developer/getting-started
+  - type: Postman
+    url: >-
+      https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
+  - type: Authentication
+    url: authentication/abbyy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/abbyy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/abbyy-problem-types.yml
+  - type: DataModel
+    url: data-model/abbyy-data-model.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
+- aid: abbyy:abbyy-catalogs-api
+  name: ABBYY Catalogs API
+  description: The Catalogs API from ABBYY — 5 operation(s) for catalogs.
+  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
+  baseURL: https://vantage-us.abbyy.com
+  tags:
+  - Catalogs
+  properties:
+  - type: OpenAPI
+    url: openapi/abbyy-catalogs-api-openapi.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/api-introduction
+  - type: APIReference
+    url: https://docs.abbyy.com/api-reference
+  - type: GettingStarted
+    url: https://docs.abbyy.com/vantage/developer/getting-started
+  - type: Postman
+    url: >-
+      https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
+  - type: Authentication
+    url: authentication/abbyy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/abbyy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/abbyy-problem-types.yml
+  - type: DataModel
+    url: data-model/abbyy-data-model.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
+- aid: abbyy:abbyy-invites-api
+  name: ABBYY Invites API
+  description: The Invites API from ABBYY — 1 operation(s) for invites.
+  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
+  baseURL: https://vantage-us.abbyy.com
+  tags:
+  - Invites
+  properties:
+  - type: OpenAPI
+    url: openapi/abbyy-invites-api-openapi.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/api-introduction
+  - type: APIReference
+    url: https://docs.abbyy.com/api-reference
+  - type: GettingStarted
+    url: https://docs.abbyy.com/vantage/developer/getting-started
+  - type: Postman
+    url: >-
+      https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
+  - type: Authentication
+    url: authentication/abbyy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/abbyy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/abbyy-problem-types.yml
+  - type: DataModel
+    url: data-model/abbyy-data-model.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
+- aid: abbyy:abbyy-report-api
+  name: ABBYY Report API
+  description: The Report API from ABBYY — 5 operation(s) for report.
+  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
+  baseURL: https://vantage-us.abbyy.com
+  tags:
+  - Report
+  properties:
+  - type: OpenAPI
+    url: openapi/abbyy-report-api-openapi.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/api-introduction
+  - type: APIReference
+    url: https://docs.abbyy.com/api-reference
+  - type: GettingStarted
+    url: https://docs.abbyy.com/vantage/developer/getting-started
+  - type: Postman
+    url: >-
+      https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
+  - type: Authentication
+    url: authentication/abbyy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/abbyy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/abbyy-problem-types.yml
+  - type: DataModel
+    url: data-model/abbyy-data-model.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
+- aid: abbyy:abbyy-report-v1-api
+  name: ABBYY Report v1 API
+  description: The Report v1 API from ABBYY — 3 operation(s) for report v1.
+  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
+  baseURL: https://vantage-us.abbyy.com
+  tags:
+  - Report v1
+  properties:
+  - type: OpenAPI
+    url: openapi/abbyy-report-v1-api-openapi.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/api-introduction
+  - type: APIReference
+    url: https://docs.abbyy.com/api-reference
+  - type: GettingStarted
+    url: https://docs.abbyy.com/vantage/developer/getting-started
+  - type: Postman
+    url: >-
+      https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
+  - type: Authentication
+    url: authentication/abbyy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/abbyy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/abbyy-problem-types.yml
+  - type: DataModel
+    url: data-model/abbyy-data-model.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
+- aid: abbyy:abbyy-skills-api
+  name: ABBYY Skills API
+  description: The Skills API from ABBYY — 2 operation(s) for skills.
+  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
+  baseURL: https://vantage-us.abbyy.com
+  tags:
+  - Skills
+  properties:
+  - type: OpenAPI
+    url: openapi/abbyy-skills-api-openapi.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/api-introduction
+  - type: APIReference
+    url: https://docs.abbyy.com/api-reference
+  - type: GettingStarted
+    url: https://docs.abbyy.com/vantage/developer/getting-started
+  - type: Postman
+    url: >-
+      https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
+  - type: Authentication
+    url: authentication/abbyy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/abbyy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/abbyy-problem-types.yml
+  - type: DataModel
+    url: data-model/abbyy-data-model.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
+- aid: abbyy:abbyy-transactiondocuments-api
+  name: ABBYY Transaction Documents API
+  description: The TransactionDocuments API from ABBYY — 4 operation(s) for transactiondocuments.
+  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
+  baseURL: https://vantage-us.abbyy.com
+  tags:
+  - TransactionDocuments
+  properties:
+  - type: OpenAPI
+    url: openapi/abbyy-transactiondocuments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/api-introduction
+  - type: APIReference
+    url: https://docs.abbyy.com/api-reference
+  - type: GettingStarted
+    url: https://docs.abbyy.com/vantage/developer/getting-started
+  - type: Postman
+    url: >-
+      https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
+  - type: Authentication
+    url: authentication/abbyy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/abbyy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/abbyy-problem-types.yml
+  - type: DataModel
+    url: data-model/abbyy-data-model.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
+- aid: abbyy:abbyy-transactions-api
+  name: ABBYY Transactions API
+  description: The Transactions API from ABBYY — 11 operation(s) for transactions.
+  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
+  baseURL: https://vantage-us.abbyy.com
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/abbyy-transactions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/api-introduction
+  - type: APIReference
+    url: https://docs.abbyy.com/api-reference
+  - type: GettingStarted
+    url: https://docs.abbyy.com/vantage/developer/getting-started
+  - type: Postman
+    url: >-
+      https://www.abbyy.com/marketplace/assets/host/abbyy/connector/postman---abbyy-vantage-api-collection/
+  - type: Authentication
+    url: authentication/abbyy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/abbyy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/abbyy-problem-types.yml
+  - type: DataModel
+    url: data-model/abbyy-data-model.yml
+  - type: Documentation
+    url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
 common:
+- type: Overlay
+  url: overlays/abbyy-vantage-processing-overlay.yaml
+- type: Overlay
+  url: overlays/abbyy-vantage-reporting-overlay.yaml
 - type: Website
   url: https://www.abbyy.com
 - type: DeveloperPortal
