@@ -267,16 +267,16 @@ apis:
     url: data-model/abbyy-data-model.yml
   - type: Documentation
     url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
-- aid: abbyy:abbyy-transactiondocuments-api
-  name: ABBYY Transaction Documents API
-  description: The TransactionDocuments API from ABBYY — 4 operation(s) for transactiondocuments.
+- aid: abbyy:abbyy-transactions-api
+  name: ABBYY Transactions API
+  description: The Transactions API from ABBYY — 11 operation(s) for transactions.
   humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
   baseURL: https://vantage-us.abbyy.com
   tags:
-  - TransactionDocuments
+  - Transactions
   properties:
   - type: OpenAPI
-    url: openapi/abbyy-transactiondocuments-api-openapi.yml
+    url: openapi/abbyy-transactions-api-openapi.yml
   - type: Documentation
     url: https://docs.abbyy.com/vantage/developer/api-introduction
   - type: APIReference
@@ -296,16 +296,16 @@ apis:
     url: data-model/abbyy-data-model.yml
   - type: Documentation
     url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
-- aid: abbyy:abbyy-transactions-api
-  name: ABBYY Transactions API
-  description: The Transactions API from ABBYY — 11 operation(s) for transactions.
-  humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
-  baseURL: https://vantage-us.abbyy.com
+- aid: abbyy:abbyy-transaction-documents-api
+  name: ABBYY Transaction Documents API
+  description: The Transaction Documents API from ABBYY — 4 operation(s) for transaction documents.
+  humanURL: https://docs.abbyy.com/flexi-capture/cloud/cloud-f-cfor-invoices-api
+  baseURL: https://api-us.flexicapture.com
   tags:
-  - Transactions
+  - Transaction Documents
   properties:
   - type: OpenAPI
-    url: openapi/abbyy-transactions-api-openapi.yml
+    url: openapi/abbyy-transaction-documents-api-openapi.yml
   - type: Documentation
     url: https://docs.abbyy.com/vantage/developer/api-introduction
   - type: APIReference
