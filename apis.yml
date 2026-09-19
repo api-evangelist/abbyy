@@ -32,6 +32,9 @@ accessModel:
   generated: '2026-07-22'
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/abbyy.png
+x-docs-platform: mintlify
+x-docs-platform-confidence: medium
+x-docs-platform-checked: 2026-09-17
 tags:
 - AI Automation
 - Document Processing
@@ -128,6 +131,8 @@ apis:
   humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
   baseURL: https://vantage-us.abbyy.com
   tags:
+  - Catalog
+  tags_raw:
   - Catalogs
   properties:
   - type: OpenAPI
@@ -273,6 +278,8 @@ apis:
   humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
   baseURL: https://vantage-us.abbyy.com
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
