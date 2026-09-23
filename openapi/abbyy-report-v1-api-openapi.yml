@@ -1,0 +1,204 @@
+openapi: 3.2.0
+info:
+  title: Abbyy.Vantage.Reporting.Service Report v1 API
+  description: Version 1 of the Vantage Reporting API.
+  version: '1.0'
+  x-application-version: 1.5.2
+servers:
+- url: https://vantage-us.abbyy.com
+  description: Production United States
+- url: https://vantage-eu.abbyy.com
+  description: Production Europe
+- url: https://vantage-au.abbyy.com
+  description: Production Australia
+security:
+- OAuth2Security:
+  - global.wildcard
+  - openid
+  - permissions
+tags:
+- name: Report v1
+paths:
+  /api/reporting/v1/qa/process-skills/documents:
+    get:
+      tags:
+      - Report v1
+      operationId: GetDocumentsAsCsv
+      parameters:
+      - name: startDate
+        in: query
+        description: Minimum transaction completion date
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        description: Maximum transaction completion date
+        schema:
+          type: string
+          format: date-time
+      - name: processSkillId
+        in: query
+        description: ID of the process skill used in the transactions
+        schema:
+          type: string
+      - name: imageType
+        in: query
+        description: Image type of the document, e.g. receipt, business card, etc.
+        schema:
+          type: string
+      - name: imageColority
+        in: query
+        description: Colority of the document, e.g. color, black and white, etc.
+        schema:
+          type: string
+      - name: imageSource
+        in: query
+        description: Source of the document, e.g. scan, photo, etc.
+        schema:
+          type: string
+      - name: wasCorrectedInManualReview
+        in: query
+        description: Only show documents that were corrected during manual review
+        schema:
+          type: string
+      - name: wasDocumentTypeChangedInManualReview
+        in: query
+        description: Only show documents, where the document type was changed during manual review
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Document report
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: string
+                format: binary
+            text/json:
+              schema:
+                type: string
+                format: binary
+      deprecated: true
+      summary: Download document changes report
+      description: Deprecated. Use the v2 Download document changes report endpoint for new development; it accepts the same filters. Downloads a CSV report from the Analytics Reporting Warehouse about documents processed by a Process skill. Each row describes one document, including whether its fields were corrected or its document type was changed during Manual Review. For the full column reference, see Analytics Reporting Warehouse.
+  /api/reporting/v1/qa/process-skills/fields:
+    get:
+      tags:
+      - Report v1
+      operationId: GetFieldsAsCsv
+      parameters:
+      - name: startDate
+        in: query
+        description: Minimum transaction completion date
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        description: Maximum transaction completion date
+        schema:
+          type: string
+          format: date-time
+      - name: processSkillId
+        in: query
+        description: ID of the process skill used in the transactions
+        schema:
+          type: string
+      - name: documentSkillId
+        in: query
+        description: ID of the document skill used in the transactions
+        schema:
+          type: string
+      - name: imageType
+        in: query
+        description: Image type of the document, e.g. receipt, business card, etc.
+        schema:
+          type: string
+      - name: imageColority
+        in: query
+        description: Colority of the document, e.g. color, black and white, etc.
+        schema:
+          type: string
+      - name: imageSource
+        in: query
+        description: Source of the document, e.g. scan, photo, etc.
+        schema:
+          type: string
+      - name: wasCorrectedInManualReview
+        in: query
+        description: Only show documents that were corrected during manual review
+        schema:
+          type: string
+      - name: wasDocumentTypeChangedInManualReview
+        in: query
+        description: Only show documents, where the document type was changed during manual review
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Field report
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: string
+                format: binary
+            text/json:
+              schema:
+                type: string
+                format: binary
+      deprecated: true
+      summary: Download field changes report
+      description: Deprecated. Use the v2 Download field changes report endpoint for new development; it accepts the same filters. Downloads a CSV report from the Analytics Reporting Warehouse about document fields processed by Process and Document skills. Each row describes one field, including whether its value was correct, had recognition issues, was located incorrectly, or was not detected before Manual Review. For the full column reference, see Analytics Reporting Warehouse.
+  /api/reporting/v1/transaction-steps:
+    get:
+      tags:
+      - Report v1
+      operationId: GetTransactionStepsCsv
+      parameters:
+      - name: skillId
+        in: query
+        description: Filter by transaction skill ID. {NULL} if skill Id filter should not be applied
+        schema:
+          type: string
+      - name: transactionId
+        in: query
+        description: Filter by transaction ID. {NULL} if Id filter should not be applied
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        description: Minimum transaction date, defined by RFC 3339
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: Maximum transaction date, defined by RFC 3339 (UtcNow if empty)
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Transaction steps
+      deprecated: true
+      summary: Download transaction steps report
+      description: 'Deprecated. Synchronously downloads a CSV report of transaction step data from the Business Processing Reporting Warehouse. This endpoint is replaced by the asynchronous v2 export workflow, which handles large date ranges reliably: create an export with Create transaction steps export, poll its status, then download the result files. For the CSV column reference, see Business Processing Reporting.'
+components:
+  securitySchemes:
+    OAuth2Security:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+          tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+          scopes:
+            global.wildcard: Global wildcard
+            openid: User Id
+            permissions: User permissions

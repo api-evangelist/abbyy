@@ -1,0 +1,442 @@
+openapi: 3.2.0
+info:
+  title: Abbyy.Vantage.Reporting.Service Report API
+  description: The Vantage Reporting API provides data for retrospective analysis of document processing. Use it to download CSV reports from the Business Processing Reporting Warehouse (transaction-level step data) and the Analytics Reporting Warehouse (document and field changes made during Manual Review). Only users with the Tenant Administrator or Processing Supervisor role can download data reports. For an overview of both warehouses, see the Reporting service guide.
+  version: '2.0'
+  x-application-version: 1.5.2
+servers:
+- url: https://vantage-us.abbyy.com
+  description: Production United States
+- url: https://vantage-eu.abbyy.com
+  description: Production Europe
+- url: https://vantage-au.abbyy.com
+  description: Production Australia
+security:
+- OAuth2Security:
+  - global.wildcard
+  - openid
+  - permissions
+tags:
+- name: Report
+paths:
+  /api/reporting/v2/qa/process-skills/documents:
+    get:
+      tags:
+      - Report
+      operationId: GetDocumentsAsCsv
+      parameters:
+      - name: startDate
+        in: query
+        description: Minimum transaction completion date
+        schema:
+          type: string
+        required: true
+      - name: endDate
+        in: query
+        description: Maximum transaction completion date
+        schema:
+          type: string
+          format: date-time
+      - name: processSkillId
+        in: query
+        description: ID of the process skill used in the transactions
+        schema:
+          type: string
+      - name: imageType
+        in: query
+        description: Image type of the document, e.g. receipt, business card, etc.
+        schema:
+          type: string
+      - name: imageColority
+        in: query
+        description: Colority of the document, e.g. color, black and white, etc.
+        schema:
+          type: string
+      - name: imageSource
+        in: query
+        description: Source of the document, e.g. scan, photo, etc.
+        schema:
+          type: string
+      - name: wasCorrectedInManualReview
+        in: query
+        description: Only show documents that were corrected during manual review
+        schema:
+          type: string
+      - name: wasDocumentTypeChangedInManualReview
+        in: query
+        description: Only show documents, where the document type was changed during manual review
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the document changes report as a CSV file with a header row. Each row describes one processed document. The example below shows a subset of columns; for the full column reference, see [Analytics Reporting Warehouse](/vantage/developer/reporting/analytics-reporting).
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+              example: 'ProcessSkillId,ProcessSkillName,TransactionId,HasManualReview,DocumentId,DocumentName,ImageSource,DocumentSkillChanged,NumberOfExportedFields,NumberOfChangedFields
+
+                9f0b2a1c-...,Invoice Processing,6d7e9eeb-...,1,c4a01f7d-...,Invoice CA_2.pdf,PDF file,false,12,2'
+            application/json:
+              schema:
+                type: string
+                format: binary
+            text/json:
+              schema:
+                type: string
+                format: binary
+      summary: Download document changes report
+      description: Downloads a CSV report from the Analytics Reporting Warehouse about documents processed by a Process skill. Each row describes one document, including whether its fields were corrected or its document type was changed during Manual Review. For the full column reference, see Analytics Reporting Warehouse.
+  /api/reporting/v2/qa/process-skills/fields:
+    get:
+      tags:
+      - Report
+      operationId: GetFieldsAsCsv
+      parameters:
+      - name: startDate
+        in: query
+        description: Minimum transaction completion date
+        schema:
+          type: string
+        required: true
+      - name: endDate
+        in: query
+        description: Maximum transaction completion date
+        schema:
+          type: string
+          format: date-time
+      - name: processSkillId
+        in: query
+        description: ID of the process skill used in the transactions
+        schema:
+          type: string
+        required: true
+      - name: documentSkillId
+        in: query
+        description: ID of the document skill used in the transactions
+        schema:
+          type: string
+      - name: imageType
+        in: query
+        description: Image type of the document, e.g. receipt, business card, etc.
+        schema:
+          type: string
+      - name: imageColority
+        in: query
+        description: Colority of the document, e.g. color, black and white, etc.
+        schema:
+          type: string
+      - name: imageSource
+        in: query
+        description: Source of the document, e.g. scan, photo, etc.
+        schema:
+          type: string
+      - name: wasCorrectedInManualReview
+        in: query
+        description: Only show documents that were corrected during manual review
+        schema:
+          type: string
+      - name: wasDocumentTypeChangedInManualReview
+        in: query
+        description: Only show documents, where the document type was changed during manual review
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the field changes report as a CSV file with a header row. Each row describes one extracted field and how it fared in Manual Review. The example below shows a subset of columns; for the full column reference, see [Analytics Reporting Warehouse](/vantage/developer/reporting/analytics-reporting).
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+              example: 'ProcessSkillId,ProcessSkillName,TransactionId,DocumentId,DocumentName,FieldID,FieldName,Correct,RecognitionIssue,DetectedIncorrectly,NotDetected,IsInDocument
+
+                9f0b2a1c-...,Invoice Processing,6d7e9eeb-...,c4a01f7d-...,Invoice CA_2.pdf,f81d4fae-...,TotalAmount,1,0,0,0,1'
+            application/json:
+              schema:
+                type: string
+                format: binary
+            text/json:
+              schema:
+                type: string
+                format: binary
+      summary: Download field changes report
+      description: Downloads a CSV report from the Analytics Reporting Warehouse about document fields processed by Process and Document skills. Each row describes one field, including whether its value was correct, had recognition issues, was located incorrectly, or was not detected before Manual Review. For the full column reference, see Analytics Reporting Warehouse.
+  /api/reporting/v2/exports/transaction-steps:
+    post:
+      tags:
+      - Report
+      operationId: CreateTransactionStepsExportRequest
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateTransactionStepsCsvRequest'
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateTransactionStepsCsvRequest'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateTransactionStepsCsvRequest'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateTransactionStepsCsvRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CreateReportRequestResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateReportRequestResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CreateReportRequestResponse'
+      summary: Create transaction steps export
+      description: Starts an asynchronous CSV export of transaction step data from the Business Processing Reporting Warehouse. The response returns a `requestId` that you use to poll the export status and download the result files once the export succeeds. For the full workflow and CSV column reference, see Business Processing Reporting.
+    get:
+      tags:
+      - Report
+      operationId: ListExportRequests
+      parameters:
+      - name: statusFilter
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        description: 'Return only export requests with the given statuses. Allowed values: `New`, `Queued`, `Processing`, `Succeeded`, `Failed`, `Cancelled`.'
+      - name: createdFrom
+        in: query
+        schema:
+          type: string
+        description: Earliest request creation date to include, for example `2025-11-05`.
+      - name: createdTo
+        in: query
+        schema:
+          type: string
+        description: Latest request creation date to include, for example `2025-11-17`.
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ListReportRequestsResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListReportRequestsResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ListReportRequestsResponse'
+      summary: List export requests
+      description: Returns the transaction steps export requests created by the current user, optionally filtered by status and creation date. Use this endpoint to recover a `requestId` if you no longer have it.
+  /api/reporting/v2/exports/transaction-steps/{requestId}/status:
+    get:
+      tags:
+      - Report
+      operationId: GetExportStatus
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID of the export request, as returned in the response when the export was created.
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ReportRequestStatusResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportRequestStatusResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ReportRequestStatusResponse'
+      summary: Get export request status
+      description: Returns the current status of a transaction steps export request. Poll this endpoint until the status is `Succeeded`, then use `totalFileCount` from the response to download each result file by its zero-based index.
+  /api/reporting/v2/exports/transaction-steps/{requestId}/result/{fileIndex}:
+    get:
+      tags:
+      - Report
+      operationId: GetExportResult
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID of the export request, as returned in the response when the export was created.
+      - name: fileIndex
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+        description: Zero-based index of the result file to download. The `totalFileCount` value from the status response gives the number of available files, so valid indexes run from `0` to `totalFileCount - 1`.
+      responses:
+        '200':
+          description: Returns one result file of a succeeded export request as a CSV file with a header row. Each row describes one processing step of a transaction. Download one file per `fileIndex`, from 0 up to `totalFileCount - 1` reported by the status endpoint. For the full column reference, see [Business Processing Reporting](/vantage/developer/reporting/business-reporting).
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+              example: 'SkillId,SkillVersion,SkillName,TransactionId,StepName,StepType,ManualReviewOperatorName,ManualReviewOperatorEmail,StartedUtc,CompletedUtc,Status,Duration,DocumentsCount,PagesCount,document_SourceFileName,document_SourceType,transaction_App
+
+                d0e27b2d-...,1,Redaction Test,6d7e9eeb-...,Input,Input,,,11/17/2025 19:37:52,11/17/2025 19:38:01,FinishedSuccessfully,9,,,Invoice CA_2.pdf,PublicAPI,PublicAPI
+
+                d0e27b2d-...,1,Redaction Test,6d7e9eeb-...,OCR,Ocr,,,11/17/2025 19:38:02,11/17/2025 19:38:17,FinishedSuccessfully,15,,,Invoice CA_2.pdf,PublicAPI,PublicAPI'
+            application/json:
+              schema:
+                type: string
+                format: binary
+            text/json:
+              schema:
+                type: string
+                format: binary
+      summary: Download export result file
+      description: Downloads one CSV result file of a completed transaction steps export. Each row is one processing step of a transaction, such as OCR, classification, or Manual Review. Result files are stored for 2 weeks after the export request completes.
+components:
+  schemas:
+    CreateTransactionStepsCsvRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/AsyncStepReportFilters'
+          description: Transaction steps filters
+        sendEmailNotification:
+          type: boolean
+          description: Enables to send notification on request processing completion
+      additionalProperties: false
+    ReportRequestStatusResponse:
+      type: object
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ReportRequestStatus'
+          description: Actual status of the request
+        totalFileCount:
+          type:
+          - string
+          - 'null'
+          description: 'Number of result files in case of successfully finished processing
+
+            Result files can be accessed by their indexes'
+        correlationId:
+          type:
+          - string
+          - 'null'
+          description: 'Correlation ID of the report creation procedure
+
+            In case of failure or cancellation correlation ID helps for further investigation'
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/AsyncStepReportFilters'
+          description: The filters used, to generate the report
+      additionalProperties: false
+    ListReportRequestsResponse:
+      type: object
+      properties:
+        requests:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ListReportRequestsResponseReportRequestDto'
+          description: Details about available requests created by the current user
+      additionalProperties: false
+    AsyncStepReportFilters:
+      required:
+      - startDate
+      type: object
+      properties:
+        skillId:
+          type:
+          - string
+          - 'null'
+          description: Filter by transaction skill ID. {NULL} if skill ID filter should not be applied
+        transactionId:
+          type:
+          - string
+          - 'null'
+          description: Filter by transaction ID. {NULL} if ID filter should not be applied
+        startDate:
+          type: string
+          description: Minimum transaction step completion date
+          format: date-time
+        endDate:
+          type: string
+          description: Maximum step completion date (current UTC time if empty)
+          format: date-time
+      additionalProperties: false
+    ReportRequestStatus:
+      enum:
+      - New
+      - Queued
+      - Processing
+      - Succeeded
+      - Failed
+      - Cancelled
+      type: string
+    ListReportRequestsResponseReportRequestDto:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: The unique identifier of the report generation request
+          format: uuid
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ReportRequestStatus'
+          description: Actual status of the request
+        completedUtc:
+          type:
+          - string
+          - 'null'
+          description: Date time (UTC) when the request processing has finished (Only available for completed requests)
+        createdUtc:
+          type: string
+          description: Date time (UTC) when the request was made
+          format: date-time
+        totalFileCount:
+          type:
+          - string
+          - 'null'
+          description: 'Number of result files in case of successfully finished processing
+
+            Result files can be accessed by their indexes'
+        filters:
+          description: All the filter parameters which were given for report creation
+      additionalProperties: false
+    CreateReportRequestResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Unique identifier of the report generation request. Pass it to the status and result endpoints.
+      additionalProperties: false
+      description: Response returned after a transaction steps export request is created. Contains the request ID used to poll the export status and download the result files.
+  securitySchemes:
+    OAuth2Security:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+          tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+          scopes:
+            global.wildcard: Global wildcard
+            openid: User Id
+            permissions: User permissions

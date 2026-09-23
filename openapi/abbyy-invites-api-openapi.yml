@@ -1,0 +1,148 @@
+openapi: 3.2.0
+info:
+  title: Vantage processing REST Invites API
+  description: 'The Vantage Processing REST API lets you process documents programmatically: create transactions, upload files, launch skills, monitor progress, and download results. For authentication and a first end-to-end request, see the Getting started guide.'
+  version: '1.0'
+  x-application-version: 1.0.0-20251028.13+6e102d0c2a7a440df9ee9615e09b3c8c333587ac
+servers:
+- url: https://vantage-us.abbyy.com
+  description: Production United States
+- url: https://vantage-eu.abbyy.com
+  description: Production Europe
+- url: https://vantage-au.abbyy.com
+  description: Production Australia
+security:
+- OAuth2Security:
+  - global.wildcard
+  - openid
+  - permissions
+tags:
+- name: Invites
+paths:
+  /api/publicapi/v1/invites:
+    post:
+      tags:
+      - Invites
+      summary: Creates invite for new tenant
+      description: To access this method, you need to contact support
+      operationId: CreateInvite
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Model:
+                  required:
+                  - email
+                  - tenantName
+                  type: object
+                  properties:
+                    email:
+                      minLength: 1
+                      type: string
+                      description: Email to send invite to
+                      format: email
+                    validWithin:
+                      type:
+                      - string
+                      - 'null'
+                      description: Time when the invite will be valid
+                      example: 14.00:00:00
+                    tenantName:
+                      minLength: 1
+                      type: string
+                      description: Name of tenant to be created
+                    useMySubscription:
+                      type: boolean
+                      description: Use active subscription from current tenant
+                      default: false
+                    tenantDescription:
+                      type:
+                      - string
+                      - 'null'
+                      description: Description of tenant to be created
+                  additionalProperties: false
+                  description: See CreateAdminInviteData model.
+                File:
+                  type: string
+                  format: binary
+            encoding:
+              Model:
+                contentType: application/json
+                style: form
+                explode: true
+              File:
+                contentType: application/octet-stream
+                style: form
+                explode: true
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+components:
+  schemas:
+    Microsoft.AspNetCore.Mvc.ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - string
+          - 'null'
+          description: Short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          description: HTTP status code for this occurrence of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies this specific occurrence of the problem.
+      additionalProperties: {}
+  securitySchemes:
+    OAuth2Security:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+          tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+          scopes:
+            global.wildcard: Global wildcard
+            openid: User Id
+            permissions: User permissions

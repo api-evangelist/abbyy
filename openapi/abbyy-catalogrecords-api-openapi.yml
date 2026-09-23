@@ -1,0 +1,363 @@
+openapi: 3.2.0
+info:
+  title: Vantage processing REST Catalog Records API
+  description: 'The Vantage Processing REST API lets you process documents programmatically: create transactions, upload files, launch skills, monitor progress, and download results. For authentication and a first end-to-end request, see the Getting started guide.'
+  version: '1.0'
+  x-application-version: 1.0.0-20251028.13+6e102d0c2a7a440df9ee9615e09b3c8c333587ac
+servers:
+- url: https://vantage-us.abbyy.com
+  description: Production United States
+- url: https://vantage-eu.abbyy.com
+  description: Production Europe
+- url: https://vantage-au.abbyy.com
+  description: Production Australia
+security:
+- OAuth2Security:
+  - global.wildcard
+  - openid
+  - permissions
+tags:
+- name: CatalogRecords
+paths:
+  /api/publicapi/v1/catalogs/{catalogId}/records:
+    post:
+      tags:
+      - CatalogRecords
+      summary: Adds records to the specified catalog
+      description: 'Adds up to 5000 records to the data catalog in one request. Each record''s `id` is chosen by you and becomes the record''s identifier. The endpoint returns HTTP 200 even when records are rejected: check `insertedRowCount` and `errorRows` in the response. Rows are rejected individually with reasons such as `CannotBeEmpty Column: ` (a required column is missing) or `UnknownColumn Column: `. After you finish updating the catalog, start a reindex operation so that skills search the updated data.'
+      operationId: AddRecords
+      parameters:
+      - name: catalogId
+        in: path
+        description: Catalog identifier. You can find it in the list of all catalogs.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Records to add
+        content:
+          application/json-patch+json:
+            schema:
+              maxItems: 5000
+              minItems: 1
+              type: array
+              items:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel'
+          application/json:
+            schema:
+              maxItems: 5000
+              minItems: 1
+              type: array
+              items:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel'
+          text/json:
+            schema:
+              maxItems: 5000
+              minItems: 1
+              type: array
+              items:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel'
+          application/*+json:
+            schema:
+              maxItems: 5000
+              minItems: 1
+              type: array
+              items:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel'
+      responses:
+        '200':
+          description: Operation completed successfully. The details can be found in the response.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.AddRecordsResultResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.AddRecordsResultResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.AddRecordsResultResult'
+        '400':
+          description: Wrong number of records
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Catalog not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+    get:
+      tags:
+      - CatalogRecords
+      summary: Lists a portion of the records in the specified catalog
+      operationId: GetRecords
+      parameters:
+      - name: catalogId
+        in: path
+        description: Catalog identifier. You can find it in the list of all catalogs.
+        required: true
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Pagination offset
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: limit
+        in: query
+        description: Maximum number of items to return
+        schema:
+          type: integer
+          format: int32
+          default: 1000
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      description: Returns a page of records from the data catalog. Use the `offset` and `limit` query parameters to page through large catalogs. Each record contains the column values defined by the catalog structure.
+  /api/publicapi/v1/catalogs/{catalogId}/records/{recordId}:
+    get:
+      tags:
+      - CatalogRecords
+      summary: Gets a record
+      operationId: GetRecord
+      parameters:
+      - name: catalogId
+        in: path
+        description: Catalog identifier. You can find it in the list of all catalogs.
+        required: true
+        schema:
+          type: string
+      - name: recordId
+        in: path
+        description: Record identifier. You can find it in the list of records.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      description: Returns a single record from the data catalog by its identifier. You can find record identifiers in the response of the list records request.
+  /api/publicapi/v1/catalogs/{catalogId}/records/delete:
+    post:
+      tags:
+      - CatalogRecords
+      summary: Deletes the specified records from the catalog
+      operationId: DeleteRecords
+      parameters:
+      - name: catalogId
+        in: path
+        description: Catalog identifier. You can find it in the list of all catalogs.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: An array of record identifiers to delete
+        content:
+          application/json-patch+json:
+            schema:
+              maxItems: 5000
+              minItems: 1
+              type: array
+              items:
+                type: string
+          application/json:
+            schema:
+              maxItems: 5000
+              minItems: 1
+              type: array
+              items:
+                type: string
+          text/json:
+            schema:
+              maxItems: 5000
+              minItems: 1
+              type: array
+              items:
+                type: string
+          application/*+json:
+            schema:
+              maxItems: 5000
+              minItems: 1
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: Deletion completed. The response body is empty; unlike adding records, no per-record report is returned.
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      description: Deletes up to 5000 records from the data catalog in one request. Pass the identifiers of the records to delete as a JSON array in the request body. After you finish updating the catalog, start a reindex operation so that skills search the updated data.
+components:
+  schemas:
+    Microsoft.AspNetCore.Mvc.ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - string
+          - 'null'
+          description: Short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          description: HTTP status code for this occurrence of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies this specific occurrence of the problem.
+      additionalProperties: {}
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.AddRecordsResultResult:
+      required:
+      - errorRows
+      - insertedRowCount
+      type: object
+      properties:
+        insertedRowCount:
+          type: integer
+          description: Number of successfully inserted rows
+          format: int32
+        errorRows:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: List of the errors occurred
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto:
+      required:
+      - fields
+      - id
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: Id of the catalog record
+        fields:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Record fields
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel:
+      required:
+      - fields
+      - id
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: Unique id of the record
+        fields:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Record fields
+      additionalProperties: false
+  securitySchemes:
+    OAuth2Security:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+          tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+          scopes:
+            global.wildcard: Global wildcard
+            openid: User Id
+            permissions: User permissions

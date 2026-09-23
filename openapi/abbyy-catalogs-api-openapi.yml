@@ -1,0 +1,348 @@
+openapi: 3.2.0
+info:
+  title: Vantage processing REST Catalogs API
+  description: 'The Vantage Processing REST API lets you process documents programmatically: create transactions, upload files, launch skills, monitor progress, and download results. For authentication and a first end-to-end request, see the Getting started guide.'
+  version: '1.0'
+  x-application-version: 1.0.0-20251028.13+6e102d0c2a7a440df9ee9615e09b3c8c333587ac
+servers:
+- url: https://vantage-us.abbyy.com
+  description: Production United States
+- url: https://vantage-eu.abbyy.com
+  description: Production Europe
+- url: https://vantage-au.abbyy.com
+  description: Production Australia
+security:
+- OAuth2Security:
+  - global.wildcard
+  - openid
+  - permissions
+tags:
+- name: Catalogs
+paths:
+  /api/publicapi/v1/catalogs:
+    get:
+      tags:
+      - Catalogs
+      summary: Lists all available catalogs
+      operationId: GetCatalogs
+      responses:
+        '200':
+          description: All catalogs are successfully returned
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto'
+      description: Returns all data catalogs available to your tenant. Use the returned `id` values as the `catalogId` in other catalog requests. Catalog ids are the catalog names (they can contain spaces, so URL-encode them in request paths). For more on managing catalogs through the API, see Data catalogs and the Vantage API.
+  /api/publicapi/v1/catalogs/{catalogId}:
+    get:
+      tags:
+      - Catalogs
+      summary: Gets detailed information about the catalog
+      description: Gets detailed information about the catalog structure, e.g. required column set
+      operationId: GetCatalog
+      parameters:
+      - name: catalogId
+        in: path
+        description: Catalog identifier. You can find it in the list of all catalogs.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Catalog info is successfully returned
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto'
+        '404':
+          description: Catalog not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+  /api/publicapi/v1/catalogs/{catalogId}/clear:
+    post:
+      tags:
+      - Catalogs
+      summary: Deletes all records from the catalog
+      operationId: ClearCatalog
+      parameters:
+      - name: catalogId
+        in: path
+        description: Catalog identifier. You can find it in the list of all catalogs.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: All records are successfully deleted from the catalog
+        '404':
+          description: Catalog not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      description: Deletes every record from the data catalog while keeping the catalog itself and its column structure. This operation cannot be undone. After clearing and repopulating the catalog, start a reindex operation so that skills search the updated data.
+  /api/publicapi/v1/catalogs/{catalogId}/reindex:
+    post:
+      tags:
+      - Catalogs
+      summary: Starts a catalog reindex operation
+      description: 'Starts an asynchronous reindex of the catalog. The response contains the operation''s `id`; poll the reindex status endpoint with it until `currentState` is `Completed` (observed transitional value: `InProgress`). Until reindexing completes, skills continue to search the previous version of the catalog data.'
+      operationId: StartCatalogReindex
+      parameters:
+      - name: catalogId
+        in: path
+        description: Catalog identifier. You can find it in the list of all catalogs.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+  /api/publicapi/v1/catalogs/{catalogId}/reindex/{reindexOperationId}:
+    get:
+      tags:
+      - Catalogs
+      summary: Gets detailed information of reindex operation
+      operationId: GetReindexOperation
+      parameters:
+      - name: catalogId
+        in: path
+        description: Catalog identifier. You can find it in the list of all catalogs.
+        required: true
+        schema:
+          type: string
+      - name: reindexOperationId
+        in: path
+        description: Operation identifier. You can find it in response to start reindex operation.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      description: Returns the status of a catalog reindex operation started with the reindex request. Poll this endpoint until `currentState` is `Completed` (or `Failed`). Until reindexing completes, skills continue to search the previous version of the catalog data.
+components:
+  schemas:
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.ReindexState:
+      enum:
+      - InProgress
+      - Failed
+      - Completed
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique id of the operation
+          format: uuid
+        indexModelId:
+          type:
+          - string
+          - 'null'
+          description: Id of the index model used to analyze documents
+          format: uuid
+        workflowProcessingId:
+          type:
+          - string
+          - 'null'
+          description: Id of the operation workflow
+          format: uuid
+        created:
+          type: string
+          description: Time when operation was created
+          format: date-time
+        completed:
+          type:
+          - string
+          - 'null'
+          description: Time when operation was completed
+          format: date-time
+        currentState:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.ReindexState'
+          description: Current state of the reindex operation. One of `InProgress`, `Failed`, or `Completed`. Skills search the updated catalog data only after the state is `Completed`.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto:
+      required:
+      - columns
+      - id
+      - name
+      - rowCount
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: Unique identifier of the catalog
+        name:
+          minLength: 1
+          type: string
+          description: Name of the catalog
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ColumnDto'
+          description: Columns of the catalog
+        rowCount:
+          type: integer
+          description: Total number of rows in the catalog
+          format: int32
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.ColumnType:
+      enum:
+      - Text
+      - Double
+      - Integer
+      - Date
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ColumnDto:
+      required:
+      - name
+      - notEmpty
+      - type
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: Name of the catalog column
+        type:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.ColumnType'
+          description: Data type of the values stored in the column. One of `Text`, `Double`, `Integer`, or `Date`.
+        notEmpty:
+          type: boolean
+          description: ''
+      additionalProperties: false
+    Microsoft.AspNetCore.Mvc.ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - string
+          - 'null'
+          description: Short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          description: HTTP status code for this occurrence of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies this specific occurrence of the problem.
+      additionalProperties: {}
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: Unique identifier of the catalog
+        name:
+          minLength: 1
+          type: string
+          description: Name of the catalog
+      additionalProperties: false
+  securitySchemes:
+    OAuth2Security:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+          tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+          scopes:
+            global.wildcard: Global wildcard
+            openid: User Id
+            permissions: User permissions

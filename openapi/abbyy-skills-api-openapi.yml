@@ -1,0 +1,259 @@
+openapi: 3.2.0
+info:
+  title: Vantage processing REST Skills API
+  description: 'The Vantage Processing REST API lets you process documents programmatically: create transactions, upload files, launch skills, monitor progress, and download results. For authentication and a first end-to-end request, see the Getting started guide.'
+  version: '1.0'
+  x-application-version: 1.0.0-20251028.13+6e102d0c2a7a440df9ee9615e09b3c8c333587ac
+servers:
+- url: https://vantage-us.abbyy.com
+  description: Production United States
+- url: https://vantage-eu.abbyy.com
+  description: Production Europe
+- url: https://vantage-au.abbyy.com
+  description: Production Australia
+security:
+- OAuth2Security:
+  - global.wildcard
+  - openid
+  - permissions
+tags:
+- name: Skills
+paths:
+  /api/publicapi/v1/skills:
+    get:
+      tags:
+      - Skills
+      summary: Lists all available skills
+      operationId: GetAvailableSkills
+      responses:
+        '200':
+          description: All skills are successfully returned
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto'
+      description: Returns all published skills available to your account, with their identifiers, names, and types. Skills that have never been published are not included. Use the returned `id` as the `skillId` when creating or launching transactions. Note that `id` is not always a GUID; built-in skills use ids such as `workspace.default.processing`.
+  /api/publicapi/v1/skills/{skillId}:
+    get:
+      tags:
+      - Skills
+      summary: Gets the detailed information about a skill
+      operationId: GetSkillInfo
+      parameters:
+      - name: skillId
+        in: path
+        description: Skill identifier. You can find it in the list of all skills.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Skill info is successfully returned
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillDto'
+        '404':
+          description: Skill not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      description: Returns detailed information about a skill. For document skills the response includes the extracted field structure, and for classification skills it includes the list of classes. Requesting a skill that exists but has never been published returns 404.
+components:
+  schemas:
+    Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillDto:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Id of the skill
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the skill
+        type:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.SkillType'
+          description: Type of the skill. One of `Classification`, `Document`, `Process`, `Ocr`, or `Assembling`.
+        fields:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.FieldDto'
+          description: For document skills.
+        classes:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillClassDto'
+          description: For classification skills.
+        skills:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.InnerSkillDto'
+          description: For process skills. Lists the skills that the process skill includes.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Skills.TextFieldFormat:
+      enum:
+      - Text
+      - Date
+      - Amount
+      - Number
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Skills.Results.FieldDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the field as defined in the skill.
+        type:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.FieldType'
+          description: Type of the field. One of `Barcode`, `Checkmark`, `CheckmarkGroup`, `Group`, `Picture`, or `Text`.
+        textFormat:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.TextFieldFormat'
+          description: Format of the field value for text fields. One of `Text`, `Date`, `Amount`, or `Number`.
+        isRepeatable:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether the field can occur multiple times in a document, for example a repeating group such as a table row.
+        children:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.FieldDto'
+          description: Child fields of a group field, such as the columns of a table. Empty for simple fields.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillClassDto:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the class defined in the classification skill.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the class defined in the classification skill.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Skills.SkillType:
+      enum:
+      - Classification
+      - Document
+      - Process
+      - Ocr
+      - Assembling
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Skills.Results.InnerSkillDto:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Identifier of a skill included in the process skill.
+      additionalProperties: false
+    Microsoft.AspNetCore.Mvc.ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - string
+          - 'null'
+          description: Short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          description: HTTP status code for this occurrence of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies this specific occurrence of the problem.
+      additionalProperties: {}
+    Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: Identifier of the skill. Use this value as the `skillId` in transaction requests.
+        name:
+          minLength: 1
+          type: string
+          description: Name of the skill as shown in Vantage.
+        type:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.SkillType'
+          description: Type of the skill. One of `Classification`, `Document`, `Process`, `Ocr`, or `Assembling`.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.FieldType:
+      enum:
+      - Barcode
+      - Checkmark
+      - CheckmarkGroup
+      - Group
+      - Picture
+      - Text
+      type: string
+  securitySchemes:
+    OAuth2Security:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+          tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+          scopes:
+            global.wildcard: Global wildcard
+            openid: User Id
+            permissions: User permissions

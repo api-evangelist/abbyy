@@ -1,0 +1,53 @@
+{
+  "provider": "abbyy",
+  "sources": [
+    "_original/abbyy-vantage-processing-openapi.json",
+    "_original/abbyy-vantage-reporting-openapi.json",
+    "_original/abbyy-vantage-reporting-v1-openapi.json"
+  ],
+  "outputs": [
+    "abbyy-catalogrecords-api-openapi.yml",
+    "abbyy-catalogs-api-openapi.yml",
+    "abbyy-invites-api-openapi.yml",
+    "abbyy-skills-api-openapi.yml",
+    "abbyy-transactiondocuments-api-openapi.yml",
+    "abbyy-transactions-api-openapi.yml",
+    "abbyy-report-api-openapi.yml",
+    "abbyy-report-v1-api-openapi.yml"
+  ],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "3 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (3 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "abbyy-vantage-processing-openapi.json: upgraded openapi 3.0.1 -> OpenAPI 3.2.0",
+    "abbyy-vantage-processing-openapi.json: declared missing tag: CatalogRecords",
+    "abbyy-vantage-processing-openapi.json: declared missing tag: Catalogs",
+    "abbyy-vantage-processing-openapi.json: declared missing tag: Invites",
+    "abbyy-vantage-processing-openapi.json: declared missing tag: Skills",
+    "abbyy-vantage-processing-openapi.json: declared missing tag: TransactionDocuments",
+    "abbyy-vantage-processing-openapi.json: declared missing tag: Transactions",
+    "abbyy-vantage-reporting-openapi.json: upgraded openapi 3.0.4 -> OpenAPI 3.2.0",
+    "abbyy-vantage-reporting-openapi.json: declared missing tag: Report",
+    "abbyy-vantage-reporting-v1-openapi.json: upgraded openapi 3.0.4 -> OpenAPI 3.2.0",
+    "abbyy-vantage-reporting-v1-openapi.json: declared missing tag: Report v1",
+    "superseded outputs removed: abbyy-transaction-documents-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 10 total)"
+  ],
+  "skipped": [
+    "_original/abbyy-vantage-reporting-v1-openapi.yml: archived document superseded by a larger archived document",
+    "_original/abbyy-vantage-reporting-openapi.yml: archived document superseded by a larger archived document",
+    "_original/abbyy-vantage-processing-openapi.yml: archived document superseded by a larger archived document",
+    "abbyy-catalogrecords-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "abbyy-catalogs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "abbyy-invites-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "abbyy-report-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "abbyy-report-v1-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "abbyy-skills-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "abbyy-transaction-documents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "abbyy-transactions-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

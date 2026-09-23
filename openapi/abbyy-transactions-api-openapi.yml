@@ -1,0 +1,1470 @@
+openapi: 3.2.0
+info:
+  title: Vantage processing REST Transactions API
+  description: 'The Vantage Processing REST API lets you process documents programmatically: create transactions, upload files, launch skills, monitor progress, and download results. For authentication and a first end-to-end request, see the Getting started guide.'
+  version: '1.0'
+  x-application-version: 1.0.0-20251028.13+6e102d0c2a7a440df9ee9615e09b3c8c333587ac
+servers:
+- url: https://vantage-us.abbyy.com
+  description: Production United States
+- url: https://vantage-eu.abbyy.com
+  description: Production Europe
+- url: https://vantage-au.abbyy.com
+  description: Production Australia
+security:
+- OAuth2Security:
+  - global.wildcard
+  - openid
+  - permissions
+tags:
+- name: Transactions
+paths:
+  /api/publicapi/v1/transactions:
+    post:
+      tags:
+      - Transactions
+      summary: Creates a processing transaction
+      description: Creates a transaction that will be used to process some files.
+      operationId: CreateTransaction
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest'
+      responses:
+        '201':
+          description: Transaction successfully created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionResult'
+        '400':
+          description: Some parameters are invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Skill with specified skillId not found or not published
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      x-mint:
+        content: <Note>For a step-by-step walkthrough of the create, upload, and start sequence, see [Processing documents with separate API calls](/vantage/developer/processing-documents/processing-documents-with-separate-api-calls).</Note>
+  /api/publicapi/v1/transactions/{transactionId}/files:
+    post:
+      tags:
+      - Transactions
+      summary: Adds files to the transaction
+      description: 'Uploads a set of files to be processed in the specified transaction.
+
+        The maximum size of processed files should not exceed 2 GB.
+
+        The maximum count per transaction should not exceed 1000 for process skill.'
+      operationId: AddFilesToTransaction
+      parameters:
+      - name: transactionId
+        in: path
+        description: 'Transaction identifier. You receive it in the response after the transaction has been
+
+          successfully created.'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Model:
+                  type: object
+                  properties:
+                    files:
+                      type:
+                      - array
+                      - 'null'
+                      items:
+                        $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileMetadataDto'
+                      description: Files processing parameters
+                  additionalProperties: false
+                  description: Additional transaction processing parameters. See TransactionMetadataDto model.
+                Files:
+                  type: array
+                  items:
+                    type: string
+                    description: Model for getting file passed in multipart/* content
+                    format: binary
+            encoding:
+              Model:
+                contentType: application/json
+                style: form
+                explode: true
+              Files:
+                contentType: application/octet-stream
+                style: form
+                explode: true
+      responses:
+        '200':
+          description: Files successfully added. The response body is empty.
+        '400':
+          description: Invalid required parameter or max file size exceeded
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Transaction not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '409':
+          description: A file with the same name already exists in the transaction. File names must be unique within a transaction.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+  /api/publicapi/v1/transactions/{transactionId}/start:
+    post:
+      tags:
+      - Transactions
+      summary: Starts the transaction
+      description: Starts processing with the specified transaction.
+      operationId: StartTransaction
+      parameters:
+      - name: transactionId
+        in: path
+        description: 'Transaction identifier. You receive it in the response after the transaction has been
+
+          successfully created.'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Transaction successfully started. The response body is empty.
+        '400':
+          description: Transaction cannot be started
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Transaction not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      x-mint:
+        content: <Note>For where this call fits in the processing sequence, see [Processing documents with separate API calls](/vantage/developer/processing-documents/processing-documents-with-separate-api-calls).</Note>
+  /api/publicapi/v1/transactions/{transactionId}/mobileInputLink:
+    post:
+      tags:
+      - Transactions
+      summary: Generates link to run mobile input with one time auth token to inject image to…
+      description: 'Link can be requested for a non-running transaction.
+
+        The token in the link gives the right to add files and start a specific transaction without the ability to get processing results.'
+      operationId: GenerateMobileInputLink
+      parameters:
+      - name: transactionId
+        in: path
+        description: 'Transaction identifier. You receive it in the response after the transaction has been
+
+          successfully created.'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: New link successfully generated
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.MobileInputLinkResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.MobileInputLinkResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.MobileInputLinkResult'
+        '400':
+          description: Link can not be generated because transaction has invalid status
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Transaction not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+  /api/publicapi/v1/transactions/launch:
+    post:
+      tags:
+      - Transactions
+      summary: Starts processing of the files in new transaction
+      description: 'Creates a transaction that will be used to process some files.
+
+        The maximum size of request body should not exceed 2 GB.
+
+        The transaction will start automatically.'
+      operationId: LaunchTransaction
+      parameters:
+      - name: skillId
+        in: query
+        schema:
+          type: string
+        description: Identifier of the skill to process the files with. You can find it in the list of all skills returned by `GET /api/publicapi/v1/skills`.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Model:
+                  type: object
+                  properties:
+                    files:
+                      type:
+                      - array
+                      - 'null'
+                      items:
+                        $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileMetadataDto'
+                      description: Files processing parameters
+                    registrationParameters:
+                      maxItems: 10
+                      type:
+                      - array
+                      - 'null'
+                      items:
+                        $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionRegistrationParameter'
+                      description: Additional registration parameters for transaction
+                    skillParameters:
+                      maxItems: 10
+                      type:
+                      - array
+                      - 'null'
+                      items:
+                        $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionSkillParameter'
+                      description: Skill parameters for transaction
+                  additionalProperties: false
+                  description: Additional transaction processing parameters. See TransactionLaunchMetadataDto model.
+                Files:
+                  type: array
+                  items:
+                    type: string
+                    description: Model for getting file passed in multipart/* content
+                    format: binary
+            encoding:
+              Model:
+                contentType: application/json
+                style: form
+                explode: true
+              Files:
+                contentType: application/octet-stream
+                style: form
+                explode: true
+      responses:
+        '201':
+          description: Transaction successfully created and started
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.CreatedTransactionResult'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.CreatedTransactionResult'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.CreatedTransactionResult'
+        '400':
+          description: Some files are invalid or skillId is not specified
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Skill with specified skillId not found or not published
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      x-mint:
+        content: <Note>For a step-by-step walkthrough of the single-call scenario, see [Processing documents with a single API call](/vantage/developer/processing-documents/processing-documents-single-api). New to the API? Start with the [Getting started guide](/vantage/developer/getting-started).</Note>
+  /api/publicapi/v1/transactions/{transactionId}:
+    get:
+      tags:
+      - Transactions
+      summary: Gets transaction info
+      description: 'Gets the details of the transaction, including the link to the results if processing has finished, or the manual
+
+        review link if manual review is needed.'
+      operationId: GetTransactionInfo
+      parameters:
+      - name: transactionId
+        in: path
+        description: 'Transaction identifier. You receive it in the response after the transaction has been
+
+          successfully created.'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Transaction info is successfully returned
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDto'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDto'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Transaction not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+    delete:
+      tags:
+      - Transactions
+      summary: Deletes the transaction
+      description: The transaction will be deleted within a few minutes
+      operationId: DeleteTransaction
+      parameters:
+      - name: transactionId
+        in: path
+        description: 'Transaction identifier. You receive it in the response after the transaction has been
+
+          successfully created.'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: 'Deletion accepted. The response body is empty. Deletion is asynchronous: the transaction remains readable for a short time (typically under a minute, at most a few minutes) and then returns 404.'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Transaction not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+  /api/publicapi/v1/transactions/{transactionId}/files/{fileId}/download:
+    get:
+      tags:
+      - Transactions
+      summary: Downloads the result files
+      description: Downloads the result file of the transaction.
+      operationId: DownloadFile
+      parameters:
+      - name: transactionId
+        in: path
+        description: Transaction identifier. You receive it in the response after the transaction has been successfully created.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: fileId
+        in: path
+        description: File identifier. You can find it in the transaction details, under documents - resultFiles.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returns the raw bytes of the requested result file. The `fileId` comes from the transaction status response (`documents[].resultFiles[]`), where each entry also has a `type`: a Document skill produces a `Json` file (full results and field metadata; structure described in the [JSON schema reference](/vantage/developer/output/json/json-schema)) and a `FieldsJson` file (extracted values only). Other formats (XML, and so on) depend on the skill''s export settings. The example below shows an abridged values-only (`FieldsJson`) result.'
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+              example:
+                Version: '3.0'
+                Fields:
+                  Invoice Number: INV-2024-0042
+                  Invoice Date: 01/15/2024
+                  Currency: USD
+                  Total: 1,250.00
+                  Business Unit:
+                    Name: Acme Corp
+                    City: Springfield
+                    CountryCode: US
+                  Line Items:
+                  - Description: Widget, industrial grade
+                    Quantity: '2'
+                    Unit Price: '625.00'
+                    Total Price: 1,250.00
+        '403':
+          description: Forbidden
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Transaction or file not found
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      x-mint:
+        content: <Note>For how to find result file identifiers and download extracted data, see [Processing documents with a single API call](/vantage/developer/processing-documents/processing-documents-single-api).</Note>
+  /api/publicapi/v1/transactions/{transactionId}/registrationParameters:
+    get:
+      tags:
+      - Transactions
+      summary: Gets registration parameters for the transaction
+      operationId: GetTransactionRegistrationParameters
+      parameters:
+      - name: transactionId
+        in: path
+        description: 'Transaction identifier. You receive it in the response after the transaction has been
+
+          successfully created.'
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Transaction registration parameters successfully returned
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionRegistrationParameterDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionRegistrationParameterDto'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionRegistrationParameterDto'
+        '400':
+          description: Some parameters are invalid
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Transaction not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      description: Returns the registration parameters (key-value pairs) attached to the transaction, such as `SourceFileName` or custom parameters you set when creating the transaction. For how registration parameters work, see Using registration parameters.
+  /api/publicapi/v1/transactions/{transactionId}/skillParameters:
+    get:
+      tags:
+      - Transactions
+      summary: Gets the skill parameters that are set for the transaction
+      description: The passed parameters take precedence over the default parameters of the skill
+      operationId: GetTransactionSkillParameters
+      parameters:
+      - name: transactionId
+        in: path
+        description: Transaction identifier
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Skill parameters successfully returned
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionSkillParameterDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionSkillParameterDto'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionSkillParameterDto'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+        '404':
+          description: Transaction not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+  /api/publicapi/v1/transactions/active:
+    get:
+      tags:
+      - Transactions
+      summary: Returns active transactions with specified parameters
+      operationId: GetActiveTransactions
+      parameters:
+      - name: StageType
+        in: query
+        description: Actual stage of transaction
+        schema:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.StageType'
+      - name: StageName
+        in: query
+        description: Actual stage's name of transaction
+        schema:
+          type: string
+          description: Actual stage's name of transaction
+      - name: SkillId
+        in: query
+        description: 'Available skill''s ID (according to permissions). If this field is empty,
+
+          then all the available skills will be used as filter.'
+        schema:
+          type: string
+          description: 'Available skill''s ID (according to permissions). If this field is empty,
+
+            then all the available skills will be used as filter.'
+      - name: SkillVersion
+        in: query
+        description: Only available skills can be filtered by their versions
+        schema:
+          type: integer
+          description: Only available skills can be filtered by their versions
+          format: int32
+      - name: StartDate
+        in: query
+        description: 'Minimum creation time of the transactions.
+
+          Time must be defined in UTC format.'
+        schema:
+          type: string
+          description: 'Minimum creation time of the transactions.
+
+            Time must be defined in UTC format.'
+          format: date-time
+      - name: EndDate
+        in: query
+        description: 'Maximum creation time of the transactions.
+
+          Time must be defined in UTC format.
+
+          If not given, the current UTC time will be used.'
+        schema:
+          type: string
+          description: 'Maximum creation time of the transactions.
+
+            Time must be defined in UTC format.
+
+            If not given, the current UTC time will be used.'
+          format: date-time
+      - name: TransactionParameters
+        in: query
+        description: 'List of transaction parameters.
+
+          Retrieved transactions should contain all the parameters'
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter'
+          description: 'List of transaction parameters.
+
+            Retrieved transactions should contain all the parameters'
+      - name: DocumentParameters
+        in: query
+        description: 'List of document parameters.
+
+          Retrieved transactions should contain all the parameters'
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter'
+          description: 'List of document parameters.
+
+            Retrieved transactions should contain all the parameters'
+      - name: Offset
+        in: query
+        description: 'Pagination offset (default: 0)'
+        schema:
+          type: integer
+          description: 'Pagination offset (default: 0)'
+          format: int32
+      - name: Limit
+        in: query
+        description: The pagination limit. Required; accepted values are 1 to 1000.
+        schema:
+          type: integer
+          description: Pagination limit
+          format: int32
+        required: true
+      responses:
+        '200':
+          description: Returns the matching active transactions as JSON. The upstream API specification does not declare a response schema for this endpoint; the example below shows the observed response shape. For field-level details, see [Working with transactions](/vantage/developer/transactions).
+          content:
+            application/json:
+              example:
+                items:
+                - stage: ManualReview
+                  stageName: Review
+                  transactionId: 56a50415-fe1d-4493-81ba-97ff07e3ffce
+                  createTimeUtc: '2023-09-11T13:53:30.633Z'
+                  transactionParameters:
+                  - isReadOnly: true
+                    key: App
+                    value: PublicAPI
+                  fileParameters:
+                  - isReadOnly: true
+                    key: Index
+                    value: '0'
+                  - isReadOnly: true
+                    key: SourceFileName
+                    value: BillofLading_1.pdf
+                  - isReadOnly: true
+                    key: SourceType
+                    value: PublicAPI
+                  skillId: workspace.default.processing
+                  skillVersion: 18
+                  documentCount: 1
+                totalItemCount: 7
+        '400':
+          description: EndDate must be greater than start date
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      description: Returns transactions that are currently being processed, filtered by stage, skill, creation time, or registration parameters. Use this to track transactions waiting at the Manual Review stage. For a walkthrough, see Getting a list of transactions.
+  /api/publicapi/v1/transactions/completed:
+    get:
+      tags:
+      - Transactions
+      summary: Returns completed transactions with specified parameters
+      operationId: GetCompletedTransactions
+      parameters:
+      - name: TransactionStatus
+        in: query
+        description: Active Transactions status
+        schema:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.CompletedTransactionStatus'
+      - name: SkillId
+        in: query
+        description: 'Available skill''s ID (according to permissions). If this field is empty,
+
+          then all the available skills will be used as filter.'
+        schema:
+          type: string
+          description: 'Available skill''s ID (according to permissions). If this field is empty,
+
+            then all the available skills will be used as filter.'
+      - name: SkillVersion
+        in: query
+        description: Only available skills can be filtered by their versions
+        schema:
+          type: integer
+          description: Only available skills can be filtered by their versions
+          format: int32
+      - name: StartDate
+        in: query
+        description: 'Minimum creation time of the transactions.
+
+          Time must be defined in UTC format.'
+        schema:
+          type: string
+          description: 'Minimum creation time of the transactions.
+
+            Time must be defined in UTC format.'
+          format: date-time
+      - name: EndDate
+        in: query
+        description: 'Maximum creation time of the transactions.
+
+          Time must be defined in UTC format.
+
+          If not given, the current UTC time will be used.'
+        schema:
+          type: string
+          description: 'Maximum creation time of the transactions.
+
+            Time must be defined in UTC format.
+
+            If not given, the current UTC time will be used.'
+          format: date-time
+      - name: TransactionParameters
+        in: query
+        description: 'List of transaction parameters.
+
+          Retrieved transactions should contain all the parameters'
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter'
+          description: 'List of transaction parameters.
+
+            Retrieved transactions should contain all the parameters'
+      - name: DocumentParameters
+        in: query
+        description: 'List of document parameters.
+
+          Retrieved transactions should contain all the parameters'
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter'
+          description: 'List of document parameters.
+
+            Retrieved transactions should contain all the parameters'
+      - name: Offset
+        in: query
+        description: 'Pagination offset (default: 0)'
+        schema:
+          type: integer
+          description: 'Pagination offset (default: 0)'
+          format: int32
+      - name: Limit
+        in: query
+        description: The pagination limit. Required; accepted values are 1 to 1000.
+        schema:
+          type: integer
+          description: Pagination limit
+          format: int32
+        required: true
+      responses:
+        '200':
+          description: Returns the matching completed transactions and their processed page counts as JSON. The upstream API specification does not declare a response schema for this endpoint; the example below shows the observed response shape. For field-level details, see [Working with transactions](/vantage/developer/transactions).
+          content:
+            application/json:
+              example:
+                items:
+                - status: Processed
+                  pageCount: 1
+                  transactionId: fc9920fe-f788-47f8-9972-b767493faed9
+                  createTimeUtc: '2023-09-11T13:47:50.273Z'
+                  transactionParameters:
+                  - isReadOnly: true
+                    key: App
+                    value: PublicAPI
+                  fileParameters:
+                  - isReadOnly: true
+                    key: Index
+                    value: '0'
+                  - isReadOnly: true
+                    key: SourceFileName
+                    value: BillofLading_1.pdf
+                  - isReadOnly: true
+                    key: SourceType
+                    value: PublicAPI
+                  skillId: 3f6b1c2a-8d4e-4f5a-9b0c-7e1d2a3b4c5d
+                  skillVersion: 1
+                  documentCount: 1
+                totalItemCount: 7
+        '400':
+          description: EndDate must be greater than start date
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails'
+      description: Returns transactions that have finished processing (processed, cancelled, or failed), filtered by status, skill, creation time, or registration parameters. Use this to find transactions whose result files are ready to download. For a walkthrough, see Getting a list of transactions.
+components:
+  schemas:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionRegistrationParameter:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          minLength: 1
+          type: string
+          description: Key (name) of the parameter
+        value:
+          minLength: 1
+          type: string
+          description: Value of the parameter
+      additionalProperties: false
+      description: Transaction registration parameter
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions:
+      type: object
+      properties:
+        autoCrop:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
+          description: Controls automatic cropping of images during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
+        autoOrientation:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
+          description: Controls automatic page orientation correction during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
+      additionalProperties: false
+      description: Image preprocessing settings for import
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.CreatedTransactionResult:
+      required:
+      - transactionId
+      type: object
+      properties:
+        transactionId:
+          type: string
+          format: uuid
+          description: Unique identifier of the created transaction. Use it in subsequent requests to add files, start processing, and download results.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: Unique identifier of the file
+        name:
+          minLength: 1
+          type: string
+          description: Name of the file. Must be unique to transaction
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionResult:
+      required:
+      - transactionId
+      type: object
+      properties:
+        transactionId:
+          type: string
+          format: uuid
+          description: Unique identifier of the new transaction. Use it to monitor the transaction status and download result files.
+        mobileInputLink:
+          type:
+          - string
+          - 'null'
+          description: 'Mobile input link which contains one time authorization token for current transaction.
+
+            Parameter is returned if generateMobileInputLink=true'
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileMetadataDto:
+      type: object
+      properties:
+        index:
+          type:
+          - integer
+          - 'null'
+          description: Documents in transaction will be ordered by this parameter
+          format: int32
+        imageProcessingOptions:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions'
+          description: Image preprocessing settings (automatic cropping and orientation correction) applied to this file on import.
+        registrationParameters:
+          maxItems: 10
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter'
+          description: "Additional file registration parameters. Predefined parameters:\n            \nSourceType: Where the file came from, usually the connector name (scanning station);\n            \nSourceDetails: How the file was received;\n            \nSourceFileName: The name of the file being added (invoice.jfif)\n            \nSourceFilePath: The path to the file\n            \nSourceArchiveName: The name of the archive containing the file being added\n            \nSourceFolderName: The name of the subfolder which containing the file being added"
+      additionalProperties: false
+      description: Additional file processing parameters
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          minLength: 1
+          type: string
+          description: Key (name) of the parameter
+        value:
+          minLength: 1
+          type: string
+          description: Value of the parameter
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationConfidenceDto:
+      required:
+      - classId
+      - className
+      - confidence
+      type: object
+      properties:
+        classId:
+          minLength: 1
+          type: string
+          description: Identifier of the candidate class.
+        className:
+          minLength: 1
+          type: string
+          description: Name of the candidate class.
+        confidence:
+          type: integer
+          format: int32
+          description: Classification confidence for this class, an integer from 0 to 100.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationDto:
+      required:
+      - classConfidences
+      - isResultClassConfident
+      - resultClass
+      type: object
+      properties:
+        isResultClassConfident:
+          type: boolean
+          description: Indicates whether the document was assigned to the result class with sufficient confidence.
+        resultClass:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassDto'
+          description: Class that the classification skill assigned to the document.
+        classConfidences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationConfidenceDto'
+          description: List of all classes available in the applied classification skill, together with the classification confidence for each class.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.SkillParameterType:
+      enum:
+      - String
+      - Catalog
+      - Bool
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ResultFileDto:
+      required:
+      - fileId
+      - fileName
+      - type
+      type: object
+      properties:
+        fileId:
+          minLength: 1
+          type: string
+          description: Uuid in storage
+        fileName:
+          minLength: 1
+          type: string
+          description: 'Predefined scheme: [documents skill name].[extension]'
+        type:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.ResultFileType'
+          description: Format of the result file, for example `Json`, `Pdf`, `Xlsx`, or `OcrJson`. The formats produced depend on the export settings of the skill. See [Output file types](/vantage/developer/output/output-file-types).
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest:
+      required:
+      - skillId
+      type: object
+      properties:
+        skillId:
+          minLength: 1
+          type: string
+          description: Id of the skill to be applied to the files
+        generateMobileInputLink:
+          type: boolean
+          description: Generate URL to run mobile input with one time auth token to inject image to specific transaction
+          default: false
+        registrationParameters:
+          maxItems: 10
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionRegistrationParameter'
+          description: Additional registration parameters for transaction
+        skillParameters:
+          maxItems: 10
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionSkillParameter'
+          description: Skill parameters for transaction
+      additionalProperties: false
+      description: Transaction creation parameters
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionSkillParameterDto:
+      type: object
+      properties:
+        key:
+          type:
+          - string
+          - 'null'
+          description: Key (name) of the parameter
+        value:
+          type:
+          - string
+          - 'null'
+          description: Value of the parameter
+        type:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.SkillParameterType'
+          description: Type of the parameter value. One of `String`, `Catalog`, or `Bool`.
+      additionalProperties: false
+      description: Transaction skill parameter
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter:
+      type: object
+      properties:
+        key:
+          type:
+          - string
+          - 'null'
+          description: Key (name) of the registration parameter to filter by, for example `SourceFileName`.
+        value:
+          type:
+          - string
+          - 'null'
+          description: Value of the registration parameter to filter by. Returned transactions must contain the parameter with this exact value.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ExtractedDocumentDto:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the document within the transaction.
+        resultFiles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ResultFileDto'
+          description: Will be empty for classification skill
+        classification:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationDto'
+          description: Classification result for the document. Returned when the applied skill performs classification.
+        businessRulesErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.DocumentBusinessRulesErrorDto'
+          description: Business rule errors raised while processing the document. Empty when all rules passed.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher:
+      enum:
+      - Default
+      - 'Yes'
+      - 'No'
+      type: string
+      description: Switcher of image preprocessing operations
+    Abbyy.Vantage.PublicApi.Contract.Transactions.ResultFileType:
+      enum:
+      - Json
+      - Pdf
+      - Text
+      - Docx
+      - Xlsx
+      - OcrJson
+      - FieldsJson
+      - FieldPicture
+      - Xml
+      - Tiff
+      - Jpeg
+      - Csv
+      - Html
+      - Pptx
+      - Alto
+      - Png
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.CompletedTransactionStatus:
+      enum:
+      - Processed
+      - Cancelled
+      - Failed
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.StageType:
+      enum:
+      - ManualReview
+      - CustomActivity
+      - Automatic
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionSkillParameter:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          minLength: 1
+          type: string
+          description: Key (name) of the parameter
+        value:
+          minLength: 1
+          type: string
+          description: Value of the parameter
+      additionalProperties: false
+      description: Skill parameter for transaction
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionRegistrationParameterDto:
+      type: object
+      properties:
+        key:
+          type:
+          - string
+          - 'null'
+          description: Key (name) of the parameter
+        value:
+          type:
+          - string
+          - 'null'
+          description: Value of the parameter
+      additionalProperties: false
+      description: Transaction registration parameter
+    Abbyy.Vantage.PublicApi.Contract.Transactions.TransactionStatus:
+      enum:
+      - New
+      - Processing
+      - Processed
+      - Failed
+      - Canceled
+      type: string
+    Microsoft.AspNetCore.Mvc.ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - string
+          - 'null'
+          description: Short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          description: HTTP status code for this occurrence of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies this specific occurrence of the problem.
+      additionalProperties: {}
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.DocumentBusinessRulesErrorDto:
+      required:
+      - currentFieldId
+      - errorType
+      - ruleId
+      type: object
+      properties:
+        errorType:
+          minLength: 1
+          type: string
+          description: Normalization, Condition, Unknown...
+        customMessage:
+          type:
+          - string
+          - 'null'
+          description: Custom error message
+        ruleId:
+          minLength: 1
+          type: string
+          description: ID of the rule that encountered the error
+        currentFieldId:
+          minLength: 1
+          type: string
+          description: ID of the field in the context that the rule was run and the error was generated
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassDto:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the class assigned by the classification skill.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the class assigned by the classification skill.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.MobileInputLinkResult:
+      required:
+      - transactionId
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: 'Transaction identifier.
+
+            You receive it in the response after the transaction has been successfully created.'
+          format: uuid
+        mobileInputLink:
+          type:
+          - string
+          - 'null'
+          description: Mobile input link which contains one time authorization token for current transaction.
+      additionalProperties: false
+      description: Result of link generation
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDto:
+      required:
+      - id
+      - status
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the transaction.
+        status:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.TransactionStatus'
+          description: Current status of the transaction. One of `New`, `Processing`, `Processed`, `Failed`, or `Canceled`.
+        manualReviewLink:
+          type:
+          - string
+          - 'null'
+          description: Link to the Manual Review client with a one-time access token, returned when the transaction requires manual review. The link is valid for 168 hours. See [Integrating manual review](/vantage/developer/integrating-manual-review).
+        documents:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ExtractedDocumentDto'
+          description: Documents produced by the transaction, each with its result files, classification result, and business rule errors.
+        error:
+          type:
+          - string
+          - 'null'
+          description: Error message describing why the transaction failed, if it failed.
+        sourceFiles:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto'
+          description: Source files that were uploaded to the transaction.
+      additionalProperties: false
+  securitySchemes:
+    OAuth2Security:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://vantage-us.abbyy.com/auth2/connect/authorize
+          tokenUrl: https://vantage-us.abbyy.com/auth2/connect/token
+          scopes:
+            global.wildcard: Global wildcard
+            openid: User Id
+            permissions: User permissions
