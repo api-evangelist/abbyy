@@ -461,15 +461,44 @@ paths:
       description: Downloads the original file that was uploaded to the transaction document, returned as a binary stream. You can find file identifiers in the transaction document info.
 components:
   schemas:
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionDocumentResult:
-      required:
-      - documentId
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions:
       type: object
       properties:
-        documentId:
+        autoCrop:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
+          description: Controls automatic cropping of images during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
+        autoOrientation:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
+          description: Controls automatic page orientation correction during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
+      additionalProperties: false
+      description: Image preprocessing settings for import
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentCreateRequest:
+      type: object
+      properties:
+        index:
+          type:
+          - integer
+          - 'null'
+          description: Documents in transaction will be ordered by this parameter
+          format: int32
+        imageProcessingOptions:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions'
+          description: Image preprocessing settings (automatic cropping and orientation correction) applied to files imported into this document.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          minLength: 1
           type: string
-          description: Document Id
-          format: uuid
+          description: Key (name) of the parameter
+        value:
+          minLength: 1
+          type: string
+          description: Value of the parameter
       additionalProperties: false
     Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDocumentResult:
       required:
@@ -486,51 +515,6 @@ components:
           items:
             $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto'
           description: Source files collection
-      additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentFileMetadataDto:
-      type: object
-      properties:
-        index:
-          type:
-          - integer
-          - 'null'
-          description: Files in document in transaction will be ordered by this parameter
-          format: int32
-        registrationParameters:
-          maxItems: 10
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter'
-          description: "Additional file registration parameters. Predefined parameters:\n            \nSourceType: Where the file came from, usually the connector name (scanning station);\n            \nSourceDetails: How the file was received;\n            \nSourceFileName: The name of the file being added (invoice.jfif)\n            \nSourceFilePath: The path to the file\n            \nSourceArchiveName: The name of the archive containing the file being added\n            \nSourceFolderName: The name of the subfolder which containing the file being added"
-      additionalProperties: false
-      description: Additional file processing parameters
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions:
-      type: object
-      properties:
-        autoCrop:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
-          description: Controls automatic cropping of images during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
-        autoOrientation:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
-          description: Controls automatic page orientation correction during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
-      additionalProperties: false
-      description: Image preprocessing settings for import
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          minLength: 1
-          type: string
-          description: Unique identifier of the file
-        name:
-          minLength: 1
-          type: string
-          description: Name of the file. Must be unique to transaction
       additionalProperties: false
     Microsoft.AspNetCore.Mvc.ProblemDetails:
       type: object
@@ -562,18 +546,30 @@ components:
           - 'null'
           description: URI reference that identifies this specific occurrence of the problem.
       additionalProperties: {}
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentCreateRequest:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto:
+      required:
+      - id
+      - name
       type: object
       properties:
-        index:
-          type:
-          - integer
-          - 'null'
-          description: Documents in transaction will be ordered by this parameter
-          format: int32
-        imageProcessingOptions:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions'
-          description: Image preprocessing settings (automatic cropping and orientation correction) applied to files imported into this document.
+        id:
+          minLength: 1
+          type: string
+          description: Unique identifier of the file
+        name:
+          minLength: 1
+          type: string
+          description: Name of the file. Must be unique to transaction
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionDocumentResult:
+      required:
+      - documentId
+      type: object
+      properties:
+        documentId:
+          type: string
+          description: Document Id
+          format: uuid
       additionalProperties: false
     Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher:
       enum:
@@ -582,21 +578,25 @@ components:
       - 'No'
       type: string
       description: Switcher of image preprocessing operations
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter:
-      required:
-      - key
-      - value
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentFileMetadataDto:
       type: object
       properties:
-        key:
-          minLength: 1
-          type: string
-          description: Key (name) of the parameter
-        value:
-          minLength: 1
-          type: string
-          description: Value of the parameter
+        index:
+          type:
+          - integer
+          - 'null'
+          description: Files in document in transaction will be ordered by this parameter
+          format: int32
+        registrationParameters:
+          maxItems: 10
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter'
+          description: "Additional file registration parameters. Predefined parameters:\n            \nSourceType: Where the file came from, usually the connector name (scanning station);\n            \nSourceDetails: How the file was received;\n            \nSourceFileName: The name of the file being added (invoice.jfif)\n            \nSourceFilePath: The path to the file\n            \nSourceArchiveName: The name of the archive containing the file being added\n            \nSourceFolderName: The name of the subfolder which containing the file being added"
       additionalProperties: false
+      description: Additional file processing parameters
   securitySchemes:
     OAuth2Security:
       type: oauth2

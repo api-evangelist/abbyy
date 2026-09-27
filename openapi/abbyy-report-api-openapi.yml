@@ -309,54 +309,6 @@ paths:
       description: Downloads one CSV result file of a completed transaction steps export. Each row is one processing step of a transaction, such as OCR, classification, or Manual Review. Result files are stored for 2 weeks after the export request completes.
 components:
   schemas:
-    CreateTransactionStepsCsvRequest:
-      type: object
-      properties:
-        filters:
-          allOf:
-          - $ref: '#/components/schemas/AsyncStepReportFilters'
-          description: Transaction steps filters
-        sendEmailNotification:
-          type: boolean
-          description: Enables to send notification on request processing completion
-      additionalProperties: false
-    ReportRequestStatusResponse:
-      type: object
-      properties:
-        status:
-          allOf:
-          - $ref: '#/components/schemas/ReportRequestStatus'
-          description: Actual status of the request
-        totalFileCount:
-          type:
-          - string
-          - 'null'
-          description: 'Number of result files in case of successfully finished processing
-
-            Result files can be accessed by their indexes'
-        correlationId:
-          type:
-          - string
-          - 'null'
-          description: 'Correlation ID of the report creation procedure
-
-            In case of failure or cancellation correlation ID helps for further investigation'
-        filters:
-          allOf:
-          - $ref: '#/components/schemas/AsyncStepReportFilters'
-          description: The filters used, to generate the report
-      additionalProperties: false
-    ListReportRequestsResponse:
-      type: object
-      properties:
-        requests:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ListReportRequestsResponseReportRequestDto'
-          description: Details about available requests created by the current user
-      additionalProperties: false
     AsyncStepReportFilters:
       required:
       - startDate
@@ -381,15 +333,15 @@ components:
           description: Maximum step completion date (current UTC time if empty)
           format: date-time
       additionalProperties: false
-    ReportRequestStatus:
-      enum:
-      - New
-      - Queued
-      - Processing
-      - Succeeded
-      - Failed
-      - Cancelled
-      type: string
+    CreateReportRequestResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Unique identifier of the report generation request. Pass it to the status and result endpoints.
+      additionalProperties: false
+      description: Response returned after a transaction steps export request is created. Contains the request ID used to poll the export status and download the result files.
     ListReportRequestsResponseReportRequestDto:
       type: object
       properties:
@@ -420,15 +372,63 @@ components:
         filters:
           description: All the filter parameters which were given for report creation
       additionalProperties: false
-    CreateReportRequestResponse:
+    ReportRequestStatusResponse:
       type: object
       properties:
-        requestId:
-          type: string
-          format: uuid
-          description: Unique identifier of the report generation request. Pass it to the status and result endpoints.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ReportRequestStatus'
+          description: Actual status of the request
+        totalFileCount:
+          type:
+          - string
+          - 'null'
+          description: 'Number of result files in case of successfully finished processing
+
+            Result files can be accessed by their indexes'
+        correlationId:
+          type:
+          - string
+          - 'null'
+          description: 'Correlation ID of the report creation procedure
+
+            In case of failure or cancellation correlation ID helps for further investigation'
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/AsyncStepReportFilters'
+          description: The filters used, to generate the report
       additionalProperties: false
-      description: Response returned after a transaction steps export request is created. Contains the request ID used to poll the export status and download the result files.
+    ReportRequestStatus:
+      enum:
+      - New
+      - Queued
+      - Processing
+      - Succeeded
+      - Failed
+      - Cancelled
+      type: string
+    CreateTransactionStepsCsvRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/AsyncStepReportFilters'
+          description: Transaction steps filters
+        sendEmailNotification:
+          type: boolean
+          description: Enables to send notification on request processing completion
+      additionalProperties: false
+    ListReportRequestsResponse:
+      type: object
+      properties:
+        requests:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ListReportRequestsResponseReportRequestDto'
+          description: Details about available requests created by the current user
+      additionalProperties: false
   securitySchemes:
     OAuth2Security:
       type: oauth2

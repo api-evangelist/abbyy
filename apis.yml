@@ -46,6 +46,7 @@ tags:
 - Agent Skills
 - RPA
 - Enterprise Automation
+- A2A
 url: https://raw.githubusercontent.com/api-evangelist/abbyy/refs/heads/main/apis.yml
 created: '2026-03-27'
 modified: '2026-08-29'
@@ -426,3 +427,10 @@ x-enrichment:
   status: enriched
   artifacts_added: 26
   pass: local-v1
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://docs.abbyy.com/.well-known/agent-card.json"
+  grade: "conformant"
+  protocol_version: "0.3"
+  control: 404

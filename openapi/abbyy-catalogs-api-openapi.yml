@@ -200,12 +200,90 @@ paths:
       description: Returns the status of a catalog reindex operation started with the reindex request. Poll this endpoint until `currentState` is `Completed` (or `Failed`). Until reindexing completes, skills continue to search the previous version of the catalog data.
 components:
   schemas:
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto:
+      required:
+      - columns
+      - id
+      - name
+      - rowCount
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: Unique identifier of the catalog
+        name:
+          minLength: 1
+          type: string
+          description: Name of the catalog
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ColumnDto'
+          description: Columns of the catalog
+        rowCount:
+          type: integer
+          description: Total number of rows in the catalog
+          format: int32
+      additionalProperties: false
     Abbyy.Vantage.PublicApi.Contract.Catalogs.ReindexState:
       enum:
       - InProgress
       - Failed
       - Completed
       type: string
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+          description: Unique identifier of the catalog
+        name:
+          minLength: 1
+          type: string
+          description: Name of the catalog
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.ColumnType:
+      enum:
+      - Text
+      - Double
+      - Integer
+      - Date
+      type: string
+    Microsoft.AspNetCore.Mvc.ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies the problem type.
+        title:
+          type:
+          - string
+          - 'null'
+          description: Short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          description: HTTP status code for this occurrence of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies this specific occurrence of the problem.
+      additionalProperties: {}
     Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult:
       type: object
       properties:
@@ -239,39 +317,6 @@ components:
           $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.ReindexState'
           description: Current state of the reindex operation. One of `InProgress`, `Failed`, or `Completed`. Skills search the updated catalog data only after the state is `Completed`.
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto:
-      required:
-      - columns
-      - id
-      - name
-      - rowCount
-      type: object
-      properties:
-        id:
-          minLength: 1
-          type: string
-          description: Unique identifier of the catalog
-        name:
-          minLength: 1
-          type: string
-          description: Name of the catalog
-        columns:
-          type: array
-          items:
-            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ColumnDto'
-          description: Columns of the catalog
-        rowCount:
-          type: integer
-          description: Total number of rows in the catalog
-          format: int32
-      additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Catalogs.ColumnType:
-      enum:
-      - Text
-      - Double
-      - Integer
-      - Date
-      type: string
     Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ColumnDto:
       required:
       - name
@@ -289,51 +334,6 @@ components:
         notEmpty:
           type: boolean
           description: ''
-      additionalProperties: false
-    Microsoft.AspNetCore.Mvc.ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - string
-          - 'null'
-          description: Short, human-readable summary of the problem type.
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          description: HTTP status code for this occurrence of the problem.
-        detail:
-          type:
-          - string
-          - 'null'
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: URI reference that identifies this specific occurrence of the problem.
-      additionalProperties: {}
-    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          minLength: 1
-          type: string
-          description: Unique identifier of the catalog
-        name:
-          minLength: 1
-          type: string
-          description: Name of the catalog
       additionalProperties: false
   securitySchemes:
     OAuth2Security:
