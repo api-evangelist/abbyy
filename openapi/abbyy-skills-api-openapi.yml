@@ -113,23 +113,33 @@ components:
             $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.FieldDto'
           description: Child fields of a group field, such as the columns of a table. Empty for simple fields.
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Skills.Results.InnerSkillDto:
+    Abbyy.Vantage.PublicApi.Contract.FieldType:
+      enum:
+      - Barcode
+      - Checkmark
+      - CheckmarkGroup
+      - Group
+      - Picture
+      - Text
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto:
+      required:
+      - id
+      - name
       type: object
       properties:
         id:
-          type:
-          - string
-          - 'null'
-          description: Identifier of a skill included in the process skill.
+          minLength: 1
+          type: string
+          description: Identifier of the skill. Use this value as the `skillId` in transaction requests.
+        name:
+          minLength: 1
+          type: string
+          description: Name of the skill as shown in Vantage.
+        type:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.SkillType'
+          description: Type of the skill. One of `Classification`, `Document`, `Process`, `Ocr`, or `Assembling`.
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Skills.SkillType:
-      enum:
-      - Classification
-      - Document
-      - Process
-      - Ocr
-      - Assembling
-      type: string
     Microsoft.AspNetCore.Mvc.ProblemDetails:
       type: object
       properties:
@@ -160,14 +170,13 @@ components:
           - 'null'
           description: URI reference that identifies this specific occurrence of the problem.
       additionalProperties: {}
-    Abbyy.Vantage.PublicApi.Contract.FieldType:
+    Abbyy.Vantage.PublicApi.Contract.Skills.SkillType:
       enum:
-      - Barcode
-      - Checkmark
-      - CheckmarkGroup
-      - Group
-      - Picture
-      - Text
+      - Classification
+      - Document
+      - Process
+      - Ocr
+      - Assembling
       type: string
     Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillDto:
       type: object
@@ -207,6 +216,15 @@ components:
             $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.InnerSkillDto'
           description: For process skills. Lists the skills that the process skill includes.
       additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Skills.Results.InnerSkillDto:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Identifier of a skill included in the process skill.
+      additionalProperties: false
     Abbyy.Vantage.PublicApi.Contract.Skills.TextFieldFormat:
       enum:
       - Text
@@ -227,24 +245,6 @@ components:
           - string
           - 'null'
           description: Name of the class defined in the classification skill.
-      additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          minLength: 1
-          type: string
-          description: Identifier of the skill. Use this value as the `skillId` in transaction requests.
-        name:
-          minLength: 1
-          type: string
-          description: Name of the skill as shown in Vantage.
-        type:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.SkillType'
-          description: Type of the skill. One of `Classification`, `Document`, `Process`, `Ocr`, or `Assembling`.
       additionalProperties: false
   securitySchemes:
     OAuth2Security:

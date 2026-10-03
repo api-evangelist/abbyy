@@ -200,6 +200,12 @@ paths:
       description: Returns the status of a catalog reindex operation started with the reindex request. Poll this endpoint until `currentState` is `Completed` (or `Failed`). Until reindexing completes, skills continue to search the previous version of the catalog data.
 components:
   schemas:
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.ReindexState:
+      enum:
+      - InProgress
+      - Failed
+      - Completed
+      type: string
     Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogDto:
       required:
       - columns
@@ -226,12 +232,6 @@ components:
           description: Total number of rows in the catalog
           format: int32
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Catalogs.ReindexState:
-      enum:
-      - InProgress
-      - Failed
-      - Completed
-      type: string
     Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.CatalogListItemDto:
       required:
       - id
@@ -247,13 +247,6 @@ components:
           type: string
           description: Name of the catalog
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Catalogs.ColumnType:
-      enum:
-      - Text
-      - Double
-      - Integer
-      - Date
-      type: string
     Microsoft.AspNetCore.Mvc.ProblemDetails:
       type: object
       properties:
@@ -284,6 +277,13 @@ components:
           - 'null'
           description: URI reference that identifies this specific occurrence of the problem.
       additionalProperties: {}
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.ColumnType:
+      enum:
+      - Text
+      - Double
+      - Integer
+      - Date
+      type: string
     Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.ReindexOperationResult:
       type: object
       properties:

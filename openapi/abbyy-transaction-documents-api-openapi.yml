@@ -461,17 +461,21 @@ paths:
       description: Downloads the original file that was uploaded to the transaction document, returned as a binary stream. You can find file identifiers in the transaction document info.
 components:
   schemas:
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto:
+      required:
+      - id
+      - name
       type: object
       properties:
-        autoCrop:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
-          description: Controls automatic cropping of images during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
-        autoOrientation:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
-          description: Controls automatic page orientation correction during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
+        id:
+          minLength: 1
+          type: string
+          description: Unique identifier of the file
+        name:
+          minLength: 1
+          type: string
+          description: Name of the file. Must be unique to transaction
       additionalProperties: false
-      description: Image preprocessing settings for import
     Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentCreateRequest:
       type: object
       properties:
@@ -484,21 +488,6 @@ components:
         imageProcessingOptions:
           $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions'
           description: Image preprocessing settings (automatic cropping and orientation correction) applied to files imported into this document.
-      additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter:
-      required:
-      - key
-      - value
-      type: object
-      properties:
-        key:
-          minLength: 1
-          type: string
-          description: Key (name) of the parameter
-        value:
-          minLength: 1
-          type: string
-          description: Value of the parameter
       additionalProperties: false
     Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDocumentResult:
       required:
@@ -516,6 +505,13 @@ components:
             $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto'
           description: Source files collection
       additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher:
+      enum:
+      - Default
+      - 'Yes'
+      - 'No'
+      type: string
+      description: Switcher of image preprocessing operations
     Microsoft.AspNetCore.Mvc.ProblemDetails:
       type: object
       properties:
@@ -546,21 +542,6 @@ components:
           - 'null'
           description: URI reference that identifies this specific occurrence of the problem.
       additionalProperties: {}
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto:
-      required:
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          minLength: 1
-          type: string
-          description: Unique identifier of the file
-        name:
-          minLength: 1
-          type: string
-          description: Name of the file. Must be unique to transaction
-      additionalProperties: false
     Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionDocumentResult:
       required:
       - documentId
@@ -571,13 +552,32 @@ components:
           description: Document Id
           format: uuid
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher:
-      enum:
-      - Default
-      - 'Yes'
-      - 'No'
-      type: string
-      description: Switcher of image preprocessing operations
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions:
+      type: object
+      properties:
+        autoCrop:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
+          description: Controls automatic cropping of images during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
+        autoOrientation:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
+          description: Controls automatic page orientation correction during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
+      additionalProperties: false
+      description: Image preprocessing settings for import
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          minLength: 1
+          type: string
+          description: Key (name) of the parameter
+        value:
+          minLength: 1
+          type: string
+          description: Value of the parameter
+      additionalProperties: false
     Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionDocumentFileMetadataDto:
       type: object
       properties:

@@ -309,30 +309,6 @@ paths:
       description: Downloads one CSV result file of a completed transaction steps export. Each row is one processing step of a transaction, such as OCR, classification, or Manual Review. Result files are stored for 2 weeks after the export request completes.
 components:
   schemas:
-    AsyncStepReportFilters:
-      required:
-      - startDate
-      type: object
-      properties:
-        skillId:
-          type:
-          - string
-          - 'null'
-          description: Filter by transaction skill ID. {NULL} if skill ID filter should not be applied
-        transactionId:
-          type:
-          - string
-          - 'null'
-          description: Filter by transaction ID. {NULL} if ID filter should not be applied
-        startDate:
-          type: string
-          description: Minimum transaction step completion date
-          format: date-time
-        endDate:
-          type: string
-          description: Maximum step completion date (current UTC time if empty)
-          format: date-time
-      additionalProperties: false
     CreateReportRequestResponse:
       type: object
       properties:
@@ -372,6 +348,26 @@ components:
         filters:
           description: All the filter parameters which were given for report creation
       additionalProperties: false
+    ReportRequestStatus:
+      enum:
+      - New
+      - Queued
+      - Processing
+      - Succeeded
+      - Failed
+      - Cancelled
+      type: string
+    CreateTransactionStepsCsvRequest:
+      type: object
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/AsyncStepReportFilters'
+          description: Transaction steps filters
+        sendEmailNotification:
+          type: boolean
+          description: Enables to send notification on request processing completion
+      additionalProperties: false
     ReportRequestStatusResponse:
       type: object
       properties:
@@ -398,26 +394,6 @@ components:
           - $ref: '#/components/schemas/AsyncStepReportFilters'
           description: The filters used, to generate the report
       additionalProperties: false
-    ReportRequestStatus:
-      enum:
-      - New
-      - Queued
-      - Processing
-      - Succeeded
-      - Failed
-      - Cancelled
-      type: string
-    CreateTransactionStepsCsvRequest:
-      type: object
-      properties:
-        filters:
-          allOf:
-          - $ref: '#/components/schemas/AsyncStepReportFilters'
-          description: Transaction steps filters
-        sendEmailNotification:
-          type: boolean
-          description: Enables to send notification on request processing completion
-      additionalProperties: false
     ListReportRequestsResponse:
       type: object
       properties:
@@ -428,6 +404,30 @@ components:
           items:
             $ref: '#/components/schemas/ListReportRequestsResponseReportRequestDto'
           description: Details about available requests created by the current user
+      additionalProperties: false
+    AsyncStepReportFilters:
+      required:
+      - startDate
+      type: object
+      properties:
+        skillId:
+          type:
+          - string
+          - 'null'
+          description: Filter by transaction skill ID. {NULL} if skill ID filter should not be applied
+        transactionId:
+          type:
+          - string
+          - 'null'
+          description: Filter by transaction ID. {NULL} if ID filter should not be applied
+        startDate:
+          type: string
+          description: Minimum transaction step completion date
+          format: date-time
+        endDate:
+          type: string
+          description: Maximum step completion date (current UTC time if empty)
+          format: date-time
       additionalProperties: false
   securitySchemes:
     OAuth2Security:
