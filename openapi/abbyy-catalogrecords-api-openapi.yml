@@ -266,23 +266,23 @@ paths:
       description: Deletes up to 5000 records from the data catalog in one request. Pass the identifiers of the records to delete as a JSON array in the request body. After you finish updating the catalog, start a reindex operation so that skills search the updated data.
 components:
   schemas:
-    Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel:
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.AddRecordsResultResult:
       required:
-      - fields
-      - id
+      - errorRows
+      - insertedRowCount
       type: object
       properties:
-        id:
-          minLength: 1
-          type: string
-          description: Unique id of the record
-        fields:
+        insertedRowCount:
+          type: integer
+          description: Number of successfully inserted rows
+          format: int32
+        errorRows:
           type: object
           additionalProperties:
             type: array
             items:
               type: string
-          description: Record fields
+          description: List of the errors occurred
       additionalProperties: false
     Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.RecordDto:
       required:
@@ -332,23 +332,23 @@ components:
           - 'null'
           description: URI reference that identifies this specific occurrence of the problem.
       additionalProperties: {}
-    Abbyy.Vantage.PublicApi.Contract.Catalogs.Results.AddRecordsResultResult:
+    Abbyy.Vantage.PublicApi.Contract.Catalogs.Requests.RecordModel:
       required:
-      - errorRows
-      - insertedRowCount
+      - fields
+      - id
       type: object
       properties:
-        insertedRowCount:
-          type: integer
-          description: Number of successfully inserted rows
-          format: int32
-        errorRows:
+        id:
+          minLength: 1
+          type: string
+          description: Unique id of the record
+        fields:
           type: object
           additionalProperties:
             type: array
             items:
               type: string
-          description: List of the errors occurred
+          description: Record fields
       additionalProperties: false
   securitySchemes:
     OAuth2Security:
