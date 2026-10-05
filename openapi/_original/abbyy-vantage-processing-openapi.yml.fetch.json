@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.abbyy.com/openapi.json",
+ "requested_url": "https://docs.abbyy.com/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 149959,
+ "sha256": "0cf3649adf7043f636840fd7c90aa73ae422d6b0f2d2e00869529f04e4aff26d",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 1.0), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
