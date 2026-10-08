@@ -334,6 +334,8 @@ apis:
   - type: Documentation
     url: https://docs.abbyy.com/vantage/developer/reporting/reporting-service
 common:
+- type: FinOps
+  url: finops/abbyy-finops.yml
 - type: Overlay
   url: overlays/abbyy-vantage-processing-overlay.yaml
 - type: Overlay
