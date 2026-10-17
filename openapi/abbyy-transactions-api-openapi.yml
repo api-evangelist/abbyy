@@ -995,87 +995,76 @@ paths:
       description: Returns transactions that have finished processing (processed, cancelled, or failed), filtered by status, skill, creation time, or registration parameters. Use this to find transactions whose result files are ready to download. For a walkthrough, see Getting a list of transactions.
 components:
   schemas:
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter:
       required:
-      - id
-      - name
+      - key
+      - value
       type: object
       properties:
-        id:
+        key:
           minLength: 1
           type: string
-          description: Unique identifier of the file
-        name:
+          description: Key (name) of the parameter
+        value:
           minLength: 1
           type: string
-          description: Name of the file. Must be unique to transaction
+          description: Value of the parameter
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.SkillParameterType:
-      enum:
-      - String
-      - Catalog
-      - Bool
-      type: string
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationDto:
-      required:
-      - classConfidences
-      - isResultClassConfident
-      - resultClass
-      type: object
-      properties:
-        isResultClassConfident:
-          type: boolean
-          description: Indicates whether the document was assigned to the result class with sufficient confidence.
-        resultClass:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassDto'
-          description: Class that the classification skill assigned to the document.
-        classConfidences:
-          type: array
-          items:
-            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationConfidenceDto'
-          description: List of all classes available in the applied classification skill, together with the classification confidence for each class.
-      additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.CreatedTransactionResult:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.MobileInputLinkResult:
       required:
       - transactionId
       type: object
       properties:
         transactionId:
           type: string
+          description: 'Transaction identifier.
+
+            You receive it in the response after the transaction has been successfully created.'
           format: uuid
-          description: Unique identifier of the created transaction. Use it in subsequent requests to add files, start processing, and download results.
-      additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassDto:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Identifier of the class assigned by the classification skill.
-        name:
-          type:
-          - string
-          - 'null'
-          description: Name of the class assigned by the classification skill.
-      additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionResult:
-      required:
-      - transactionId
-      type: object
-      properties:
-        transactionId:
-          type: string
-          format: uuid
-          description: Unique identifier of the new transaction. Use it to monitor the transaction status and download result files.
         mobileInputLink:
           type:
           - string
           - 'null'
-          description: 'Mobile input link which contains one time authorization token for current transaction.
-
-            Parameter is returned if generateMobileInputLink=true'
+          description: Mobile input link which contains one time authorization token for current transaction.
       additionalProperties: false
+      description: Result of link generation
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionRegistrationParameterDto:
+      type: object
+      properties:
+        key:
+          type:
+          - string
+          - 'null'
+          description: Key (name) of the parameter
+        value:
+          type:
+          - string
+          - 'null'
+          description: Value of the parameter
+      additionalProperties: false
+      description: Transaction registration parameter
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileMetadataDto:
+      type: object
+      properties:
+        index:
+          type:
+          - integer
+          - 'null'
+          description: Documents in transaction will be ordered by this parameter
+          format: int32
+        imageProcessingOptions:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions'
+          description: Image preprocessing settings (automatic cropping and orientation correction) applied to this file on import.
+        registrationParameters:
+          maxItems: 10
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter'
+          description: "Additional file registration parameters. Predefined parameters:\n            \nSourceType: Where the file came from, usually the connector name (scanning station);\n            \nSourceDetails: How the file was received;\n            \nSourceFileName: The name of the file being added (invoice.jfif)\n            \nSourceFilePath: The path to the file\n            \nSourceArchiveName: The name of the archive containing the file being added\n            \nSourceFolderName: The name of the subfolder which containing the file being added"
+      additionalProperties: false
+      description: Additional file processing parameters
     Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionCreateRequest:
       required:
       - skillId
@@ -1107,84 +1096,47 @@ components:
           description: Skill parameters for transaction
       additionalProperties: false
       description: Transaction creation parameters
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.StageType:
       enum:
-      - Default
-      - 'Yes'
-      - 'No'
+      - ManualReview
+      - CustomActivity
+      - Automatic
       type: string
-      description: Switcher of image preprocessing operations
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.MobileInputLinkResult:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.ResultFileType:
+      enum:
+      - Json
+      - Pdf
+      - Text
+      - Docx
+      - Xlsx
+      - OcrJson
+      - FieldsJson
+      - FieldPicture
+      - Xml
+      - Tiff
+      - Jpeg
+      - Csv
+      - Html
+      - Pptx
+      - Alto
+      - Png
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.NewTransactionResult:
       required:
       - transactionId
       type: object
       properties:
         transactionId:
           type: string
-          description: 'Transaction identifier.
-
-            You receive it in the response after the transaction has been successfully created.'
           format: uuid
+          description: Unique identifier of the new transaction. Use it to monitor the transaction status and download result files.
         mobileInputLink:
           type:
           - string
           - 'null'
-          description: Mobile input link which contains one time authorization token for current transaction.
-      additionalProperties: false
-      description: Result of link generation
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionSkillParameterDto:
-      type: object
-      properties:
-        key:
-          type:
-          - string
-          - 'null'
-          description: Key (name) of the parameter
-        value:
-          type:
-          - string
-          - 'null'
-          description: Value of the parameter
-        type:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.SkillParameterType'
-          description: Type of the parameter value. One of `String`, `Catalog`, or `Bool`.
-      additionalProperties: false
-      description: Transaction skill parameter
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionSkillParameter:
-      required:
-      - key
-      - value
-      type: object
-      properties:
-        key:
-          minLength: 1
-          type: string
-          description: Key (name) of the parameter
-        value:
-          minLength: 1
-          type: string
-          description: Value of the parameter
-      additionalProperties: false
-      description: Skill parameter for transaction
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationConfidenceDto:
-      required:
-      - classId
-      - className
-      - confidence
-      type: object
-      properties:
-        classId:
-          minLength: 1
-          type: string
-          description: Identifier of the candidate class.
-        className:
-          minLength: 1
-          type: string
-          description: Name of the candidate class.
-        confidence:
-          type: integer
-          format: int32
-          description: Classification confidence for this class, an integer from 0 to 100.
+          description: 'Mobile input link which contains one time authorization token for current transaction.
+
+            Parameter is returned if generateMobileInputLink=true'
       additionalProperties: false
     Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionDto:
       required:
@@ -1224,82 +1176,40 @@ components:
             $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto'
           description: Source files that were uploaded to the transaction.
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationDto:
       required:
-      - key
-      - value
+      - classConfidences
+      - isResultClassConfident
+      - resultClass
       type: object
       properties:
-        key:
-          minLength: 1
-          type: string
-          description: Key (name) of the parameter
-        value:
-          minLength: 1
-          type: string
-          description: Value of the parameter
+        isResultClassConfident:
+          type: boolean
+          description: Indicates whether the document was assigned to the result class with sufficient confidence.
+        resultClass:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassDto'
+          description: Class that the classification skill assigned to the document.
+        classConfidences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationConfidenceDto'
+          description: List of all classes available in the applied classification skill, together with the classification confidence for each class.
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionRegistrationParameter:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.FileDto:
       required:
-      - key
-      - value
+      - id
+      - name
       type: object
       properties:
-        key:
+        id:
           minLength: 1
           type: string
-          description: Key (name) of the parameter
-        value:
+          description: Unique identifier of the file
+        name:
           minLength: 1
           type: string
-          description: Value of the parameter
+          description: Name of the file. Must be unique to transaction
       additionalProperties: false
-      description: Transaction registration parameter
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ResultFileDto:
-      required:
-      - fileId
-      - fileName
-      - type
-      type: object
-      properties:
-        fileId:
-          minLength: 1
-          type: string
-          description: Uuid in storage
-        fileName:
-          minLength: 1
-          type: string
-          description: 'Predefined scheme: [documents skill name].[extension]'
-        type:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.ResultFileType'
-          description: Format of the result file, for example `Json`, `Pdf`, `Xlsx`, or `OcrJson`. The formats produced depend on the export settings of the skill. See [Output file types](/vantage/developer/output/output-file-types).
-      additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionRegistrationParameterDto:
-      type: object
-      properties:
-        key:
-          type:
-          - string
-          - 'null'
-          description: Key (name) of the parameter
-        value:
-          type:
-          - string
-          - 'null'
-          description: Value of the parameter
-      additionalProperties: false
-      description: Transaction registration parameter
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions:
-      type: object
-      properties:
-        autoCrop:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
-          description: Controls automatic cropping of images during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
-        autoOrientation:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
-          description: Controls automatic page orientation correction during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
-      additionalProperties: false
-      description: Image preprocessing settings for import
     Microsoft.AspNetCore.Mvc.ProblemDetails:
       type: object
       properties:
@@ -1330,6 +1240,36 @@ components:
           - 'null'
           description: URI reference that identifies this specific occurrence of the problem.
       additionalProperties: {}
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.CreatedTransactionResult:
+      required:
+      - transactionId
+      type: object
+      properties:
+        transactionId:
+          type: string
+          format: uuid
+          description: Unique identifier of the created transaction. Use it in subsequent requests to add files, start processing, and download results.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.SkillParameterType:
+      enum:
+      - String
+      - Catalog
+      - Bool
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassDto:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the class assigned by the classification skill.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the class assigned by the classification skill.
+      additionalProperties: false
     Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ExtractedDocumentDto:
       required:
       - id
@@ -1357,11 +1297,27 @@ components:
             $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.DocumentBusinessRulesErrorDto'
           description: Business rule errors raised while processing the document. Empty when all rules passed.
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.StageType:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionSkillParameter:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          minLength: 1
+          type: string
+          description: Key (name) of the parameter
+        value:
+          minLength: 1
+          type: string
+          description: Value of the parameter
+      additionalProperties: false
+      description: Skill parameter for transaction
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.CompletedTransactionStatus:
       enum:
-      - ManualReview
-      - CustomActivity
-      - Automatic
+      - Processed
+      - Cancelled
+      - Failed
       type: string
     Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.Parameter:
       type: object
@@ -1377,39 +1333,49 @@ components:
           - 'null'
           description: Value of the registration parameter to filter by. Returned transactions must contain the parameter with this exact value.
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.ResultFileType:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ClassificationConfidenceDto:
+      required:
+      - classId
+      - className
+      - confidence
+      type: object
+      properties:
+        classId:
+          minLength: 1
+          type: string
+          description: Identifier of the candidate class.
+        className:
+          minLength: 1
+          type: string
+          description: Name of the candidate class.
+        confidence:
+          type: integer
+          format: int32
+          description: Classification confidence for this class, an integer from 0 to 100.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionRegistrationParameter:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          minLength: 1
+          type: string
+          description: Key (name) of the parameter
+        value:
+          minLength: 1
+          type: string
+          description: Value of the parameter
+      additionalProperties: false
+      description: Transaction registration parameter
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher:
       enum:
-      - Json
-      - Pdf
-      - Text
-      - Docx
-      - Xlsx
-      - OcrJson
-      - FieldsJson
-      - FieldPicture
-      - Xml
-      - Tiff
-      - Jpeg
-      - Csv
-      - Html
-      - Pptx
-      - Alto
-      - Png
+      - Default
+      - 'Yes'
+      - 'No'
       type: string
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.CompletedTransactionStatus:
-      enum:
-      - Processed
-      - Cancelled
-      - Failed
-      type: string
-    Abbyy.Vantage.PublicApi.Contract.Transactions.TransactionStatus:
-      enum:
-      - New
-      - Processing
-      - Processed
-      - Failed
-      - Canceled
-      type: string
+      description: Switcher of image preprocessing operations
     Abbyy.Vantage.PublicApi.Contract.Transactions.Results.DocumentBusinessRulesErrorDto:
       required:
       - currentFieldId
@@ -1435,28 +1401,62 @@ components:
           type: string
           description: ID of the field in the context that the rule was run and the error was generated
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileMetadataDto:
+    Abbyy.Vantage.PublicApi.Contract.Transactions.TransactionStatus:
+      enum:
+      - New
+      - Processing
+      - Processed
+      - Failed
+      - Canceled
+      type: string
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.TransactionSkillParameterDto:
       type: object
       properties:
-        index:
+        key:
           type:
-          - integer
+          - string
           - 'null'
-          description: Documents in transaction will be ordered by this parameter
-          format: int32
-        imageProcessingOptions:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions'
-          description: Image preprocessing settings (automatic cropping and orientation correction) applied to this file on import.
-        registrationParameters:
-          maxItems: 10
+          description: Key (name) of the parameter
+        value:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.TransactionFileRegistrationParameter'
-          description: "Additional file registration parameters. Predefined parameters:\n            \nSourceType: Where the file came from, usually the connector name (scanning station);\n            \nSourceDetails: How the file was received;\n            \nSourceFileName: The name of the file being added (invoice.jfif)\n            \nSourceFilePath: The path to the file\n            \nSourceArchiveName: The name of the archive containing the file being added\n            \nSourceFolderName: The name of the subfolder which containing the file being added"
+          description: Value of the parameter
+        type:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Results.SkillParameterType'
+          description: Type of the parameter value. One of `String`, `Catalog`, or `Bool`.
       additionalProperties: false
-      description: Additional file processing parameters
+      description: Transaction skill parameter
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Results.ResultFileDto:
+      required:
+      - fileId
+      - fileName
+      - type
+      type: object
+      properties:
+        fileId:
+          minLength: 1
+          type: string
+          description: Uuid in storage
+        fileName:
+          minLength: 1
+          type: string
+          description: 'Predefined scheme: [documents skill name].[extension]'
+        type:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.ResultFileType'
+          description: Format of the result file, for example `Json`, `Pdf`, `Xlsx`, or `OcrJson`. The formats produced depend on the export settings of the skill. See [Output file types](/vantage/developer/output/output-file-types).
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.ImageProcessingOptions:
+      type: object
+      properties:
+        autoCrop:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
+          description: Controls automatic cropping of images during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
+        autoOrientation:
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Transactions.Requests.PreprocessingOperationSwitcher'
+          description: Controls automatic page orientation correction during import. Set to `Yes` or `No` to override the skill settings, or `Default` to use the behavior configured in the skill.
+      additionalProperties: false
+      description: Image preprocessing settings for import
   securitySchemes:
     OAuth2Security:
       type: oauth2

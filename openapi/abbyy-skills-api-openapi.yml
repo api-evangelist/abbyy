@@ -124,33 +124,20 @@ components:
             $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.Results.InnerSkillDto'
           description: For process skills. Lists the skills that the process skill includes.
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto:
-      required:
-      - id
-      - name
+    Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillClassDto:
       type: object
       properties:
         id:
-          minLength: 1
-          type: string
-          description: Identifier of the skill. Use this value as the `skillId` in transaction requests.
+          type:
+          - string
+          - 'null'
+          description: Identifier of the class defined in the classification skill.
         name:
-          minLength: 1
-          type: string
-          description: Name of the skill as shown in Vantage.
-        type:
-          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.SkillType'
-          description: Type of the skill. One of `Classification`, `Document`, `Process`, `Ocr`, or `Assembling`.
+          type:
+          - string
+          - 'null'
+          description: Name of the class defined in the classification skill.
       additionalProperties: false
-    Abbyy.Vantage.PublicApi.Contract.FieldType:
-      enum:
-      - Barcode
-      - Checkmark
-      - CheckmarkGroup
-      - Group
-      - Picture
-      - Text
-      type: string
     Abbyy.Vantage.PublicApi.Contract.Skills.Results.InnerSkillDto:
       type: object
       properties:
@@ -167,20 +154,36 @@ components:
       - Amount
       - Number
       type: string
-    Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillClassDto:
+    Microsoft.AspNetCore.Mvc.ProblemDetails:
       type: object
       properties:
-        id:
+        type:
           type:
           - string
           - 'null'
-          description: Identifier of the class defined in the classification skill.
-        name:
+          description: URI reference that identifies the problem type.
+        title:
           type:
           - string
           - 'null'
-          description: Name of the class defined in the classification skill.
-      additionalProperties: false
+          description: Short, human-readable summary of the problem type.
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          description: HTTP status code for this occurrence of the problem.
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type:
+          - string
+          - 'null'
+          description: URI reference that identifies this specific occurrence of the problem.
+      additionalProperties: {}
     Abbyy.Vantage.PublicApi.Contract.Skills.Results.FieldDto:
       type: object
       properties:
@@ -216,36 +219,33 @@ components:
       - Ocr
       - Assembling
       type: string
-    Microsoft.AspNetCore.Mvc.ProblemDetails:
+    Abbyy.Vantage.PublicApi.Contract.Skills.Results.SkillListItemDto:
+      required:
+      - id
+      - name
       type: object
       properties:
+        id:
+          minLength: 1
+          type: string
+          description: Identifier of the skill. Use this value as the `skillId` in transaction requests.
+        name:
+          minLength: 1
+          type: string
+          description: Name of the skill as shown in Vantage.
         type:
-          type:
-          - string
-          - 'null'
-          description: URI reference that identifies the problem type.
-        title:
-          type:
-          - string
-          - 'null'
-          description: Short, human-readable summary of the problem type.
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          description: HTTP status code for this occurrence of the problem.
-        detail:
-          type:
-          - string
-          - 'null'
-          description: Human-readable explanation specific to this occurrence of the problem.
-        instance:
-          type:
-          - string
-          - 'null'
-          description: URI reference that identifies this specific occurrence of the problem.
-      additionalProperties: {}
+          $ref: '#/components/schemas/Abbyy.Vantage.PublicApi.Contract.Skills.SkillType'
+          description: Type of the skill. One of `Classification`, `Document`, `Process`, `Ocr`, or `Assembling`.
+      additionalProperties: false
+    Abbyy.Vantage.PublicApi.Contract.FieldType:
+      enum:
+      - Barcode
+      - Checkmark
+      - CheckmarkGroup
+      - Group
+      - Picture
+      - Text
+      type: string
   securitySchemes:
     OAuth2Security:
       type: oauth2
