@@ -221,6 +221,8 @@ apis:
   humanURL: https://docs.abbyy.com/vantage/developer/api-introduction
   baseURL: https://vantage-us.abbyy.com
   tags:
+  - Report V1
+  tags_raw:
   - Report v1
   properties:
   - type: OpenAPI
