@@ -94,3 +94,42 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: abbyy-servicenow-store-partner-apps
+  label: ServiceNow Store (partner apps)
+  partner: servicenow
+  partner_name: ServiceNow Store (partner apps)
+  category: ServiceNow Store partner app / app certification
+  type: register
+  channel: standard-directory
+  evidence: https://store.servicenow.com/store/seller/3504f98b4711261c75259959126d4323
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: ServiceNow Store (store.servicenow.com/store/sitemap_xml -> /store/app/<id> server-rendered pages)
+    standard: ServiceNow Store app certification (ServiceNow Certified App badge)
+    spec_file: null
+    role: servicenow-store-partner
+    registered_name: ABBYY USA Software House Inc.
+    register_id: 3504f98b4711261c75259959126d4323
+    matched_domain: abbyy.com
+    matched_by: domain
+    identity_source: the listing's own seller website link (no lookup)
+    certified_products:
+    - product: ServiceNow Certified App (scoped_app / integration)
+      product_type: scoped_app / integration
+      standard: ServiceNow Store app certification (ServiceNow Certified App badge)
+      lapsed: true
+      products_sample:
+      - ABBYY Vantage - Document AI
+      releases:
+      - Zurich
+    products_sample:
+    - ABBYY Vantage - Document AI
+    signal_note: 'listing alone = standard-participant; certified_products = one entry per Application type the
+      seller holds a ServiceNow Certified App badge for, standard named on each; lapsed: true when none of that
+      type''s certified apps lists either of the two newest release families on the Store; app counts are context,
+      never counted'
+    detected_by: sweep-servicenow-store.py
+    detected: '2026-10-23'
+  status: not-a-workflow
+  arazzo: null
