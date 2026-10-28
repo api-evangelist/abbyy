@@ -1,4 +1,4 @@
-# ABBYY (abbyy)
+# ABBYY
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,49 +64,141 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-ABBYY provides intelligent document processing and process intelligence solutions powered by AI.
+ABBYY is an intelligent document processing (IDP) and process intelligence company whose platform classifies documents, extracts structured data with confidence scores, and orchestrates human-in-the-loop review. ABBYY Vantage exposes two public REST APIs — a Processing API for transactions, documents, skills and data catalogs, and a Reporting API for business and analytics warehouse exports — both authenticated with OAuth 2.0 and served from regional US, EU and AU hosts. ABBYY also ships FlexiCapture Cloud for Invoices as a separate Basic-auth REST API, mobile capture SDKs, RPA connectors for UiPath, Power Automate, Pega, Blue Prism and Automation Anywhere, a hosted documentation MCP server, and a published A2A agent card.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/abbyy/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/abbyy/refs/heads/main/apis.yml)
+**Areas:** AI Automation · Document Processing · OCR · Intelligent Document Processing · Data Extraction · Process Intelligence · MCP · Agent Skills · RPA · Enterprise Automation · A2A
 
-## Scope
+## ABBYY on APIs.io
 
-- **Type:** Index
+Everything profiled for ABBYY is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/abbyy/](https://apis.io/providers/abbyy/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (10)
 
-- AI Automation
-- Document Processing
+- [ABBYY FlexiCapture Cloud for Invoices API](https://apis.io/apis/abbyy/abbyy-flexicapture-invoices/) — REST API for ABBYY FlexiCapture Cloud for Invoices. Uploads files, runs invoice capture tasks, downloads results, and maintains business-unit and vendor…
+- [ABBYY Documentation MCP Server](https://apis.io/apis/abbyy/abbyy-docs-mcp/) — Hosted, unauthenticated Model Context Protocol server over the public ABBYY documentation corpus. Exposes semantic search, a read-only virtual documentation…
+- [ABBYY Catalog Records API](https://apis.io/apis/abbyy/abbyy-catalogrecords-api/) — The CatalogRecords API from ABBYY — 3 operation(s) for catalogrecords.
+- [ABBYY Catalogs API](https://apis.io/apis/abbyy/abbyy-catalogs-api/) — The Catalogs API from ABBYY — 5 operation(s) for catalogs.
+- [ABBYY Invites API](https://apis.io/apis/abbyy/abbyy-invites-api/) — The Invites API from ABBYY — 1 operation(s) for invites.
+- [ABBYY Report API](https://apis.io/apis/abbyy/abbyy-report-api/) — The Report API from ABBYY — 5 operation(s) for report.
+- [ABBYY Report v1 API](https://apis.io/apis/abbyy/abbyy-report-v1-api/) — The Report v1 API from ABBYY — 3 operation(s) for report v1.
+- [ABBYY Skills API](https://apis.io/apis/abbyy/abbyy-skills-api/) — The Skills API from ABBYY — 2 operation(s) for skills.
+- [ABBYY Transactions API](https://apis.io/apis/abbyy/abbyy-transactions-api/) — The Transactions API from ABBYY — 11 operation(s) for transactions.
+- [ABBYY Transaction Documents API](https://apis.io/apis/abbyy/abbyy-transaction-documents-api/) — The Transaction Documents API from ABBYY — 4 operation(s) for transaction documents.
 
-## Timestamps
+### Published properties
 
-- **Created:** 2026-03-27
-- **Modified:** 2026-03-27
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### MCP servers (1)
 
-### ABBYY
+Model Context Protocol servers that expose the API to agents.
 
-ABBYY provides intelligent document processing and process intelligence solutions powered by AI.
+- [ABBYY Documentation MCP Server](https://apis.io/servers/abbyy/abbyy-documentation-mcp-server/)
 
-- **Human URL:** [https://www.abbyy.com](https://www.abbyy.com)
+#### Overlays (2)
 
-#### Tags
+OpenAPI overlays, including conversational phrasing for each operation.
 
-- AI Automation
+- [Abbyy Vantage Processing Overlay](https://apis.io/overlays/abbyy/abbyy-vantage-processing-overlay/)
+- [Abbyy Vantage Reporting Overlay](https://apis.io/overlays/abbyy/abbyy-vantage-reporting-overlay/)
 
-#### Properties
+#### Security (3)
 
-- [Documentation](https://www.abbyy.com/developers/)
+Authentication, trust centre, and vulnerability disclosure.
 
-## Common Properties
+- [Abbyy Authentication](https://apis.io/security/abbyy/abbyy-authentication/)
+- [Abbyy Domain Security](https://apis.io/security/abbyy/abbyy-domain-security/)
+- [Abbyy Trust Center](https://apis.io/security/abbyy/abbyy-trust-center/)
 
-- [GitHub Organization](https://github.com/abbyy)
-- [LinkedIn](https://www.linkedin.com/company/abbyy)
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Abbyy Scopes](https://apis.io/scopes/abbyy/abbyy-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Abbyy Plans Pricing](https://apis.io/plans/abbyy/abbyy-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Abbyy Rate Limits](https://apis.io/rate-limits/abbyy/abbyy-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Abbyy Finops](https://apis.io/finops/abbyy/abbyy-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://www.abbyy.com)
-- [Documentation](https://www.abbyy.com/developers/)
-- [Integrations](https://www.abbyy.com/marketplace/)
+- [Documentation](https://docs.abbyy.com/vantage/developer/api-introduction)
+- [Getting started](https://docs.abbyy.com/vantage/getting-started/overview)
+- [API reference](https://docs.abbyy.com/api-reference)
+- [Blog](https://www.abbyy.com/blog/)
+- [Terms of service](https://www.abbyy.com/legal/subscription-terms/)
+- [Privacy policy](https://www.abbyy.com/privacy/)
+- [GitHub](https://github.com/abbyy)
+- [Status](https://status.abbyy.com/)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 50.8** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 80.0 |
+| Contract quality | 48.8 |
+| Contract governance | 4.5 |
+| Operational transparency | 42.1 |
+| Developer ergonomics | 71.4 |
+| Access clarity | 36.8 |
+
+**Agent readiness 43.7** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | negotiable (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | yes |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | conformant |
+| Dry Run Mode | — |
+| Delegated Identity | documented (partial credit) |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 39.2** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/abbyy/](https://apis.io/providers/abbyy/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for ABBYY: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/abbyy/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
